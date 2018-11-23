@@ -1,0 +1,75 @@
+Types of users
+--------------
+There are two types of user in linux
+
+-->Super user (# prompt) (System Admin)(Having all rights)
+-->Normal user ($ prompt)
+
+Types of files in Linux
+-----------------------
+-->File
+-->Directory
+
+Permissions on files
+--------------------
+-->Read
+-->Write
+-->Executable
+
+
+
+1. whoami 
+---------
+To display the current user name
+
+2. date
+-------
+To display current system date and time
+
+3. cat
+------
+
+-->it is to create new files
+-->used to display the content of the files
+-->to apeend some data in existing file
+
+		a.creating a new file and add some data into the file and use ctrl+d to save the content
+		   e.g:	cat >t1 (type fome data and press ctrl+d)
+		b.for displaying the content of the file
+		   e.g: cat t1
+		c.for appening some data to existing file
+		   e.g: cat >>t1 (type fome data and press ctrl+d)
+
+4. mv
+-----
+
+for creating a new files,(moving the content of one file to another file or moving the content of existing source file to an existing destination file)  and removing the source file
+
+e.g: mv t1 t2
+
+5. pwd
+------
+for displaying present working directory
+
+e.g: pwd
+
+6. cp
+-----		   
+		
+for creating a new files,(copying the content of one file to another file or copying the content of existing source file to an existing destination file)
+
+e.g:  cp t2 t1
+
+7. rm
+------
+
+
+
+
+
+find . -name "shutdown.sh"
+
+ ps -ef | grep "tomcat"
+
+ cd -
+ 
