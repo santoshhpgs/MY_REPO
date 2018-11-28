@@ -34,6 +34,7 @@ git remote set-url origin ssh://git@github.com/[username]/[repository-name].git	
 git log	                                                               				View changes
 git log --summary	                                                   				View changes (detailed)
 git diff [source branch] [target branch}	                           				Preview changes before merging
+git reset -- <filePath>																For unstaging a file which is already added using git add command and not commited
 git difftool HEAD
 git revert commit_id
 git revert -n commit_id --> git commit -m 'message'
