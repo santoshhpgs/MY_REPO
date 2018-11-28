@@ -1,3 +1,4 @@
+===============================================================================================================================
 git clone ssh://znshaca@gerrit.ericsson.se:29418/bscs/core
 
 git clone ssh://zarudei@gerrit.ericsson.se:29418/bscs/core -b spec/master R17
