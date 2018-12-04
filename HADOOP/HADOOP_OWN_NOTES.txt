@@ -1,2 +1,6 @@
-HADOOP
-------
+<nppcrypt version="1015">
+<encryption cipher="rijndael256" mode="gcm" encoding="base64" tag="dBuGGmNno1RKirtK1t72eA==" />
+<random iv="+Oy2cKhsQekjb5AVPSfS8w==" salt="aqx8uoZ42Epvu2avktimxQ==" />
+<key algorithm="scrypt" N="16384" r="8" p="1" />
+</nppcrypt>
+LcKXYuJisV6UEFE3cvZjBw==
