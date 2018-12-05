@@ -1,0 +1,429 @@
+
+
+MR Lab1 : WordCount
+
+Program to count the no of occurrences of a word in a file
+
+start-dfs.sh   //storage daemons will start
+start-yarn.sh  //processing daemons will start 
+
+[training@localhost ~]$ cat > comment
+java is simple
+java is secure
+java is compiled
+java is interpreted
+ctrl+d
+
+[training@localhost ~]$ hadoop fs -mkdir /mrlab2
+[training@localhost ~]$ hadoop fs -copyFromLocal comment /mrlab2
+[training@localhost ~]$ hadoop fs -cat /mrlab2/comment
+java is simple
+java is secure
+java is compiled
+java is interpreted
+
+[training@localhost ~]$
+
+___________________________
+
+Eclipse steps :
+
+create a java project:
+
+file--> new --> java project
+  ex: mrproj1
+select add to working set ---->finish
+
+configure jar files.
+
+mrproj1-->rightclick --> Build Path --> Configure build Path---> Libraries ---> add external jar files.
+
+  select folloing jars.
+   /usr/lib/hadoop-*.*/hadoop-core.jar
+  /usr/lib/hadoop-*.*/lib/commons-cli-*.*.jar
+
+create package :
+
+mrproj1 -->src---> rightclick --> new --> package
+ ex: mrpack1
+
+create java class :
+
+mrproj1 --> src --> mrpack1 --> rightclick---->new --> class
+  ex: WordMap
+
+__________________________________
+1)Mapper Class
+
+WordMap.java:
+ is a mapper program, which writes word as key and 1 as value.
+----------------------
+package mrpack1;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import java.util.StringTokenizer;
+
+//press ctrl+shift+O for these import stmts or rightclick each and quickfix each
+
+public class Woava irdMap extends Mapper
+ <LongWritable,Text,Text,IntWritable>  //<i/pkey,i/p value,o/p key,o/p value>
+{                                     //<offset,line,word,add1>
+     // js secure
+    public void map(LongWritable  k,Text v,Context  con)throws IOException, InterruptedException
+     {
+        String line = v.toString(); //converting from text to string
+    StringTokenizer t = new StringTokenizer(line); //dividing line into words
+     while(t.hasMoreTokens())
+     {
+         String word = t.nextToken();
+         con.write(new Text(word),new IntWritable(1));
+                         
+     }
+  }
+}
+
+//map() fn executes for every row or record or line
+o/p: java   1
+     is     1
+     secure 1 
+     java   1
+     is     1
+     simple 1
+     java   1
+     is     1
+     compiled1
+     java    1
+     is      1
+     interpreted 1
+
+
+
+
+
+
+---------------------
+2)Reducer class
+
+RedForSum.java
+  is Reducer program, which will give sum aggregation.
+
+----------------------------
+package mrpack1;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class RedForSum extends Reducer
+<Text,IntWritable,Text,IntWritable>
+{
+    
+    //   java   <1,1,1,1> 
+    //   is     <1,1,1,1>
+   public void reduce(Text k,Iterable<IntWritable> vlist,Context con) throws IOException, InterruptedException
+   {
+       int tot=0;
+       for(IntWritable v: vlist)
+          tot+=v.get();           //tot=tot+v.get()
+       con.write(k, new IntWritable(tot));
+   }
+}
+//reduce fn executed for every group
+---------------------------
+
+o/p:
+
+
+java 4
+is   4
+simple 1
+secure 1
+compiled 1
+
+
+
+3)Driver Class
+
+Driver1.java
+
+ is Driver program, to call mapper and reducer
+-----------------
+package mrpack1;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class Driver1
+{
+    public static void main(String[] args)      //here we have main() method
+     throws Exception
+     {
+        Configuration c = new Configuration();
+        Job j = new Job(c,"MyFirst"); //add configuration object to job and give jobname
+        j.setJarByClass(Driver1.class);
+        j.setMapperClass(WordMap.class);
+        j.setReducerClass(RedForSum.class);
+        j.setOutputKeyClass(Text.class); // in what format o/p key of mapper is given to reducer
+        j.setOutputValueClass(IntWritable.class);//in what format o/p value of mapper is given to reducer
+         Path p1 = new Path(args[0]); //input path
+         Path p2 = new Path(args[1]); //output path
+       
+FileInputFormat.addInputPath(j,p1);//adding i/p path to job
+FileOutputFormat.setOutputPath(j, p2);//adding o/p path to job
+
+System.exit(j.waitForCompletion(true) ? 0:1);
+  }
+}
+---------------------
+
+Now export all these 3 classes into jar file.
+
+mrproj1 ---->rightclick--> export --> jar -->java jar
+  ex: /home/training/Desktop/myapp.jar
+
+-------------------------------
+
+submitting mr job:
+
+For submitting MR job, we need to specify 4 parameters
+
+syntax: hadoop jar <jar filename> <packagename.drivername> <input path> <output path>
+
+        
+[training@localhost ~]$ hadoop jar Desktop/myapp.jar \
+>  mrpack1.Driver1 \
+>  /mrlab2/comment \
+>  /mrlab2/res1 
+
+[training@localhost ~]$ hadoop fs -ls mrlab2/res1
+
+/user/training/mrlab2/res1/part-r-00000
+
+[training@localhost ~]$ hadoop fs -cat mrlab2/res1/part-r-00000
+java   4
+is     4
+compiled  1
+secure    1
+simple    1
+interpreted 1
+-------------------------------------------------------------------------------------------
+
+
+
+
+Case 1: Suspending the Reducer: Default Reducer will run even if reducer suspended
+
+To suspend the reducer, in driver class, keep the following stmt in comment so that reducer will be suspended
+ //  j.setReducerClass(RedForSum.class);
+
+Now just suspend the reducer by keeping the following stmt in comment
+//  j.setReducerClass(RedForSum.class);
+Now default reducer will be running,
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+
+
+public class Driver1
+{
+    public static void main(String[] args) //here we have main() fn
+     throws Exception
+     {
+        Configuration c = new Configuration();
+        Job j = new Job(c,"MyFirst");
+        j.setJarByClass(Driver1.class);
+        j.setMapperClass(WordMap.class);
+      //  j.setReducerClass(RedForSum.class);
+        j.setOutputKeyClass(Text.class); // in what format o/p key of mapper is given to reducer
+        j.setOutputValueClass(IntWritable.class);//in what format o/p value of mapper is given to reducer
+         Path p1 = new Path(args[0]); //input
+         Path p2 = new Path(args[1]); //output
+       
+FileInputFormat.addInputPath(j,p1);//adding i/p path to job
+FileOutputFormat.setOutputPath(j, p2);//adding o/p path to job
+
+System.exit(j.waitForCompletion(true) ? 0:1);
+  }
+}
+
+generate jar file and submit MR job
+
+$ hadoop jar Desktop/myapp3.jar mrpack1.Driver1 /mrlab2/comment /mrlab2/r3
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /mrlab2/r3
+Found 2 items
+-rw-r--r--   1 lenovo supergroup          0 2017-06-12 11:58 /mrlab2/r3/_SUCCESS
+-rw-r--r--   1 lenovo supergroup         91 2017-06-12 11:58 /mrlab2/r3/part-r-00000
+
+Note: here we got Part-r file bcoz default reducer is running, but within this file
+we have mapper output
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /mrlab2/r3/part-r-00000
+compiled	1
+interpreted	1
+is	1
+is	1
+is	1
+is	1
+java	1
+java	1
+java	1
+java	1
+secure	1
+simple	1
+
+Here same mapper o/p only but,Grouping and sorting phases are executed but aggregation is not done becoz that class is kept in comment to suspend the reducer.
+----------------------------------------------------------------------------------------------------
+Case 2:suspending the default reducer also :
+
+
+Even though reducer is suspended,default reducer will be running,even to suspend that,include the following stmt
+ j.setNumReduceTasks(0);
+ This stmt is used to control the no of reducers i.e either to increase/decrease the no of reducers
+whenever we suspend reducer then mapper o/p is permanently stored in HDFS, i.e we get part-m file.
+
+
+package mrpack1;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+
+
+public class Driver1
+{
+    public static void main(String[] args) //here we have main() fn
+     throws Exception
+     {
+        Configuration c = new Configuration();
+        Job j = new Job(c,"MyFirst");
+        j.setJarByClass(Driver11.class);
+        j.setMapperClass(WordMap.class);
+      //  j.setReducerClass(RedForSum.class);
+        j.setNumReduceTasks(0); //even default reducer suspended,no of reducers=0
+        j.setOutputKeyClass(Text.class); // in what format o/p key of mapper is given to reducer
+        j.setOutputValueClass(IntWritable.class);//in what format o/p value of mapper is given to reducer
+         Path p1 = new Path(args[0]); //input
+         Path p2 = new Path(args[1]); //output
+       
+FileInputFormat.addInputPath(j,p1);//adding i/p path to job
+FileOutputFormat.setOutputPath(j, p2);//adding o/p path to job
+
+System.exit(j.waitForCompletion(true) ? 0:1);
+  }
+}
+
+generate jar file and submit MR job as
+$ hadoop jar Desktop/myapp2.jar mrpack1.Driver1 /mrlab2/comment /mrlab2/r2
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /mrlab2/r2
+Found 2 items
+-rw-r--r--   1 lenovo supergroup          0 2017-06-12 11:47 /mrlab2/r2/_SUCCESS
+-rw-r--r--   1 lenovo supergroup         91 2017-06-12 11:47 /mrlab2/r2/part-m-00000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /mrlab2/r2/part-m-00000
+java	1
+is	1
+simple	1
+java	1
+is	1
+compiled	1
+java	1
+is	1
+interpreted	1
+java	1
+is	1
+secure	1
+-------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------
+Case 3: Increasing no of Reducers
+we can increase no of reducers by specfying the number as
+j.setNumReduceTasks(2);
+
+The Driver program is
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+
+
+public class Driver1
+{
+    public static void main(String[] args) //here we have main() fn
+     throws Exception
+     {
+        Configuration c = new Configuration();
+        Job j = new Job(c,"MyFirst");
+        j.setJarByClass(Driver1.class);
+        j.setMapperClass(WordMap.class);
+       j.setReducerClass(RedForSum.class);
+       j.setNumReduceTasks(2);
+        j.setOutputKeyClass(Text.class); // in what format o/p key of mapper is given to reducer
+        j.setOutputValueClass(IntWritable.class);//in what format o/p value of mapper is given to reducer
+         Path p1 = new Path(args[0]); //input
+         Path p2 = new Path(args[1]); //output
+       
+FileInputFormat.addInputPath(j,p1);//adding i/p path to job
+FileOutputFormat.setOutputPath(j, p2);//adding o/p path to job
+
+System.exit(j.waitForCompletion(true) ? 0:1);
+  }
+}
+
+Now generate jar and submit MR job
+
+ hadoop jar Desktop/myapp4.jar mrpack1.Driver /mrlab2/comment /mrlab2/r4
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /mrlab2/r4
+Found 3 items
+-rw-r--r--   1 lenovo supergroup          0 2017-06-12 12:11 /mrlab2/r4/_SUCCESS
+-rw-r--r--   1 lenovo supergroup         20 2017-06-12 12:11 /mrlab2/r4/part-r-00000
+-rw-r--r--   1 lenovo supergroup         35 2017-06-12 12:11 /mrlab2/r4/part-r-00001
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /mrlab2/r4/part-r-00000
+compiled	1
+secure	1
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /mrlab2/r4/part-r-00001
+interpreted	1
+is	4
+java	4
+simple	1
+
+
+-------------------------------------------------------------------------------------------------
+To see the results in GUI
+
+open browser and type the following
+http://localhost:50070
+
+Legacy---->browse the filesystem---> /mrlab2/r4
+
+
+
+
+
+
+
