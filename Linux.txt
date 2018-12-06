@@ -73,3 +73,286 @@ find . -name "shutdown.sh"
 
  cd -
  
+
+============================================================================================================================
+
+
+LFS Commands:
+
+1)ls : lists all available files and directories
+
+  ls dirname ------->lists all files present in particular directory
+-------------------------------------------------------------------------------------------------------
+2)ll :longlist
+      It also displays all files and directories with details
+-------------------------------------------------------------------------------------------------------
+3)mkdir : creating a directory
+  ex: mkdir hadooplab11
+------------------------------------------------------------------------------------------------------
+4)touch : for creating a empty file
+  ex: touch sample1.txt
+------------------------------------------------------------------------------------------------------
+5)cat : for reading a file
+  ex: cat filename
+   cat customer.txt
+------------------------------------------------------------------------------------------------------
+6)cat > filename : for creating a file with content
+
+$ cat > sample2.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+
+ctrl+D ------->for save and exit
+
+now read sample2.txt
+$ cat sample2.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+
+------------------------------------------------------------------------------------------------
+7)cat >> filename : for appending data to a existing file
+lenovo@lenovo-Lenovo-G450:~$ cat sample2.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+lenovo@lenovo-Lenovo-G450:~$ cat >> sample2.txt
+Java is simple
+Java is easy
+Java is secure
+lenovo@lenovo-Lenovo-G450:~$ cat sample2.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+Java is simple
+Java is easy
+Java is secure
+------------------------------------------------------------------------------------------------------
+8)cat file1 > file2 : duplicating a file
+$ cat sample2.txt > sample3.txt 
+lenovo@lenovo-Lenovo-G450:~$ cat sample3.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+Java is simple
+Java is easy
+Java is secure
+-------------------------------------------------------------------------------------------------------
+9)gedit : for creating and modifying a file
+  
+ ex:
+   gedit filename
+  
+   If file doesnot exist,it creates a new file
+   If file already exists, it opens the file for modification  
+   ctrl+S
+--------------------------------------------------------------------------------------------
+10) other File Editors 
+i) vi
+ii)Nano
+
+
+vi :Virtual interface
+
+vi filename
+Editor opens in Read only mode
+to insert data press---->esc "i"
+insert some data
+
+again bring it to read only mode--->by pressing "esc"
+
+:wq------->write and quit
+
+
+again if u open the same file using vi---->we can edit it.
+
+------------------------------------------------------------------------------------
+ii)Nano : here no need to press esc ,it looks like Notepad
+
+Nano sample6.txt
+
+A Editor opens
+
+Type some data
+
+for saving and exit
+ctrl+x
+     y
+     enter
+
+-------------------------------------------------------------------------------------
+11)grep : for searching for a particular keyword/pattern.
+
+syntax:
+
+grep keyword filename
+
+$ grep Hadoop sample3.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+
+lenovo@lenovo-Lenovo-G450:~$ grep hadoop sample3.txt
+No matchings
+so, for ignoring the case use -i
+lenovo@lenovo-Lenovo-G450:~$ grep -i hadoop sample3.txt
+Hadoop is simple
+Hadoop is easy
+Hadoop is great
+Hadoop is booming
+
+-----------------------------------------------------------------------------------
+12)pwd : present working Directory
+
+
+--------------------------------------------------------------------------------
+$ date
+Mon Sep 17 16:51:24 IST 2018
+
+
+lenovo@lenovo-Lenovo-G450:~$ cal
+   September 2018     
+Su Mo Tu We Th Fr Sa  
+                   1  
+ 2  3  4  5  6  7  8  
+ 9 10 11 12 13 14 15  
+16 17 18 19 20 21 22  
+23 24 25 26 27 28 29  
+30                    
+
+-----------------------------------------------------------------------------------
+13) wc sample4.txt ------------->word count
+
+ wc sample4.txt
+ 3  9 49 sample4.txt
+
+lines---->3
+words----->9
+characters->49
+
+---------------------------------------------------------------------------------
+14)
+
+$ cat sample4.txt|wc -l        ---------->for only lines to be dispalyed
+3
+lenovo@lenovo-Lenovo-G450:~$ cat sample4.txt|wc -w ------>for words
+9
+lenovo@lenovo-Lenovo-G450:~$ cat sample4.txt|wc -c ------>for characters
+49
+
+-------------------------------------------------------------------------------------
+15) history : displays all previously typed commands
+
+------------------------------------------------------------------------------------
+16)ps : processes running currently
+
+------------------------------------------------------------------------------------
+17)jps : java processes running currently
+
+------------------------------------------------------------------------------------
+18) cp :copy command
+
+ cp sourcefilepath destinationfilepath
+
+cp command performs the following:
+
+1)copies a file into a directory
+ 
+cp sample4.txt LFSlab5
+lenovo@lenovo-Lenovo-G450:~$ ls LFSlab5
+sample4.txt
+
+2)copies multiple files into a directory
+$ cp *.txt LFSlab5
+
+
+$cp *.* LFSlab5 ----------->all files with all extensions will be copied into LFSlab5
+
+3)copies a file into another file
+$ cp sample6.txt sample7.txt
+
+Here sample7.txt created automatically and sample6.txt data copied into it 
+
+$ cp customer.txt sample7.txt
+If sample7.txt already exists , then it will be overwritten eith customer.txt
+
+if doesnt exist creates a new file as sample7.txt
+
+4)copies a file from one directory to another directory
+$ cp LFSlab4/sample5.txt LFSlab6
+
+--------------------------------------------------------------------------------------
+19)mv :move command  
+
+mv command follows cut+paste i.e Ctrl x + ctrl v
+i.e wont be available in source, will be available in destination.
+
+synta$ mv LFSlab6/customer.txt LFSlab6/cust.txt
+x:
+
+mv sourcefilepath destinationfilepath
+
+mv command performs the following:
+
+1)moves a file from one directory to another directory
+$ mv LFSlab5/customer.txt LFSlab6
+
+2)moves multiple files from one directory to another directory
+$ mv LFSlab5/*.log LFSlab6 ------->moves all log files into LFSlab6
+$mv LFSlab5/*.* LFSlab6  --------->moves all files with all extensions
+
+3)moves a file into another file
+  mv cmd indirectly used for renaming a file
+$ mv LFSlab6/sample1.txt LFSlab6/samp.txt
+
+-------------------------------------------------------------------------------------
+20)cd : change directory
+
+$ cd LFSlab6
+lenovo@lenovo-Lenovo-G450:~/LFSlab6$ pwd
+/home/lenovo/LFSlab6
+lenovo@lenovo-Lenovo-G450:~/LFSlab6$ ls  --->displays all files and directories
+                                             of LFSlab6
+
+
+Coming out of a directory
+
+cd ..  ---------->comes out of a directory
+ex:
+/LFSlab6$ cd ..   ------->comes out of LFSlab6 directory
+
+cd     ---------->totally comes out of all the directories
+ex:~
+/LFSlab6/LFSbab7$ cd
+comes out of all the directories
+
+------------------------------------------------------------------------------------
+21)rm : for removing a file
+
+syntax:
+rm filename          ------->removes a file
+ (or)
+rm dirname/filename -------->removes a file from a particular directory
+ex:
+$ rm LFSlab6/sample5.txt        --->removes sample5.txt prsent in LFSlab6
+
+-------------------------------------------------------------------------------------
+22) rmdir: removes a empty directory
+
+$ mkdir LFSlab7
+$ rmdir LFSlab7
+
+-------------------------------------------------------------------------------------
+23)rm -r :Removes a directory with content
+
+$ rm -r LFSlab5     ------->removes LSlab5 directory along with its contents(files)
+
+------------------------------------------------------------------------------------- 
+ 
