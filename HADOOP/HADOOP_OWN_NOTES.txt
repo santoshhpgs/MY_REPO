@@ -1,5 +1,61 @@
 HADOOP
 ------
+SESSION 1 12TH NOV
+------------------
+1.what is big data ?
+2.why Hadoop 
+3.Drawbacks of database
+4.Hadoop advantages
+5.Hadoop components
+6.Hadoop job market
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Bigdata:KB,MB,GB      TB,PB,EB,ZB,YB,SB..................
+
+1PB=1024TB's
+
+SBI=>LAKHS
+
+FB---->1 min ----
+
+----------------------------------------------------------------------------------------------------------------------------------------
+on an average
+1.Google generaating -------------------->450PB/month
+2.FaceBook generating-------------------->350PB/month
+										  350*1024TB's
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Oracle,MySQL,sqlserver------------------->OLTP--->GB's
+Teradata,Natezza,Vertica----------------->OLAP--->TB's
+
+1PB of data ----------->no tool 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Drawbacks of Databases:
+
+1.Limited storage :GB's or TB's 
+2.no parallel processing
+3.if volume increases -------------------->speed decreases
+   eg: select sum(amt) from sales1; ---------->1000 recs
+       select sum(amt) from sales2; ---------->1Lakh recs
+       select sum(amt) from sales3; ---------->1 cr recs
+4.if complexity increases speed decreases	
+
+  eg: select sum(amt) from sales1;
+	  select avg(amt) from sales1;
+	  select stddev(amt) from sales1;
+
+5.RDBMS can hold only structured data.
+
+6.	  
+	   
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 SESSION 8 21ST NOV
 ------------------
 Hadoop is meant for storage and processing.For storage we are going with HDFS(Hadoop Distributed File System) and for processing
