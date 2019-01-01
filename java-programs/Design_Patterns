@@ -1,0 +1,59 @@
+Design Patterns
+---------------
+a.Creational Design Patterns
+-----------------------------
+1.Abstract Factory : Allows for the creation of objects without specifying their concrete type.
+
+2.Builder : Used to create complex objects.
+
+3.Factory Method : Creates objects without specifying the exact class to create.
+    >>Define an interface for creating an object,but let the subclasses decide which object to instatiate.Factory method lets a class
+      defer instantiation to subclass
+     Impementation
+     -------------
+     Provide an interface for creating an object.Here do not consider the word interface as java interface.It simply means to provide 
+     a contract/method  to create an object.
+     
+     Let the subclass decide what exact object to instatiate - This pattern involves "Inheritence"
+
+4.Prototype : Creates a new object from an existing object.
+
+5.Singleton : Ensures only one instance of an object is created.
+
+
+b.Structural Design Patterns
+----------------------------
+6.Adapter : Allows for two incompatible classes to work together by wrapping an interface around one of the existing classes.
+
+7.Bridge : Decouples an abstraction so two classes can vary independently.
+
+8.Composite : Takes a group of objects into a single object.
+
+9.Decorator : Allows for an object’s behavior to be extended dynamically at run time.
+
+10.Facade : Provides a simple interface to a more complex underlying object.
+
+11.Flyweight : Reduces the cost of complex object models.
+
+12.Proxy : Provides a placeholder interface to an underlying object to control access, reduce cost, or reduce complexity.
+
+c.Behavior Design Patterns
+--------------------------
+Chain of Responsibility. Delegates commands to a chain of processing objects.
+Command. Creates objects which encapsulate actions and parameters.
+-------------------------------------------------------------------------------
+13.Interpreter : Implements a specialized language.
+
+14.Iterator : Accesses the elements of an object sequentially without exposing its underlying representation.
+
+15.Mediator : Allows loose coupling between classes by being the only class that has detailed knowledge of their methods.
+
+16.Memento : Provides the ability to restore an object to its previous state.
+
+17.Observer : Is a publish/subscribe pattern which allows a number of observer objects to see an event.
+
+18.State : Allows an object to alter its behavior when its internal state changes.
+
+19.Strategy : Allows one of a family of algorithms to be selected on-the-fly at run-time.
+
+20.Template Method : Defines the skeleton of an algorithm as an abstract class, allowing its sub-classes to provide concrete behavior.
