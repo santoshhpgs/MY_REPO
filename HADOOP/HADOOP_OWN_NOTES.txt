@@ -92,4 +92,12 @@ Job Tracker assigns task to Task Tracker and Task Tracker performs the tasks
  PIG is a dataflow language
  Dataflow is a sequence collections of pipes.
  A pipe is any data operation such as loading data,trasnforming data,filtering data,sorting data,merging data,grouping data etc.
- PIG processing happens using various built in operators
+ PIG processing happens using various built-in operators
+ 
+ Drawbacks of MR
+ ---------------
+ huge coding
+ lot of programming required
+ operations like joins,order by are very complex to implement
+ 
+ 
