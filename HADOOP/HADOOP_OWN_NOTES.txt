@@ -85,4 +85,11 @@ Job Tracker assigns task to Task Tracker and Task Tracker performs the tasks
 
 
  
- 
+ ---------------------------------------------------------------------------------------------------------------------------------------
+ SESSION 21 11th DEC
+ -------------------
+ PIG is a component of Hadoop used for processing
+ PIG is a dataflow language
+ Dataflow is a sequence collections of pipes.
+ A pipe is any data operation such as loading data,trasnforming data,filtering data,sorting data,merging data,grouping data etc.
+ PIG processing happens using various built in operators
