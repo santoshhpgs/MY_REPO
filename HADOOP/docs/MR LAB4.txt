@@ -1,0 +1,123 @@
+
+MR Lab3
+
+Case 3: single grouping mutiple Aggregation
+
+ex:
+
+ select dno,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp group by dno;
+
+
+DnoSalMap.java
+--------------------
+package mr.analytics;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+public class DnoSalMap extends Mapper
+ <LongWritable,Text,Text,IntWritable>
+{
+     //  file : emp
+     // schema : id,name,sal,sex,dno
+    //  delimiter : "," (comma)
+ //  sample row : 101,amar,20000,m,11
+ //   Dno as key, sal as value.
+    public void map(LongWritable k,Text v,Context  con)throws IOException,InterruptedException
+     {
+        String line =v.toString();
+      String[] w = line.split(",");   
+      String dno = w[4];
+     int sal =Integer.parseInt(w[2]);
+    con.write(new Text(dno),new IntWritable(sal));
+     }
+  }
+
+Reducer :RedForAggr.java
+
+RedForAggr.java
+---------------
+package mrpack1;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+
+public class RedForAggr extends Reducer
+<Text,IntWritable,Text,Text>
+{
+    //   11  <10,20,50>   
+   public void reduce(Text k,Iterable<IntWritable> vlist,Context con) throws IOException, InterruptedException
+   {
+       int tot=0;
+       int cnt=0;
+       int m=0;
+       int n=0;
+       for(IntWritable v: vlist)
+       {  
+          int num=v.get();
+          tot+=num;
+          cnt++;
+          m = Math.max(m,num);
+          n= Math.min(m,num);
+       }
+       int avg = tot/cnt; 
+
+  
+      String value1=tot+"\t"+avg+"\t"+cnt+"\t"+m+"\t"+n; 
+       
+       con.write(k, new Text(value1));
+   }
+}
+
+----------------
+Driver1.java
+----------------
+
+package mr.analytics;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class Driver1
+{
+    public static void main(String[] args)
+     throws Exception
+     {
+        Configuration c = new Configuration();
+        Job j = new Job(c,"d1");
+        j.setJarByClass(Driver1.class);
+        j.setMapperClass(DnoSalMap.class);
+        j.setReducerClass(RedForAggr.class);
+        j.setOutputKeyClass(Text.class);
+        j.setOutputValueClass(IntWritable.class);
+         Path p1 = new Path(args[0]); //input
+         Path p2 = new Path(args[1]); //output
+       
+FileInputFormat.addInputPath(j,p1);
+FileOutputFormat.setOutputPath(j, p2);
+
+System.exit(j.waitForCompletion(true) ? 0:1);
+  }
+}
+
+--------------------------
+
+submit:
+
+[training@localhost ~]$ hadoop fs -cat mrlab/r8/part-r-00000
+11	40000	20000	2	30000	10000
+12	60000	30000	2	40000	20000
+13	50000	50000	1	50000	50000
+

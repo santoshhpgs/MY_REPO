@@ -1,0 +1,97 @@
+
+MR Lab3
+
+Case 2: Multiple grouping single Aggregation
+grouping By Multiple columns.
+
+ex:
+
+ select dno,sex,sum(sal) from emp group by dno,sex;
+
+
+DnoSexSalMap.java
+--------------------
+package mr.analytics;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+public class DnoSexSalMap extends Mapper
+ <LongWritable,Text,Text,IntWritable>
+{
+     //  file : emp
+     // schema : id,name,sal,sex,dno
+    //  delimiter : "," (comma)
+ //  sample row : 101,amar,20000,m,11
+ //   sex as key, sal as value.
+    public void map(LongWritable k,Text v,Context  con)throws IOException,InterruptedException
+     {
+        String line =v.toString();
+      String[] w = line.split(",");   
+      String sex = w[3];
+      String dno = w[4];
+     int sal =Integer.parseInt(w[2]);
+     String myKey = dno+"\t"+sex;
+    con.write(new Text(myKey),new IntWritable(sal));
+     }
+  }
+
+Reducer :RedForSum.java
+----------------
+Driver8.java
+----------------
+
+package mr.analytics;
+
+import
+
+org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import
+
+org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import
+
+org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class Driver8
+{
+    public static void main(String[] args)
+     throws Exception
+     {
+        Configuration c = new Configuration();
+        Job j = new Job(c,"d8");
+        j.setJarByClass(Driver8.class);
+        j.setMapperClass(DnoSexSalMap.class);
+        j.setReducerClass(RedForSum.class);
+        j.setOutputKeyClass(Text.class);
+        j.setOutputValueClass(IntWritable.class);
+         Path p1 = new Path(args[0]); //input
+         Path p2 = new Path(args[1]); //output
+       
+FileInputFormat.addInputPath(j,p1);
+FileOutputFormat.setOutputPath(j, p2);
+
+System.exit(j.waitForCompletion(true) ?
+
+0:1);
+  }
+}
+
+--------------------------
+
+submit:
+
+[training@localhost ~]$ hadoop fs -cat mrlab/r8/part-r-00000
+11      f       25000
+11      m       26000
+12      f       18000
+13      m       19000
+
+_______________________

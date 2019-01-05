@@ -1,0 +1,270 @@
+--------------------------------------------------------------------------------------------------------------------------  
+5) filter :-
+
+      to create subsets , based on given criteria.
+
+     (row filter, equivalant to 'where' clause of sql  select statement )
+
+1)want only male records
+grunt> e1 = filter emp by (sex=='m');
+grunt> dump e1;
+o/p:
+(101,miller,10000,m,11)
+(103,sony,30000,m,12)
+(105,John,50000,m,11)
+
+2)only female records
+grunt> e2 = filter emp by (sex=='f');
+grunt> dump e2;
+o/p:
+(102,Blake,20000,f,12)
+(104,sita,40000,f,13)
+
+3)want Records whose dno=12
+grunt> e3 = filter emp by (dno==12);
+grunt> dump e3;
+(102,Blake,20000,f,12)
+(103,sony,30000,m,12)
+
+4)want records whose sex is male and dno=12
+grunt> e4 = filter emp by (sex=='m' and dno==12);
+grunt> dump e4
+(103,sony,30000,m,12)
+--------------------------------------------------------------------------------------------------------------------------
+6) Limit :-
+
+ to fetch first n number of tuples.
+
+ grunt> top3 = limit emp 3;
+grunt> dump top3
+
+(101,miller,10000,m,11)
+(102,Blake,20000,f,12)
+(103,sony,30000,m,12)
+--------------------------------------------------------------------------------------------------------------------------
+7) sample:-
+
+ to create subsets, in random sample style.
+
+grunt> rs = sample emp 0.5;
+grunt> dump rs      
+(102,bbb,2000,f,12)
+(103,ccc,3000,m,12)
+(105,eee,5000,m,11)
+
+------------------------------------------------------------------------------------------------------------------------
+
+8) Aggregated functions in PigLatin.
+
+   SUM(), AVG(), MAX(), MIN(), COUNT()
+
+   
+grunt> r = foreach emp generate SUM(sal) as tot;
+grunt> dump r
+
+   ABOVE statement will be failed during execution,.
+
+    bcoz, AGGREGATED functions are applied only on inner bags.
+   when you group data , inner bags will be created
+
+_________________________________________
+
+9) group: -
+      to get inner bags foreach data group.
+   based on grouping field.
+
+grunt> describe emp;
+emp: {id: int,name: chararray,sal: int,sex: chararray,dno: int}
+
+1)Single Grouping Single Aggregation:
+
+grunt> -- select sex, sum(sal) from emp group by sex
+grunt> e = foreach emp generate sex, sal;
+grunt> grpsex = group e by sex;
+grunt> describe grpSex
+bySex: {group: chararray,e: {sex: chararray,sal: int}}
+
+dump grpsex;
+(f,{(f,40000),(f,20000)})
+(m,{(m,50000),(m,30000),(m,10000)})
+
+grunt> res = foreach grpSex generate
+         group as sex, SUM(e.sal) as tot;
+grunt>dump res
+(f,60000)
+(m,90000)
+
+grunt> store res into '/myhdfs1';
+
+grunt> cat /myhdfs1/part-r-00000
+
+(f,60000)
+(m,90000)
+_________________________________
+
+grunt> -- select dno, sum(sal) from emp group by sex
+grunt> describe emp
+emp: {id: int,name: chararray,sal: int,sex: chararray,dno: int}
+grunt> e1 = foreach emp generate dno, sal;
+grunt> grpdno = group e1 by dno;
+grunt>dump grpdno;
+(11,{(11,50000),(11,10000)})
+(12,{(12,30000),(12,20000)})
+(13,{(13,40000)})
+grunt> res1 = foreach grpdno generate 
+            group as dno, SUM(e1.sal) as tot;
+
+grunt>dump res1;
+(11,60000)
+(12,50000)
+(13,40000)
+
+grunt> store res into 'piglab/result1';
+
+grunt> ls piglab/res1
+hdfs://localhost/user/training/piglab/result1/_logs <dir>
+hdfs://localhost/user/training/piglab/result1/part-r-00000<r 1>       28
+grunt> cat piglab/result1/part-r-00000
+11      60000
+12      50000
+13      40000 
+
+--------------------------------------------------------------------------------------------------------------------
+
+2)
+grunt> -- single grouping and multiple aggregations
+-- select dno, sum(sal),max(sal),min(sal),avg(sal),count(*) from emp group by sex
+ 
+grunt> res2 = foreach grpSex generate
+>>    group as dno, 
+>>     SUM(e1.sal) as tot,
+>>    AVG(e1.sal) as avg,
+>>    MAX(e1.sal) as max,
+>>    MIN(e1.sal) as min,
+>>    COUNT(e1) as cnt;
+grunt> dump res2
+(11,60000,30000.0,50000,10000,2)
+(12,50000,25000.0,30000,20000,2)
+(13,40000,40000.0,40000,40000,1)
+--------------------------------------------------------------------------------------------------------------------
+3)Multi grouping single aggregation
+grunt> -- multi grouping..
+grouping based on dno,sex
+---- select dno,sex,sum(sal) from emp group by dno,sex
+grunt> e = foreach emp generate dno, sex, sal;
+grunt> grp = group e by dno, sex;
+2016-06-09 19:28:35,893 [main] ERROR org.apache.pig.tools.grunt.Grunt - ERROR 1000: Error during parsing. Unrecognized alias sex
+Details at logfile: /home/training/pig_1465437040017.log
+grunt> 
+  above statement is invalid.
+  pig does not allow groping by multiple fields.
+
+  solution: 
+   make multiple fields as a tuple, and group it by tuple.
+
+grunt> grp = group e by (dno, sex);
+grunt> describe grp
+grp: {group: (dno: int,sex: chararray),e: {dno: int,sex: chararray,sal: int}}
+grunt> res = foreach grp generate 
+         group as dnosex, SUM(e.sal) as tot; 
+              (or)
+grunt> res = foreach grp generate 
+         group.dno, group.sex, SUM(e.sal) as tot; 
+grunt> dump res
+(11,f,250000)
+(11,m,260000)
+(12,f,180000)
+(12,m,300000)
+(13,f,600000)
+(13,m,690000)
+-----------------------------------------------------------------------------------------------------------------------------------
+
+4)Multi grouping Multiple Aggregation:
+select dno,sex sum(sal),max(sal),min(sal),avg(sal),count(*) from emp group by dno,sex
+grunt> e4 = foreach emp generate dno,sex,sal;
+grunt> grpdnosex = group e4 by dno,sex;
+//error so keep in tuple
+grunt> grpdnosex = group e4 by (dno,sex);
+grunt> describe grp
+grpdnosex: {group: (dno: int,sex: chararray),e4: {dno: int,sex: chararray,sal: int}}
+grunt> dump grpdnosex;
+((11,m),{(11,m,50000),(11,m,10000)})
+((12,f),{(12,f,20000)})
+((12,m),{(12,m,30000)})
+((13,f),{(13,f,40000)})
+runt> res4 = foreach grpdnosex generate group.dno as dno,group.sex as sex,SUM(e4.sal) as totsal,AVG(e4.sal) as avgsal,MAX(e4.sal) as maxsal,MIN(e4.sal) as minsal,COUNT(e4) as cnt;
+grunt> dump res4;
+(11,m,60000,30000.0,50000,10000,2)
+(12,f,20000,20000.0,20000,20000,1)
+(12,m,30000,30000.0,30000,30000,1)
+(13,f,40000,40000.0,40000,40000,1)
+
+---------------------------------------------------------------------------------------------------------------------------------
+Task: I want totsal generated for all emps irrespective of dno or sex
+grunt> -- select sum(sal) from emp;
+Task: I want company or organization as "IBM' for all employees
+
+grunt> e = foreach emp generate 'ibm' as org, sal;
+grunt> dump e; 
+
+(ibm,26000)
+(ibm,25000)
+(ibm,13000)
+(ibm,8000)
+(ibm,6000)
+(ibm,10000)
+(ibm,30000)
+(ibm,50000)
+(ibm,10000)
+(ibm,50000)
+
+grunt> grp = group e by org;
+grunt> res = foreach grp generate 
+>>         SUM(e.sal) as tot;
+grunt> dump res
+(228000)
+
+_____________________________________
+
+ 2nd one --- for entire column aggregation.
+
+grunt> describe emp;
+emp: {id: int,name: chararray,sal: int,sex: chararray,dno: int}
+grunt> e = foreach emp generate sal;
+grunt> grp = group e all;    
+grunt> dump grp
+
+(all,{(26000),(25000),(13000),(8000),(6000),(10000),(30000),(50000),(10000),(50000)})
+
+grunt> res = foreach grp generate 
+>>     SUM(e.sal) as tot, 
+>>    AVG(e.sal) as avg, MAX(e.sal) as max,
+>>    MIN(e.sal) as min, COUNT(e) as cnt;
+grunt> dump res
+(228000,22800.0,50000,6000,10)
+----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

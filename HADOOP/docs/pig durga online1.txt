@@ -1,0 +1,298 @@
+PIG:
+PIG is a component of Hadoop used for Processing
+Pig is a Dataflow Language.
+Dataflow is a sequence collection of pipes.
+A pipe is any data operation such as loading data,transforming data,filtering data,sorting data,
+merging data,grouping data etc.
+Pig Processing happens using various built-in operators
+
+---------------------------------------------------------------------------------------------
+Drawbacks of MR:
+1)Huge coding
+2)Lot of Programming required
+3)operations like Joins,order by are very complex to implement.
+
+--------------------------------------------------------------------------------------------
+Advantages of Pig:
+1)very less code.
+2)complex operations also can be performed in an easier way.
+3)100lines of MR code ~ 5lines of PIG.
+
+-------------------------------------------------------------------------------------------
+for Pig,we use a language called as PIGLATIN
+PIGLATIN : It is a simple scripting language ,which is used to define dataflows 
+
+------------------------------------------------------------------------------------------
+PIG Terminologies:
+1)Relation----> table name
+2)Bag  ------->in sql, it is table
+3)Tuple ------>in sql, it is row
+4)Field ----->in sql, it is column
+
+1)Field : It is an entity which is similar to column in sql
+          ex: eid, ename
+
+2)Tuple :collection of field values forms a tuple
+         A tuple represented using ()
+         ex: (101,Miller,10000,m,11)------>tuple
+
+3)Bag : colection of tuples forms a bag
+        ex: (101,Miller,10000,m,11)
+            (102,John,20000,m,11)
+            (103,sony,30000,f,12) 
+
+   There are 2 types of Bags:
+   i)Inner Bag
+  ii)Outer Bag:
+
+   Outer Bag: collection of tuples forms a bag called as outer bag.
+   Inner Bag: if a bag taken as one field ,then such type of bag,we call it as inner bag.
+
+4)Relation : a bag referred by a name called as Relation
+
+--------------------------------------------------------------------------------------
+
+            (101,Miller,10000,m,11)------------->Tuple-->consisting of 5 fields
+            (102,John,20000,m,11)
+            (103,sony,30000,f,12)
+            (104,sita,40000,f,12)
+collection of above 4 tuples is called as a bag called outer bag
+A outer is refered by a name---->emp----->called as Relation
+
+
+grp =group emp by dno
+
+        (11,{(101,Miller,10000,m,11),(102,John,20000,m,11)})--------->tuple
+        (12,{(103,sony,30000,f,12),(104,sita,40000,f,12)})
+
+here each tuple consisting of 2 fields
+1)dno
+2)Bag ---->taken as one field,called as inner bag.
+
+Note:Inner bags are created only when we group the data
+
+ex: group based on city
+   for hyd, u get one inner bag consisting of all hyd records
+       pune, u get one inner bag consisting of all pune records
+
+----------------------------------------------------------------------------------------------
+Datatypes in PIG: 2 types
+
+1)Simple Datatypes : int,float,long,double,boolean,chararray
+2)Complex Datatypes : Tuple , Bag
+
+examples:
+ Name--------->chararray
+ age---------->int
+ salary------->float/double
+ Married?----->Boolean(True/False)
+ emp datails--->Tuple
+                (101,Miller,10000,m,11)
+
+ emps details--->Bag
+            (101,Miller,10000,m,11)
+            (102,John,20000,m,11)
+            (103,sony,30000,f,12) 
+
+ emp details--------->(Ashok,25,hyd,{(ch1,7,3.4),(ch2,2,2.1)})
+                      here we have 4 fields
+                      Name
+                      Age
+                      city
+                      children --->a bag taken as one field called as inner bag
+--------------------------------------------------------------------------------------------
+Pig Execution modes :2 modes of Executiom
+
+1)Local Mode
+2)HDFS Mode (or) MR mode (or) clustered mode
+
+1)Opening Pig in Local mode:
+     -First open terminal and say----------->$pig -x local
+      grunt> 
+             grunt shell opens in local mode
+             here we write our Pig stmts.
+             In local mode, Pig takes i/p from LFs and writes into LFS only
+        Adv: Used in Development and Testing
+
+---------------------------------------------------------------------------
+2)1)Opening Pig in HDFS mode:
+     -First open terminal and say----------->$pig
+      grunt> 
+             grunt shell opens in HDFS mode
+             here we write our Pig stmts.
+             In HDFS mode, Pig takes i/p from HDFs and writes into HDFS only
+        Adv: Used in production
+
+-----------------------------------------------------------------------------------------
+In real time, we open 2 terminals
+
+       Terminal1                           Terminal2
+
+      in Local mode                        in HDFS mode
+      $pig -x local                        $Pig
+      used for Development &               Used in production
+       Testing
+      First we execute here,
+      if succes then it is executed here------->in HDFS mode
+
+------------------------------------------------------------------------------------------
+
+PigLatin statement format:
+
+l1 =load 'emp1' as (eid:int,ename:chararray,sal:int)
+          <--------------expression----------------->
+l1---->relation name
+load -->operator name
+
+
+expression will be changing from operator to opeator
+
+Pig processing happens using various built-in operators
+
+Every Pig stmt again internally converted to MR
+
+-----------------------------------------------------------------------------------------
+Various Built-in Operators in PIG:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

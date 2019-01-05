@@ -1,0 +1,685 @@
+
+
+
+
+cogroup:- we can perform seperate aggregations on each data set
+_________
+          ex:for each branch seperate aggregation
+
+we get seperate inner bags (data groups) for each dataset.
+ 
+ 
+ 
+
+cat > branch1
+11,20000
+12,30000
+12,40000
+13,50000
+13,60000
+
+cat > branch2
+11,9000
+11,8000
+12,7000
+13,6000
+13,5000
+
+b1 = load 'branch1' using PigStorage(',') as (dno:int, price:int);
+b2 = load 'branch2' using PigStorage(',') as (dno:int, price:int);
+
+grunt>cg = cogroup b1 by dno, b2 by dno;
+(11,{(11,20000)},{(11,8000),(11,9000)})
+(12,{(12,40000),(12,30000)},{(12,7000)})
+(13,{(13,60000),(13,50000)},{(13,5000),(13,6000)})
+
+grunt> describe cg;
+cg: {group: int,b1: {(dno: int,sal: double)},b2: {(dno: int,sal: double)}}
+
+grunt>res = foreach cg generate
+    group as dno, SUM(b1.price) as tot1,
+    SUM(b2.price) as tot2;
+o/p:
+(11,20000,17000)
+(12,70000,7000)
+(13,110000,11000)
+
+grunt>res1 = foreach res generate
+    dno, tot1+tot2 as tot;
+o/p:
+(11,37000)
+12,77000)
+(13,121000)
+
+we can perform multiple aggregations also
+
+ex:2
+
+cat > ds1
+a,100
+b,200
+a,100
+b,400
+
+cat > ds2
+a,300
+c,600
+a,700
+c,800
+
+grunt> d1 = load 'ds1' using PigStorage(',') as (c1:chararray,c2:int);
+grunt> d2 = load 'ds2' using PigStorage(',') as (c1:chararray,c2:int);
+cg = cogroup d1 by $0, d2 by $0;
+
+(a,{(a,100),(a,100)},{(a,700),(a,300)})
+(b,{(b,400),(b,200)},{})
+(c,{},{(c,800),(c,600)})
+
+res5 = foreach cgrp1 generate group as key,SUM(d1.c2) as tot,SUM(d2.c2);
+
+(a,200,1000)
+(b,600,)
+(c,,1400)
+
+
+ex:3
+
+[training@localhost ~]$ cat > sales1
+p1,2000
+p2,3000
+p1,4000
+p1,5000
+p2,4000
+p3,5000
+[training@localhost ~]$ cat > sales2
+p1,6000
+p2,8000
+p1,1000
+p1,5000
+p1,6000
+p2,6000
+p2,8000
+[training@localhost ~]$ hadoop fs -copyFromLocal sales1  /piglab
+
+
+[training@localhost ~]$ hadoop fs -copyFromLocal sales2  /piglab
+
+grunt> s1 = load '/piglab/sales1' using PigStorage(',') as (pid:chararray, price:int);
+grunt> s2 = load '/piglab/sales2'  using PigStorage(',') as (pid:chararray, price:int);
+grunt> cg = cogroup s1 by pid, s2 by pid;
+grunt> describe cg
+cg: {group: chararray,s1: {pid: chararray,price: int},s2: {pid: chararray,price: int}}
+grunt> dump cg
+
+(p1,{(p1,2000),(p1,4000),(p1,5000)},{(p1,6000),(p1,1000),(p1,5000),(p1,6000)})
+(p2,{(p2,3000),(p2,4000)},{(p2,8000),(p2,6000),(p2,8000)})
+(p3,{(p3,5000)},{})
+
+grunt> res = foreach cg generate
+    group as pid, SUM(s1.price) as tot1,
+    SUM(s2.price) as tot2;
+grunt> dump res
+
+(p1,11000,18000)
+(p2,7000,22000)
+(p3,5000,)
+
+___________________________________
+
+
+
+
+
+Eliminating or cleaning nulls
+
+grunt> describe res;
+res: {pid: chararray,tot1: long,tot2: long}.
+
+grunt> res = foreach res generate             
+>>    pid,                                
+>>    (tot1 is null   ?   0:tot1) as tot1,
+>>   (tot2 is null ? 0:tot2) as tot2;     
+grunt> 
+
+
+(p1,11000,18000)
+(p2,7000,22000)
+(p3,5000,0)
+
+    
+grunt> res = foreach res generate
+>>      *,  tot1+tot2 as totall;
+grunt> dump res
+
+(p1,11000,18000,29000)
+(p2,7000,22000,29000)
+(p3,5000,0,5000)
+
+___________________________________
+
+assignment:-
+______________
+
+task: cleaning 
+schema -->
+  trid, prid, price, mrp, qnt, discount
+
+if  price missed, replace it by mrp.
+if qnt missed , replace it by 1.
+if discount missed , replace it by 0.
+
+ 
+_______________________________
+
+
+
+
+distinct:- to eliminate duplicates
+
+cat > dupes
+101,aaa,10000
+101,bbb,20000
+101,aaa,10000
+101,aaa,10000
+101,aaa,10000
+102,bbb,40000
+103,ccc,50000
+102,bbb,40000
+102,bbb,40000
+
+
+
+grunt> dupe = load 'dupes' using PigStorage(',') as (id:int,name:chararray,sal:int); 
+
+grunt> dump dupe;
+
+grunt> g1 = distinct dupe;
+grunt>dump d1;
+(101,aaa,10000)
+(101,bbb,20000)
+(102,bbb,40000)
+(103,ccc,50000)
+
+ what are different dno(departments)s
+
+grunt> g2 = foreach g1 generate eid;
+(101)
+(101)
+(102)
+(103)
+
+grunt> g3 = distinct g2;
+grunt> dump g3;
+(101)
+(102)
+(103)
+
+----------------------------------------------------------------------------------------------------------
+
+
+2 Types of merging:
+1)Vertical Merging
+2)Horizontal Merging:
+
+1)Vertical Merging:
+  Merging the rows of 2 or more datasets vertically
+  ex: Union
+  syntax: union e1,e2
+  condition : schema of the merging datasets must be same.
+
+2)Horizontal Merging:
+  Merging the columns of  2 or more datasets horizontally.
+  ex: Joins
+  syntax: join e1 by dno,d1 by dno
+  condition : Atleast one column should be in common
+
+----------------------------------------------------------------------
+1)vertical Merging:
+
+ case 1:If schema of datasets are same
+ $ cat emps1
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+lenovo@lenovo-Lenovo-G450:~$ cat emps2
+201,ddd,20000,m,11
+202,eee,30000,f,12
+203,fff,40000,m,11
+204,ggg,50000,f,12
+lenovo@lenovo-Lenovo-G450:~$ 
+grunt> e1 =load 'emps1' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+grunt> e2 =load 'emps2' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+ e3 =union e1,e2;
+dump e3;
+(101,aaa,1000.0,m,11)
+(102,bbb,2000.0,f,12)
+(103,ccc,3000.0,m,12)
+(104,ddd,4000.0,f,13)
+(105,eee,5000.0,m,11)
+(106,fff,6000.0,f,14)
+(107,ggg,7000.0,m,15)
+(108,hhh,8000.0,f,16)
+(201,ddd,20000.0,m,11)
+(202,eee,30000.0,f,12)
+(203,fff,40000.0,m,11)
+(204,ggg,50000.0,f,12)
+
+
+-----------------------------------------------------------------------
+case 2: if field positions are different then
+        arrange in order and perform union
+
+lenovo@lenovo-Lenovo-G450:~$ cat emps1
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+lenovo@lenovo-Lenovo-G450:~$ cat emps2
+201,ddd,20000,m,11
+202,eee,30000,f,12
+203,fff,40000,m,11
+204,ggg,50000,f,12
+lenovo@lenovo-Lenovo-G450:~$ cat emps3
+301,miller,150000,11,m
+302,Ajay,25000,12,m
+303,Anu,35000,11,f
+304,Aksha,45000,12,f
+305,Anil,55000,13,mlenovo@lenovo-Lenovo-G450:~$ 
+
+grunt> e1 =load 'emps1' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+grunt> e2 =load 'emps2' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+grunt> e3 =load 'emps3' using PigStorage(',') as (eid:int,ename:chararray,sal:double,dno:int,sex:chararray);
+
+grunt> e3 =foreach e3 generate eid,ename,sal,sex,dno;
+grunt> res =union e1,e2,e3;
+grunt> dump res;
+(101,aaa,1000.0,m,11)
+(102,bbb,2000.0,f,12)
+(103,ccc,3000.0,m,12)
+(104,ddd,4000.0,f,13)
+(105,eee,5000.0,m,11)
+(106,fff,6000.0,f,14)
+(107,ggg,7000.0,m,15)
+(108,hhh,8000.0,f,16)
+(201,ddd,20000.0,m,11)
+(202,eee,30000.0,f,12)
+(203,fff,40000.0,m,11)
+(204,ggg,50000.0,f,12)
+(301,miller,150000.0,m,11)
+(302,Ajay,25000.0,m,12)
+(303,Anu,35000.0,f,11)
+(304,Aksha,45000.0,f,12)
+(305,Anil,55000.0,m,13)
+
+------------------------------------------------------------------------------------
+case 3: If schema and no of fields are different
+
+lenovo@lenovo-Lenovo-G450:~$ cat emps1
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+lenovo@lenovo-Lenovo-G450:~$ cat emps4
+401,miller,10000,m,hyd
+402,Blake ,20000,m,pune
+403,Amar,30000,m,hydlenovo@lenovo-Lenovo-G450:~$ cat emps5
+501,Kalyan,25000,m,11,manager
+502,Venkatesh,35000,m,12,HR
+503,Anisha,40000,f,13,Accountantlenovo@lenovo-Lenovo-G450:~$ 
+
+Neutralize the schema of all the 3 datasets into one and perform union 
+
+grunt> e1 =load 'emps1' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+grunt> e4 =load 'emps4' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,city:chararray);
+
+grunt> e5 =load 'emps5' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int,designation:chararray);
+
+grunt> s1 =foreach e1 generate eid,ename,sal,sex,dno,'******' as city,'xxxxxx' as designation;
+grunt> s4 =foreach e4 generate eid,ename,sal,sex,0 as dno,city,'xxxxxx' as designation;
+grunt> s5 =foreach e5 generate eid,ename,sal,sex,dno,'******' as city,designation;
+grunt> res =union s1,s4,s5;
+grunt> dump res;
+(101,aaa,1000.0,m,11,******,xxxxxx)
+(102,bbb,2000.0,f,12,******,xxxxxx)
+(103,ccc,3000.0,m,12,******,xxxxxx)
+(104,ddd,4000.0,f,13,******,xxxxxx)
+(105,eee,5000.0,m,11,******,xxxxxx)
+(106,fff,6000.0,f,14,******,xxxxxx)
+(107,ggg,7000.0,m,15,******,xxxxxx)
+(108,hhh,8000.0,f,16,******,xxxxxx)
+(401,miller,10000.0,m,0,hyd,xxxxxx)
+(402,Blake ,20000.0,m,0,pune,xxxxxx)
+(403,Amar,30000.0,m,0,hyd,xxxxxx)
+(501,Kalyan,25000.0,m,11,******,manager)
+(502,Venkatesh,35000.0,m,12,******,HR)
+(503,Anisha,40000.0,f,13,******,Accountant)
+
+--------------------------------------------------------------------------------------
+Horizontal Merging: Merging cols horizontally
+
+ex:Joins
+condition for horizontal merging :atleast one field should be common 
+
+There are 2 types of JOINs
+1)Inner Join
+2)Outer Join : 3 types
+              i)Left Outer Join
+             ii)Right Outer Join
+             iii)Full outer Join
+
+ex: 
+     A=1   B=1
+       2     2
+       3     3
+       4     7
+       5     8
+       6     9
+
+1)Inner Join : Only Matching fields
+o/p:
+      (1,1)
+      (2,2)
+      (3,3)
+
+2)Left Outer Join :Matchings + unmatched fields of left side i.e Total presence of
+                                                                 left side
+       
+      (1,1)
+      (2,2)
+      (3,3)  matchings +
+      (4, )  unmatched of left side
+      (5, )
+      (6, )
+2)Right Outer Join :Matchings + unmatched fields of rightt side i.e Total presence of
+                                                                 right side
+       
+      (1,1)
+      (2,2)
+      (3,3)  matchings +
+      ( ,7)  unmatched of right side
+      ( ,8)
+      ( ,9)
+2)Left Outer Join :Matchings + unmatched fields of left side 
+                             + unmatched fields of right side                                      
+       
+      (1,1)
+      (2,2)
+      (3,3)  matchings +
+      (4, )  unmatched of left side
+      (5, )
+      (6, )
+      ( ,7)  unmatched of right side
+      ( ,8)
+      ( ,9)
+ex:
+lenovo@lenovo-Lenovo-G450:~$ cat emps1
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+lenovo@lenovo-Lenovo-G450:~$ cat dept1
+11,mrkt,hyd
+12,HR,delhi
+13,fin,pune
+17,HR,hyd
+18,fin,pune
+19,mrkt,delhi
+grunt> e1 =load 'emps1' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+grunt> d1 =load 'dept1' using PigStorage(',') as(dno:int,dname:chararray,city:chararray);
+--------------------------------------------------------------------------
+Inner join:
+grunt> ij =join e1 by dno,d1 by dno;
+grunt> dump ij;
+(105,eee,5000.0,m,11,11,mrkt,hyd)
+(101,aaa,1000.0,m,11,11,mrkt,hyd)
+(103,ccc,3000.0,m,12,12,HR,delhi)
+(102,bbb,2000.0,f,12,12,HR,delhi)
+(104,ddd,4000.0,f,13,13,fin,pune)
+-------------------------------------------------------------------------
+Left Outer Join:
+grunt> loj =join e1 by dno left outer,d1 by dno;
+grunt> dump loj;
+(105,eee,5000.0,m,11,11,mrkt,hyd)
+(101,aaa,1000.0,m,11,11,mrkt,hyd)
+(103,ccc,3000.0,m,12,12,HR,delhi)
+(102,bbb,2000.0,f,12,12,HR,delhi)
+(104,ddd,4000.0,f,13,13,fin,pune)
+(106,fff,6000.0,f,14,,,)
+(107,ggg,7000.0,m,15,,,)
+(108,hhh,8000.0,f,16,,,)
+--------------------------------------------------------------------------------
+Right Outer Join:
+grunt> roj =join e1 by dno right outer,d1 by dno;
+grunt> dump roj;
+
+(105,eee,5000.0,m,11,11,mrkt,hyd)
+(101,aaa,1000.0,m,11,11,mrkt,hyd)
+(103,ccc,3000.0,m,12,12,HR,delhi)
+(102,bbb,2000.0,f,12,12,HR,delhi)
+(104,ddd,4000.0,f,13,13,fin,pune)
+(,,,,,17,HR,hyd)
+(,,,,,18,fin,pune)
+(,,,,,19,mrkt,delhi)
+
+-----------------------------------------------------------------------------
+Full outer Join:
+grunt> foj =join e1 by dno full outer,d1 by dno;
+grunt> dump foj;
+(105,eee,5000.0,m,11,11,mrkt,hyd)
+(101,aaa,1000.0,m,11,11,mrkt,hyd)
+(103,ccc,3000.0,m,12,12,HR,delhi)
+(102,bbb,2000.0,f,12,12,HR,delhi)
+(104,ddd,4000.0,f,13,13,fin,pune)
+(106,fff,6000.0,f,14,,,)
+(107,ggg,7000.0,m,15,,,)
+(108,hhh,8000.0,f,16,,,)
+(,,,,,17,HR,hyd)
+(,,,,,18,fin,pune)
+(,,,,,19,mrkt,delhi)
+
+grunt> describe foj;
+foj: {e1::eid: int,e1::ename: chararray,e1::sal: double,e1::sex: chararray,e1::dno: int,d1::dno: int,d1::dname: chararray,d1::city: chararray}
+grunt> r1 =foreach foj generate e1::dno,d1::dname,e1::sal;
+grunt> dump r1;
+
+grunt> r1 =foreach foj generate e1::dno as dno1,d1::dno as dno2,e1::sal as sal;
+grunt> dump r1;
+(11,11,5000.0)
+(11,11,1000.0)
+(12,12,3000.0)
+(12,12,2000.0)
+(13,13,4000.0)
+(14,,6000.0)
+(15,,7000.0)
+(16,,8000.0)
+(,17,)
+(,18,)
+(,19,)
+----------------------------------------------------------------------------
+Status wise, i want total sal generated 
+
+grunt> r3 =foreach r1 generate (
+>> dno1 is not null and dno2 is not null ? 'WORKING' :
+>> (dno1 is not null and dno2 is null ? 'BENCHPROJ' : 'BENCHTEAM')) as status,sal;
+grunt> dump r3;
+(WORKING,5000.0)
+(WORKING,1000.0)
+(WORKING,3000.0)
+(WORKING,2000.0)
+(WORKING,4000.0)
+(BENCHPROJ,6000.0)
+(BENCHPROJ,7000.0)
+(BENCHPROJ,8000.0)
+(BENCHTEAM,)
+(BENCHTEAM,)
+(BENCHTEAM,)
+grunt> r4 =foreach r3 generate status,(sal is null ? 0 :sal) as sal;
+grunt> dump r4;
+(WORKING,5000.0)
+(WORKING,1000.0)
+(WORKING,3000.0)
+(WORKING,2000.0)
+(WORKING,4000.0)
+(BENCHPROJ,6000.0)
+(BENCHPROJ,7000.0)
+(BENCHPROJ,8000.0)
+(BENCHTEAM,0.0)
+(BENCHTEAM,0.0)
+(BENCHTEAM,0.0)
+grunt> grp =group r4 by status;
+
+grunt> dump grp;
+
+grunt> res =foreach grp generate group as status,SUM(r4.sal) as totsal;
+
+grunt> dump res;
+(WORKING,15000.0)
+(BENCHPROJ,21000.0)
+(BENCHTEAM,0.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

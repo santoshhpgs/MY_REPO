@@ -1,0 +1,763 @@
+Operators in PIG:
+
+1.load
+2.foreach
+3.dump
+4.store
+5.filter
+6.limit
+7.sample
+8.cross
+9.group
+10.cogroup
+11.order
+12.union
+13.join
+14.left outer join
+15.right outer join
+16.full outer join
+17.describe
+18.illustrate
+19.exec
+20.run
+21.pig
+
+
+
+1)Load :
+_____
+   used to load data from file to pig relation.
+
+   the file can be loaded from lfs/hdfs , depends on Pig Start up mode.
+
+  ex:  emp= load 'user/file1' as (id:int,name:chararray,sal:int,sex:chararry,dno:int);
+
+
+-------------------------------------------------------------------------------------------------------
+2) dump :-
+    
+   to execute entire data flow.
+   writes output into console.
+
+    entire dataflow will be converted as single map reduce job.
+
+   
+ syntax: dump relationname
+ ex:  grunt> dump res;
+
+---------------------------------------------------------------------------------------------------------------------
+HDFS mode:  
+
+open terminal and say
+$pig
+<grunt>
+$:hadoop fs -mkdir /piglab
+
+[training@localhost ~]$ cat > file1
+
+Good morning.........
+Good morning........
+Good morning........
+
+[training@localhost ~]$ hadoop fs -copyFromLocal file1 /piglab
+
+grunt> s = load '/piglab/file1' as (line:chararray); 
+
+after relation name,s, give space,otherwise error
+
+grunt> describe s
+s: {line: chararray}
+grunt> dump s
+
+o/p:
+
+Good morning.........
+Good morning........
+Good morning........
+-----------------------------------------------------------------------------------------------------------------------
+Local mode:
+
+$pig -x local
+
+<grunt>
+
+$mkdir piglab1
+
+$ cat piglab1/file1
+Good morning.........
+Good morning........
+Good morning........
+
+grunt> s = load 'piglab1/file1' as (line:chararray);
+grunt> describe s
+s: {line: chararray}
+grunt> dump s
+
+o/p:
+
+Good morning.........
+Good morning........
+Good morning........
+
+----------------------------------------------------------------------------------------------------------
+2)if File has multiple fields with tabspace as delimiter:
+Note:Default delimiter in pig is tabspace('\t)
+
+[training@localhost ~]$ cat > test1
+10	20	30
+40	50	60
+70	80	90
+[training@localhost ~]$ hadoop fs -copyFromLocal test1 /piglab
+
+loading data with schema
+
+grunt> s = load '/piglab/test1' as (a:int, b:int, c:int);
+grunt> dump s
+
+(10,20,30)
+(40,50,60)
+(70,80,90)
+pig's default delimiter is tab space.
+so here no need to specify the delimiter while loading
+
+we can see the o/p in grunt shell itself
+grunt> cat /piglab1/test1
+(10,20,30)
+(40,50,60)
+(70,80,90)
+
+--------------------------------------------------------------------------------------------------------------
+3)if file has ',' or space or any other delimiter..
+
+[training@localhost ~]$ cat > test2
+100,200,300
+400,500,600
+700,800,900
+[training@localhost ~]$ hadoop fs -copyFromLocal test2 /piglab
+
+grunt> s1 = load '/piglab/test2' as (a:int, b:int, c:int);
+grunt> dump s1
+
+ Total input paths to process : 1
+(,,)
+(,,)
+(,,)
+
+grunt> s2 = load 'piglab/test2' as (a:string, b:int, c:int);
+grunt> dump s2
+
+(100,200,300,,)
+(400,500,600,,)
+(700,800,900,,)
+
+here again 2nd and 3rd fields are empty
+here entire line is treated as single field.
+---------------------------------------------------------------------------------------------------------------
+Pig has two Storage methods.
+
+
+   i) PigStorage()-- is for Text input Format.
+  ii) BinStorage()-- is for sequence input Format.
+                            (Binary)
+
+
+   default is PigStorage().
+
+ for the PigStorage('\t'), tab is default delimiter.
+
+grunt> cat /piglab1/test1
+10	20	 30
+40	50	 60
+70      80       90
+
+grunt> s1 = load '/piglab/test1' using PigStorage('\t') as (a:int, b:int, c:int);
+grunt> s2 = load '/piglab/test1' using PigStorage() as (a:int, b:int, c:int);
+grunt> s3 = load '/piglab/test1' as (a:int, b:int, c:int);
+
+
+output of s1,s2,s3  is same.
+
+in s2, PigStorage() is applied with out delimiter,
+    \t is applied. (default)
+
+in s3, no storage method is specified, 
+   by default PigStorage() with \t delimiter will be applied.
+
+grunt> s4 = load '/piglab/test1' as (a:int, b:int);
+grunt> s5 = load '/piglab/test1' as (a:int, b:int,c:int, d:int);
+grunt> dump s5
+
+in s4, first two fields will be loaded, 3rd field will be skipped.
+
+ in s5,   d field will become null, bcoz no 4th field in the file.
+
+(10,20,30,)
+(40,50,60,)
+(70,80,90,)
+
+--------------------------------------------------------------------------------------------------------------
+3)Loading File with comma(,) delimiter
+//test2
+100,200,300
+400,500,600
+700,800,900
+grunt> s6 = load '/piglab/test2' using PigStorage(',') as (a:int, b:int, c:int);
+grunt> dump ds
+
+(100,200,300)
+(400,500,600)
+(700,800,900)
+
+--------------------------------------------------------------------------------------------------------------
+4)if file has space as delimiter
+//test3
+10 20 30
+40 50 60
+70 80 90
+
+ s1 = load 'test3' using PigStorage(' ') as (a:int, b:int, c:int);
+(10,20,30)
+(40,50,60)
+(70,80,90)
+
+----------------------------------------------------------------------------------------------------------------
+5) Loading emps Records
+[training@localhost ~]$ cat emps
+101,miller,10000,m,11
+102,Blake,20000,f,12
+103,sony,30000,m,12
+104,sita,40000,f,13
+105,John,50000,m,11
+
+[training@localhost ~]$ hadoop fs -copyFromLocal emps /piglab
+
+
+grunt> emp = load '/piglab/emps' using PigStorage(',') as (id:int, name:chararray, sal:int,sex:chararray, dno:int);
+grunt> illustrate emp
+
+------------------------------------------------------------------------------------------------
+| emp     | id: bytearray | name: bytearray | sal: bytearray | sex: bytearray | dno: bytearray | 
+------------------------------------------------------------------------------------------------
+|         | 101           | vino            | 26000          | m              | 11             | 
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+| emp     | id: int | name: chararray | sal: int | sex: chararray | dno: int | 
+------------------------------------------------------------------------------
+|         | 101     | vino            | 26000    | m              | 11       | 
+------------------------------------------------------------------------------
+
+grunt> 
+initially each field is loaded as bytearray,
+  later that will be converted into given data types.
+------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------
+3)STORE:
+
+   writes output into disk (local/hdfs)
+
+   grunt> store res into '/results1';
+    here default delimiter is tab ('\t')
+   To store emp result in HDFS:
+   grunt> store emp into '/results2' using PigStorage(',');
+   results2 directory will be created in HDFS
+
+   load and store operators use Storage Methods.
+
+  grunt> ls results2;
+file:/home/lenovo/results2/part-m-00000<r 1>	90
+file:/home/lenovo/results2/_SUCCESS<r 1>	0
+grunt> cat results2/part-m-00000
+101,miller,10000,m,11
+102,Blake,20000,f,12
+103,sony,30000,m,12
+104,sita,40000,f,13
+105,John,50000,m,11
+
+load and store operators use Storage Methods.
+
+--------------------------------------------------------------------------------------------------------
+
+4) FOREACH:
+Foreach: copying one relation to another
+i)
+syntax: relation =foreach filename generate field1,field2,......fieldn
+ex:
+grunt>e1 =foreach emp generate *;
+
+grunt>dump e1;
+(101,miller,10000,m,11)
+(102,Blake,20000,f,12)
+(103,sony,30000,m,12)
+(104,sita,40000,f,13)
+(105,John,50000,m,11)
+
+here loading all columns to e1
+
+This is similar to select * from emp;
+ 
+--------------------------------------------------------------------------------------------------------------
+
+ii)Copying selected fields(columns):
+
+    or filtering fields.
+      (subsetting fields)
+
+grunt> describe emp
+emp: {id: int,name: chararray,sal: int,sex: chararray,dno: int}
+grunt> e1 = foreach emp generate name,sal,dno;
+grunt> describe e1;
+e: {name: chararray,sal: int,dno: int}
+grunt> dump e1 
+(miller,10000,11)
+(Blake,20000,12)
+(sony,30000,12)
+(sita,40000,13)
+(John,50000,11)
+
+------------------------------------------------------------------------------------------------------------------
+
+ iii)  generate new fields(columns).
+
+grunt> e2 = foreach emp generate *,sal*0.1 as tax, sal*0.2 as hra,sal-tax+hra as net;
+
+  above statement will be failed,
+ new field aliases can not be reused in same statement,i.e tax and hra are used in the same stmt
+
+solution:
+
+grunt> e2 = foreach emp generate *,sal*0.1 as tax, sal*0.2 as hra;
+grunt> e2 = foreach e2 generate *,sal-tax+hra as net;  //overwrites
+grunt> dump e2
+(101,miller,10000,m,11,1000.0,2000.0,11000.0)
+(102,Blake,20000,f,12,2000.0,4000.0,22000.0)
+(103,sony,30000,m,12,3000.0,6000.0,33000.0)
+(104,sita,40000,f,13,4000.0,8000.0,44000.0)
+(105,John,50000,m,11,5000.0,10000.0,55000.0)
+
+storing result into hdfs/lfs
+grunt> store e2 into '/pigRes3' using PigStorage(',');
+
+a directory pigRes3 will be created and result will be stored into it 
+
+grunt> ls /pigRes3
+hdfs://localhost/user/training/pigRes3/_logs    <dir>
+hdfs://localhost/user/training/pigRes3/part-m-00000<r 1>  420
+grunt> cat pigRes3/part-m-00000
+(101,miller,10000,m,11,1000.0,2000.0,11000.0)
+(102,Blake,20000,f,12,2000.0,4000.0,22000.0)
+(103,sony,30000,m,12,3000.0,6000.0,33000.0)
+(104,sita,40000,f,13,4000.0,8000.0,44000.0)
+(105,John,50000,m,11,5000.0,10000.0,55000.0)
+
+-----------------------------------------------------------------------------------------------------------------------
+
+ iv) changing data types.
+
+grunt> describe e2
+e2: {id: int,name: chararray,sal: int,sex: chararray,dno: int,tax: double,hra: double,net: double}
+grunt> e3 = foreach e2 generate id, name, sal, sex, dno, (int)tax, (int)hra,(int)net;
+grunt> describe e3;
+e3: {id: int,name: chararray,sal: int,sex: chararray,dno: int,tax: int,hra: int,net: int}
+
+
+-----------------------------------------------------------------------------------------------------------------------
+v) renaming fields.
+__________________
+
+   grunt> describe emp
+emp: {id: int,name: chararray,sal: int,sex: chararray,dno: int}
+grunt> e4  = foreach emp generate id as ecode, name , sal as income, sex as gender, dno;
+grunt> describe e4;
+e4: {ecode: int,name: chararray,income: int,gender: chararray,dno: int}
+
+-------------------------------------------------------------------------------------------------------------------------
+vi)modifying (adding/subtracting) and copying
+for each employee adding 10,000
+e4=foreach e4 generate id,name,sal+10000 as sal,sex,dno
+here same name e4,updated and overwritten
+
+-------------------------------------------------------------------------------------------------------------------------
+
+vii) Conditional transformations:
+
+i)To find largest among 2 no's
+[training@localhost ~]$ cat > samp1
+100,300
+400,150
+1,5
+5,3
+[training@localhost ~]$ hadoop fs -copyFromLocal samp1 /pdemo
+
+grunt> x1 = load '/piglab/samp1' using PigStorage(',') as (a:int, b:int);
+grunt> x2 = foreach x1 generate *,(a>b  ? a:b) as big;
+grunt> dump x2
+
+(100,300,300)
+(400,150,400)
+(1,5,5)
+(5,3,5)
+
+----------------------------------------------------------------------------------------------------------------------------
+
+ii)nested conditions: Largest of 3 nos
+
+[training@localhost ~]$ cat > samp2
+10      34      56
+10      8       2
+12      45      9  
+[training@localhost ~]$ hadoop fs -copyFromLocal samp2 /pdemo
+
+grunt> xx = load '/pdemo/samp2' as (a:int, b:int, c:int);
+grunt> y = foreach xx generate *,(a>b ?   (a>c ? a:c):(b>c ? b:c)) as big;
+grunt> dump y
+
+(10,34,56,56)
+(10,8,2,10)
+(12,45,9,45)
+-----------------------------------------------------------------------------------------------------------------------
+iii)3 transformations
+
+1) Generate Grade based on sal
+   if sal>=50000------------------------> Grade 'A'
+   if sal>=30000 and sal <50000 --------> Grade 'B'
+   if sal>=20000 and sal <30000---------> Grade 'C
+   else---------------------------------> Grade 'D'
+
+2) sex---->as
+   'm'------->male
+   'f'------->female
+
+3) dno==11  into-------> 'mrkt'
+   dno==12  into-------> 'fin'
+   dno==13  into-------> 'HR'
+
+
+
+Giving grades based on sal
+grunt> e = foreach emp generate id, name, sal , 
+(sal>=50000 ? 'A':
+(sal>=30000 ? 'B':
+(sal>=20000 ? 'C':'D'))) as grade,
+(sex=='m' ? 'Male':'Female') as sex,
+(dno==11 ? 'Mrkt':
+(dno==12 ? 'Hr':
+(dno==13 ? 'Fin':'Others'))) as dname;
+
+grunt>dump e
+(101,miller,10000,D,Male,Mrkt)
+(102,Blake,20000,C,Female,Hr)
+(103,sony,30000,B,Male,Hr)
+(104,sita,40000,B,Female,Fin)
+(105,John,50000,A,Male,Mrkt)
+
+
+grunt> store e into '/pigRes4';
+
+grunt> ls /pigRes4
+hdfs://localhost/user/training/pigRes4/_logs    <dir>
+hdfs://localhost/user/training/pigRes4/part-m-00000<r 1>  271
+grunt> cat /pigRes4/part-m-00000
+(101,miller,10000,D,Male,Mrkt)
+(102,Blake,20000,C,Female,Hr)
+(103,sony,30000,B,Male,Hr)
+(104,sita,40000,B,Female,Fin)
+(105,John,50000,A,Male,Mrkt)
+
+---------------------------------------------------------------------------------------------------------------------
+
+iv)changing the name sita to Gita
+
+grunt> e2 =foreach e1 generate eid,
+>> (ename=='sita' ?'Gita':ename) as ename1;
+
+grunt>dump e2
+(101,miller,10000,D,Male,Mrkt)
+(102,Blake,20000,C,Female,Hr)
+(103,sony,30000,B,Male,Hr)
+(104,Gita,40000,B,Female,Fin)
+(105,John,50000,A,Male,Mrkt)
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+v) copy relation to relation
+
+   e = foreach emp generate *;
+
+----------------------------------------------------------------------------------------------------------------------
+Note:
+foreach can't be applied for row filter
+foreach can be applied only for column filter
+
+for row filter,we have another operator---->Filter
+-----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_____________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+

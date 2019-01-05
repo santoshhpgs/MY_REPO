@@ -1,0 +1,869 @@
+HIVE introduction:
+
+-It is a datawarehouse environment in hadoop framework.
+-Here we can store data into tables in structured format
+-In MR or PIG,there are no tables,they r reading and writing data into HDFS/LFS
+
+for Oracle--------->sql
+for PIG------------>Piglatin
+for Hive----------->hql 
+
+Hive(hql) features :
+1)hql is used to manage and process data,which is similar to sql and has got some differences
+ 
+hql can process
+i)Structured data
+ii)XML data
+iii)json data
+i)weblog(url) data
+
+Hive has got pre-defined parsers for XML and json for processing them.
+
+Hive data is stored in HDFS only.
+Default storage location is /user/hive/warehouse
+
+whenever you create a hive table, with the tablename, a directory is created automatically at the 
+backend default storage  i.e at /user/hive/warehouse
+
+
+The hive stmts or queries are internally converted to MR and processed.
+
+
+Hadoop is not for record-level operations
+
+Hadoop is for Batch(Bulk-level) operations
+
+
+There are 2 types of tables in Hive.
+1)Internal Table  or Managed Table
+2)External Table
+--------------------------------------------------------------------------------------------------------------
+syntax for creating Internal Table:
+
+create table tablename(schema)
+row format delimited
+fields terminated by 'delimiter';
+
+Loading data into internal table: 2 ways
+
+i)from LFS:
+  syntax:
+  load data local inpath 'LFS filepath' into table tablename;
+ii)from HDFS:
+  syntax:
+  load data  inpath 'HDFS filepath' into table tablename;
+
+Note: whenever we load data from HDFS to hive table , it follows cut and paste
+      means wont be available in source, will be available only in destination.
+-------------------------------------------------------------------------------------------------------------
+syntax for creating External Table:
+
+create external table tablename(schema)
+row format delimited
+fields terminated by 'delimiter';
+
+Loading data into external table: 2 ways
+
+i)from LFS:
+  syntax:
+  load data local inpath 'LFS filepath' into table tablename;
+ii)from HDFS:
+  syntax:
+  load data  inpath 'HDFS filepath' into table tablename;
+
+---------------------------------------------------------------------------------------------------------------
+
+Difference between internal and External tables:
+
+whenever internal table is dropped then both data and metadata is lost.
+
+whenever external table is dropped then only metadata is lost but data remains in backend hive directory
+
+
+Regularly used data represent using external table
+temporary data represent using internal table
+
+--------------------------------------------------------------------------------------------------------------
+Practicals:
+
+Working with internal tables:
+
+hive> create table mysamp1(line string);
+OK
+
+whenever this table is created  then in backend hive directory, a directory with  tablename (mysamp1) is created 
+automatically i.e at /user/hive/warehouse/mysamp1 
+
+$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+empty
+create 2 files in LFS
+lenovo@lenovo-Lenovo-G450:~$ cat > file1
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+lenovo@lenovo-Lenovo-G450:~$ cat > file2
+Hello............
+Hello...........
+Hello............  
+Hello............
+Hello...........
+Hello..........
+
+Now loading these 2 files into hive table.
+hive> load data local inpath 'file1' into table mysamp1;
+Loading data to table default.mysamp1
+OK
+Time taken: 2.231 seconds
+
+Note: whenever we load data into hive table, then we see the data i.e file  gets loaded into backend hive directory
+
+hive> select * from mysamp1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+
+whenever we perform select query, then hive goes to back-end hive directory and reads whatever present 
+within that directory.
+
+Go and check in backend hive directory:
+$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup        128 2018-09-03 12:10 /user/hive/warehouse/mysamp1/file1
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -cat /user/hive/warehouse/mysamp1/file1
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+-------------------------------------------------------------------------------------------------------
+Loading one more file into table mysamp1  ----------->file2
+
+here data(file2) gets appended to previous data(file1)
+In back-end hive directory(mysamp1)------>we see 2 files
+whever we perform select operation----->hive goes to backend directory and reads these 2 files
+
+hive> load data local inpath 'file2' into table mysamp1;
+
+hive> select * from mysamp1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+Hello............
+Hello...........
+Hello............
+Hello............
+Hello...........
+Hello..........
+
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup        128 2018-09-03 12:10 /user/hive/warehouse/mysamp1/file1
+-rwxr-xr-x   1 lenovo supergroup        104 2018-09-03 12:22 /user/hive/warehouse/mysamp1/file2
+
+
+Question:
+
+what happens if i bring a file from LFS using put command into hive backend directory without using
+load command and if i perform select operation--->what will it display?
+
+Ans : 3files
+
+$ cat > file3
+hi.....
+hi....
+hi....
+hi...
+hi...
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -put file3 /user/hive/warehouse/mysamp1
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+Found 3 items
+-rwxr-xr-x   1 lenovo supergroup        128 2018-09-03 12:10 /user/hive/warehouse/mysamp1/file1
+-rwxr-xr-x   1 lenovo supergroup        104 2018-09-03 12:22 /user/hive/warehouse/mysamp1/file2
+-rw-r--r--   1 lenovo supergroup         34 2018-09-03 12:29 /user/hive/warehouse/mysamp1/file3
+
+hive> select * from mysamp1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+Hello............
+Hello...........
+Hello............
+Hello............
+Hello...........
+Hello..........
+hi.....
+hi....
+hi....
+hi...
+hi...
+
+----------------------------------------------------------------------------------------------------------------
+Q) what happens if i delete a file from back-end hive directory?
+
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -rm /user/hive/warehouse/mysamp1/file1
+
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup        104 2018-09-03 12:22 /user/hive/warehouse/mysamp1/file2
+-rw-r--r--   1 lenovo supergroup         34 2018-09-03 12:29 /user/hive/warehouse/mysamp1/file3
+
+hive> select * from mysamp1;
+OK
+Hello............
+Hello...........
+Hello............
+Hello............
+Hello...........
+Hello..........
+hi.....
+hi....
+hi....
+hi...
+hi...
+--------------------------------------------------------------------------------------------------------------------
+Dropping a internal table :
+
+hive> drop table mysamp1;
+
+Here both metadata(table) and data(backend hive directory) are lost.
+
+hive> select * from mysamp1;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'mysamp1'
+
+$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+ls: `/user/hive/warehouse/mysamp1': No such file or directory
+
+------------------------------------------------------------------------------------------------------------------
+
+External Tables:
+
+hive> create external table ursample1(line string);
+
+hive> load data local inpath 'file1' into table ursample1;
+
+hive> select * from ursample1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+Time taken: 0.246 seconds, Fetched: 6 row(s)
+
+hive> load data local inpath 'file2' into table ursample1;
+
+hive> select * from ursample1;
+
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+Hello............
+Hello...........
+Hello............
+Hello............
+Hello...........
+Hello..........
+
+hdfs dfs -ls /user/hive/warehouse/ursample1
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup        128 2018-09-03 12:46 /user/hive/warehouse/ursample1/file1
+-rwxr-xr-x   1 lenovo supergroup        104 2018-09-03 12:47 /user/hive/warehouse/ursample1/file2
+
+
+Dropping External table:
+
+hive> drop table ursample1;
+
+hive> select * from ursample1;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'ursample1'
+
+when we drop external table ,then only metadata(table) is lost but still data(hive backend directory) 
+ is available.
+$ hdfs dfs -ls /user/hive/warehouse/ursample1
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup        128 2018-09-03 12:46 /user/hive/warehouse/ursample1/file1
+-rwxr-xr-x   1 lenovo supergroup        104 2018-09-03 12:47 /user/hive/warehouse/ursample1/file2
+
+-----------------------------------------------------------------------------------------------------------
+Advantage of External table------------->reuse
+
+How to reuse an External Table
+
+If you drop an external table and again if u re-create it with same name then
+then at backend--->that table directory is available with data.
+so here the data is re-used
+
+hive> select * from ursample1;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'ursample1'
+
+but at backend----->directory exists.
+
+so recreate the table ,
+
+hive> create external table ursample1(line string);
+
+here if we perform select operation------->data available
+
+hive> select * from ursample1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Good Morning........
+Good Morning........
+Enough............
+Hello............
+Hello...........
+Hello............
+Hello............
+Hello...........
+Hello..........
+
+---------------------------------------------------------------------------------------------------------------
+Q)what happens if u drop a external table and recreate it with same tablename but with different no of columns.
+
+hive> drop table ursample1;
+
+hive> select * from ursample1;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'ursample1'
+
+recreate the table with samename and diferent columns 
+
+hive> create external table ursample1(col1 string,col2 string);
+OK
+Time taken: 0.2 seconds
+hive> select * from ursample1;
+OK
+Good Morning..........	NULL
+Good Morning.........	NULL
+Good Morning.........	NULL
+Good Morning........	NULL
+Good Morning........	NULL
+Enough............	NULL
+Hello............	NULL
+Hello...........	NULL
+Hello............	NULL
+Hello............	NULL
+Hello...........	NULL
+Hello..........	NULL
+
+-----------------------------------------------------------------------------------------------------------
+loading data from HDFS:
+
+$ hdfs dfs -mkdir /hivelab3
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -put file1 /hivelab3
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -cat /hivelab3/file1
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+
+create table and load file1 from hdfs and file2 from LFS
+
+hive> create table mysamp1(line string);
+OK
+Time taken: 1.089 seconds
+hive> load data inpath '/hivelab3/file1' into table mysamp1;
+Loading data to table default.mysamp1
+OK
+Time taken: 1.306 seconds
+
+hive> load data local inpath 'file2' into table mysamp1;
+Loading data to table default.mysamp1
+OK
+Time taken: 1.035 seconds
+hive> select * from mysamp1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Hello...........
+Hello..........
+Hello..........
+Hello.........
+Hello.........
+
+$ hdfs dfs -ls /user/hive/warehouse/mysamp1
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup        112 2018-09-04 11:29 /user/hive/warehouse/mysamp1/file1
+-rwxr-xr-x   1 lenovo supergroup         79 2018-09-04 11:36 /user/hive/warehouse/mysamp1/file2
+
+$ hdfs dfs -ls /hivelab3
+
+here no file-----bcoz ,cut and paste happened
+
+------------------------------------------------------------------------------------------------------------
+storing hive table data in custom location:
+
+here at backend a directory is created with custom location name but not with table name
+hive> create table mysample1(line string) location '/user/myyloc1';
+
+hive> load data local inpath 'file1' into table mysample1;
+
+hive> select * from mysample1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+
+$ hdfs dfs -ls /user/myyloc1
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup        112 2018-09-04 11:47 /user/myyloc1/file1
+
+here directory created with custom location name but not with tablename
+
+create one more table with same location i.e '/usr/myyloc1'
+
+hive> create table mysample2(line string) location '/user/myyloc1';
+
+hive> select * from mysample2;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+
+Note : here both mysample1 and mysample2 tables share same location and data
+       
+       If u load data in one table reflected in other table also.
+
+hive> load data local inpath 'file2' into table mysample2;
+
+hive> select * from mysample1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+Hello...........
+Hello..........
+Hello..........
+Hello.........
+Hello.........
+
+Q)what happens if I drop table1(mysample1) which is sharing same location with table2(mysample2)?
+hive> drop table mysample1;
+OK
+Time taken: 4.278 seconds
+
+here the entire backend directory(myyloc1) is going to be deleted
+
+hive> select * from mysample2;
+OK
+Time taken: 0.229 seconds
+
+so here the table is empty
+
+-----------------------------------------------------
+Now again i want to load data into mysample2
+
+hive> load data local inpath 'file1' into table mysample2;
+
+here the file1 going to loaded in the backend hive directory(myyloc1) ,which is created automatically
+
+hive> select * from mysample2;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+
+
+$ hdfs dfs -ls /user/myyloc1
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup        112 2018-09-04 12:13 /user/myyloc1/file1
+
+-----------------------------------------------------------------------------------------------------------------
+overwriting contents of a hive table:
+
+hive> create table ctab1(line string);
+
+hive> load data local inpath 'file1' into table ctab1;
+
+hive> select * from ctab1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+
+hive> load data local inpath 'file2' into table ctab1;
+
+
+hdfs dfs -ls /user/hive/warehouse/ctab1
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup        112 2018-09-04 12:23 /user/hive/warehouse/ctab1/file1
+-rwxr-xr-x   1 lenovo supergroup         79 2018-09-04 12:26 /user/hive/warehouse/ctab1/file2
+
+
+Now I want to overwrite the table content ---->i.e with file3
+
+hive> load data local inpath 'file3' overwrite into table ctab1;
+
+hive> select * from ctab1;
+OK
+hi.....
+hi....
+hi....
+hi...
+hi...
+Time taken: 0.195 seconds, Fetched: 5 row(s)
+
+$ hdfs dfs -ls /user/hive/warehouse/ctab1
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup         34 2018-09-04 12:29 /user/hive/warehouse/ctab1/file3
+
+------------------------------------------------------------------------------------------------------------------
+
+Table to Table copy:
+
+hive> select * from ctab1;
+OK
+hi.....
+hi....
+hi....
+hi...
+hi...
+
+hive> create table ctab2(line string);
+
+now loading data into ctab2 from ctab1
+
+hive> insert overwrite table ctab2
+    > select * from ctab1;
+
+ MR job executes----
+
+Note:whenever we perform table to table copy(insert overwrite) then we get a file with name 000000_0
+     under backend hive directory.
+
+hive> select * from ctab2;
+OK
+hi.....
+hi....
+hi....
+hi...
+hi...
+
+$ hdfs dfs -ls /user/hive/warehouse/ctab2
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup         34 2018-09-04 12:46 /user/hive/warehouse/ctab2/000000_0
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -cat /user/hive/warehouse/ctab2/000000_0
+hi.....
+hi....
+hi....
+hi...
+hi...
+------------------------------------------------------------------------------------------------------------
+Creating table from another table
+
+$ cat > file1
+Hadoop is Great
+Hadoop is simple
+Hadoop is booming
+
+hive> create database hivedb11;
+OK
+Time taken: 0.602 seconds
+hive> use hivedb11;
+OK
+Time taken: 0.034 seconds
+hive> create table mysamp1(line string);
+OK
+Time taken: 0.662 seconds
+hive> load data local inpath 'file1' into table mysamp1;
+Loading data to table hivedb11.mysamp1
+OK
+Time taken: 1.824 seconds
+hive> select * from mysamp1;
+OK
+Hadoop is Great
+Hadoop is simple
+Hadoop is booming
+
+
+hive> create table mysamp2 like mysamp1;
+OK
+Time taken: 0.48 seconds
+
+hive> select * from mysamp2;
+OK
+Time taken: 0.246 seconds
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+creating database  and storing tables in it.
+
+hive> create database nareshit1;
+
+hive> use nareshit1;
+
+hive> show tables;
+
+hive> create table sample1(line string);
+
+hive> load data local inpath 'file1' into table sample1;
+
+hive> select * from sample1;
+OK
+Good Morning..........
+Good Morning.........
+Good Morning..........
+Good Morning.........
+Good Morning.........
+
+hive> show tables;
+OK
+sample1
+Time taken: 0.04 seconds, Fetched: 1 row(s)
+
+$ hdfs dfs -ls /user/hive/warehouse/nareshit1.db
+Found 1 items
+drwxr-xr-x   - lenovo supergroup          0 2018-09-04 12:54 /user/hive/warehouse/nareshit1.db/sample1
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/nareshit1.db/sample1
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup        112 2018-09-04 12:54 /user/hive/warehouse/nareshit1.db/sample1/file1
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -cat /user/hive/warehouse/nareshit1.db/sample1/file1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
