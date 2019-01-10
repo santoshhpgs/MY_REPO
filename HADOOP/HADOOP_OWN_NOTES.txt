@@ -78,6 +78,54 @@ Hadoop Advantages:
 			   
 			   
 ----------------------------------------------------------------------------------------------------------------------------------------
+SESSION 2 13th NOV
+------------------
+OLTP--->online transcational processing
+
+Hadoop Components
+-----------------
+1.HDFS------------------------------>Storage
+2.MapReduce------------------------->Processing
+3.PIG------------------------------->Processing,PigLatin
+4.Hive------------------------------>Processing,DWH,hql-------->sql
+5.Sqoop---------------------------->sql+hadoop--------->import/export operations
+6.NoSql: Schemaless
+		 Random access
+   Nosql database-------->Hbase,casandra,Mondgodb,,couvhdg,Riak,PNUT
+
+7.HBase:
+8.Flume --------> Streaming components ---->for streaming
+9.Kafka---------->for Advanced streaming
+10.YARN:
+11.ZooKeeper
+-----------------------------------------------------------------------------------------------------------------------------
+Data storage and processing in Hadoop:
+
+In Hadoop , Data stored in the form of files
+
+Each file again sub-devided into blocks
+
+default blocksize =64mb
+
+Design principle w.r.to HDFS blocks
+
+1.Every file has will have dedicated no of blocks
+2.No two files data is stored in a single blocks
+3.All the blocks have equal volume except the last block
+
+----------------------------------------------------------------------------------------------------------------------------
+SESSION 3 14th NOV
+------------------
+
+CASE 1 : No of blocks = No of slaves(B1,B2,B3,B4) (S1,S2,S3,S4)--->Then more parallelism
+CASE 2 : No of blocks > No of slaves(B1,B2,B3,B4) (S1,S2)--->Then less parallelism
+CASE 3 : More no of blocks ---> one slaves (B1,B2,B3,B4) (S1)--->Then no parallelism
+
+
+
+
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 
