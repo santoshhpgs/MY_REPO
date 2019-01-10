@@ -46,11 +46,31 @@ Drawbacks of Databases:
 	  select avg(amt) from sales1;
 	  select stddev(amt) from sales1;
 
-5.RDBMS can hold only structured data.
+5.RDBMS can handle only structured data.
 
-6.	  
 	   
 ----------------------------------------------------------------------------------------------------------------------------------------
+Hadoop Cluster : Group of cpu's(nodes) connected in a n/w
+               There are 2 types of nodes
+			   i)Master nodes or Name node
+			  ii)Name node or Data node
+
+Master node responsibilities
+----------------------------
+1.Task Assignment
+2.Load balancing
+3.Fault tolerence
+4.Health monitor
+			  
+Slave node responsibilities
+---------------------------
+1.Storing and processing the data			  
+			   
+			   
+			   
+			   
+			   
+			   
 ----------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -88,56 +108,3 @@ Job Tracker assigns task to Task Tracker and Task Tracker performs the tasks
  ---------------------------------------------------------------------------------------------------------------------------------------
  SESSION 21 11th DEC
  -------------------
- PIG is a component of Hadoop used for processing
- PIG is a dataflow language
- Dataflow is a sequence collections of pipes.
- A pipe is any data operation such as loading data,trasnforming data,filtering data,sorting data,merging data,grouping data etc.
- PIG processing happens using various built-in operators
- 
- Drawbacks of MR
- ---------------
- 1.huge coding
- 2.lot of programming required
- 3.operations like joins,order by are very complex to implement
- 
- --------------------------------------------------------------------------------------------------------------------
- 
- Advantages of PIG
- -----------------
- 1.very less code
- 2.complex operation also can be perfomed in an easier way
- 3.100 lines of MR code - 5 lines of PIG
- 
- -------------------------------------------------------------------------------------------------------------------
- 
- for PIG we use a language called as PIGLATIN
- 
- PIGLATIN : it is a simple scripting language , which is used to define dataflows
- 
- ---------------------------------------------------------------------------------------------------------------------
- 
- PIG Terminology:
- 1.Relation ------------------->table name
- 2.Bag ------------------------>in sql ,it is table
- 3.Tuple ---------------------->in sql ,it is row
- 4.Field ---------------------->in sql ,it is column
- 
- 1.Field : it is an entity which is similar to column in sql
-			eg:eid,ename
- 2.Tuple :collection of field values forms a tuple
-			A tuple represented using ()
-			eg:(101,Miller,10000,m,11)-------------->tuple
-			
-3.Bag : collection of tuples forms a bag
-			eg:(101,Miller,10000,m,11)
-			   (102,john,20000,m,11)
-			   (103,Sony,30000,f,12)
-			   
-	There are two types of Bags:
-		1.Inner Bag
-		2.Outer Bag
-		
-		Outer bag: collection of tuples forms a bag called as outer bag.
-		Inner Bag: If a bag taken as one field then such type of bag is called as Inner Bag
- 
- 
