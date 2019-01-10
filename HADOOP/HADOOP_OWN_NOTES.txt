@@ -67,8 +67,14 @@ Slave node responsibilities
 1.Storing and processing the data			  
 			   
 			   
-			   
-			   
+----------------------------------------------------------------------------------------------------------------------------			   
+
+Hadoop Advantages:
+
+1.Unlimited data storage----->horizantally unlimited scalability
+2.High speed processing------>parallel processing
+3.can handle all varieties of data
+4.opensource-------->No licensing required			   
 			   
 			   
 ----------------------------------------------------------------------------------------------------------------------------------------
