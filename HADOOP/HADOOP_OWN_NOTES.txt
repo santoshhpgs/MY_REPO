@@ -122,13 +122,76 @@ CASE 2 : No of blocks > No of slaves(B1,B2,B3,B4) (S1,S2)--->Then less paralleli
 CASE 3 : More no of blocks ---> one slaves (B1,B2,B3,B4) (S1)--->Then no parallelism
 
 
+Replication and Fault tolerence
 
+4 step criteria
+
+1.Name node select the slave which is highly configured
+2.Name node select which is nearest
+3.Name node select the slave which is more idle
+4.Name node slect the slave with good health
 
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+SESSION 4 15th NOV
+------------------
 
+Design principules w.r.to replication
+
+1.Replication applicable only to data but not for metadata
+2.Replication applicable only for data node but not for name node
+3.Maximum no of replication depends on the no of slave nodes
+4.All the replicas can not be stored in the same slave
+
+---------------------------------------------------------------------------------------------------------------------------
+Configuring Block size and Replication
+
+goto the hadoop installed directory ------->hadoop/conf/hdfs-site.xml
+
+open this hdfs-site.xml
+
+<configuration>
+     <property>
+	    <name>dfs.Block.size</name>
+		<value>50mb</value>
+	</property>
+    <property>	
+	    <name>dfs.replication</name>
+		<value>4</value>
+    </property>		
+</configuration>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Note:If we are changing the block size then we need to restart the cluster,then only the changes will be applied.bcoz the
+config file is read only once i.e during the start of the custer
+
+
+SESSION 5 16th NOV
+------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
 
 SESSION 8 21ST NOV
 ------------------
