@@ -249,20 +249,9 @@ intoroductory demo session repeated
 
 SESSION 8 21th NOV
 ------------------
+MapReduce
+----------
 
-
-
-
-
-
-
-
-
-
------------------------------------------------------------------------------------------------------------------------------
-
-SESSION 8 21ST NOV
-------------------
 Hadoop is meant for storage and processing.For storage we are going with HDFS(Hadoop Distributed File System) and for processing
 we are going with Map Reduce.
 
@@ -287,9 +276,30 @@ Job Tracker assigns task to Task Tracker and Task Tracker performs the tasks
  Job Tracker
 -who is going to executes the the tasks
  Task Tracker 
-
-
  
- ---------------------------------------------------------------------------------------------------------------------------------------
- SESSION 21 11th DEC
- -------------------
+MapReduce is a component of hadoop designed for parallel processing
+MR always allows data in (k,v) pair
+
+(name,Ajay)
+  k     v 
+(age,25)  
+  k   v 
+  
+  MR execution sub-devided into 3 phases
+  
+  1.Mapper phase
+  2.Reducer phase
+
+Mapper i/p format:
+
+Reducrer performs 3 tasks:
+
+Grouping---------->if key does not exists creates a new key,if key exists append the value`
+sorting----------->based on the maper o/p key
+Aggregation------->need to write logic
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
