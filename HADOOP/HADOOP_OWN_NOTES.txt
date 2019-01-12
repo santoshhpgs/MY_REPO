@@ -206,11 +206,49 @@ all the metadata info stored in HDFS of name node in form of blocks only.
 this metadata also stored in temp folder of LFS
 form this temp folder in a timely manner copied in to 2 special files 1.fsimage 2.edits
 only name node can write in to fsimage and edits secondary name node can not write into fsimage and edits
+metadata should not only stored in name node it should also be stored in non hadoop cluster(NHC) so when name node is down
+and secondary name node is unable to retrive it can take metadata from NHC
+
+processing components
+---------------------
+1.job tracker(jt)
+2.task tracker(tt)
+
+job tracker resides within name node
+task tracker resides within data node
+
+no of task trackers = no of data nodes
+
+job tracker responsiblities
+---------------------------
+task assignment
+load balancing
+fault tolerence
+health monitoring
+
+task tracker responsibilities
+------------------------------
+executing the task given by job tracker
 
 
+Hadoop versions
+---------------
+
+hadoop 0.xx
+hadoop 1.xx
+hadoop 2.xx(YARN)
 
 
+SESSION 6 19th NOV
+------------------
+intoroductory demo session repeated
 
+SESSION 7 20th NOV
+------------------
+intoroductory demo session repeated
+
+SESSION 8 21th NOV
+------------------
 
 
 
