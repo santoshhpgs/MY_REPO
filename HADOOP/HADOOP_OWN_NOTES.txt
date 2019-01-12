@@ -190,8 +190,22 @@ Data node responsiblilites
 
 Secondary name node
 -------------------
-if name node down then entire cluster is down  
+if name node down then entire cluster is down then entire cluster will be in spectator mode means can not perform any
+operation such as storage and processing.if name node is down then immidiately secondary name node comes into picture
 
+Secondary name node responsibilities
+------------------------------------
+same as name node
+but secondary name node is not 100% backup node for name node.
+bcoz name node can read write and update but secondary name node can only read but cannot write or update
+
+what happens internally within name node
+----------------------------------------
+Eevery node int the cluster will have 2 sections one is LFS and second one is HDFS
+all the metadata info stored in HDFS of name node in form of blocks only.
+this metadata also stored in temp folder of LFS
+form this temp folder in a timely manner copied in to 2 special files 1.fsimage 2.edits
+only name node can write in to fsimage and edits secondary name node can not write into fsimage and edits
 
 
 
