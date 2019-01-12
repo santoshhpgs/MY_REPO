@@ -172,9 +172,25 @@ config file is read only once i.e during the start of the custer
 SESSION 5 16th NOV
 ------------------
 
+Hadoop Architecture
+------------------
 
+1.Storage Architectural components
+2.processing Architectural components
 
+Name node responsiblilites
+--------------------------
+1.To store the physical memory locations of the blocks of a file
+2.By combining which physical memory locations of the block so that the file can be formulated 
+3.To store metadata(data about data) information
 
+Data node responsiblilites
+--------------------------
+1.Storing HDFS blocks.we can have multiple data nodes.the no of data nodes depends on the voume of the data.
+
+Secondary name node
+-------------------
+if name node down then entire cluster is down  
 
 
 
