@@ -290,8 +290,6 @@ MR always allows data in (k,v) pair
   1.Mapper phase
   2.Reducer phase
 
-Mapper i/p format:
-
 Reducrer performs 3 tasks:
 
 Grouping---------->if key does not exists creates a new key,if key exists append the value`
@@ -299,7 +297,15 @@ sorting----------->based on the maper o/p key
 Aggregation------->need to write logic
 
 
+4 cases:
 
+case 1:Single grouping seingle aggregation
+case 2:Multi gouping single aggregation
+case 3:Single gouping nulti aggregation
+case 4:Multi gouping multi aggregation
 
 
 -----------------------------------------------------------------------------------------------------------------------------
+
+SESSION 9 22th NOV
+------------------
