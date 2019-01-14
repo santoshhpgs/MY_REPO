@@ -299,13 +299,54 @@ Aggregation------->need to write logic
 
 4 cases:
 
-case 1:Single grouping seingle aggregation
+case 1:Single grouping single aggregation
 case 2:Multi gouping single aggregation
-case 3:Single gouping nulti aggregation
+case 3:Single gouping multi aggregation
 case 4:Multi gouping multi aggregation
 
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-SESSION 9 22th NOV
+SESSION 9 22nd NOV
 ------------------
+
+case 1:Single grouping single aggregation
+
+emp.txt
+
+101,Miller,10000,M,11
+102,Blake,20000,M,12
+103,Sony,30000,F,11
+104,Sita,40000,F,12
+105,John,50000,M,13
+
+select sex,sum(sal) from emp group by sex;
+
+
+case 2:Multi gouping single aggregation
+
+emp.txt
+
+101,Miller,10000,M,11
+102,Blake,20000,M,12
+103,Sony,30000,F,11
+104,Sita,40000,F,12
+105,John,50000,M,13
+
+select dno,sex,sum(sal) from emp group by dno,sex;
+
+
+
+case 3:Single gouping multi aggregation
+
+emp.txt
+
+101,Miller,10000,M,11
+102,Blake,20000,M,12
+103,Sony,30000,F,11
+104,Sita,40000,F,12
+105,John,50000,M,13
+
+select dno,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp;
+
+
