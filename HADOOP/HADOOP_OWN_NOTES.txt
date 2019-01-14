@@ -350,3 +350,25 @@ emp.txt
 select dno,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp;
 
 
+case 4:Multi gouping multi aggregation
+
+[case 2 mapper + case 3 reducer]
+
+select dno,sex,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp group by dno,sex;
+
+SESSION 10 23nd NOV
+-------------------
+ 
+if grouping------------>then reducer required
+if no grouping---------->then no reducer
+
+if reducer is not required we need to suspend the reducer even if reducer is suspended then default reducer is going to run
+
+suspending default reducer also 
+
+jobname.setNumReduceTask(0);
+
+increasing the no of reducer
+
+jobname.setNumReduceTask(2);
+
