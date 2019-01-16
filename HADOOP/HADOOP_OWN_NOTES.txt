@@ -372,3 +372,8 @@ increasing the no of reducer
 
 jobname.setNumReduceTask(2);
 
+
+
+SESSION 11 24nd NOV
+-------------------
+
