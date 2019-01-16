@@ -377,3 +377,19 @@ jobname.setNumReduceTask(2);
 SESSION 11 24nd NOV
 -------------------
 
+Various phases of MapReduce
+---------------------------
+1.Mapper phase
+2.Partioner phase
+3.Reducer phase
+
+
+hdfs------->i/p(k,v)---->Mapper-----o/p-------i/p(k,v)------->partioner phase------o/p(k,List(v))----i/p(k,List(v))--->
+Reducer------>o/p(k,v)--->HDFS
+
+All the above 3 phases are not executed parallely , they are executed sequentially
+one after another because one phase o/p is given as i/p to another phase.
+
+once mapper phase is 100% done then it executes partioner phase
+if partioner phase is 100% done , then it executes Reducer phase,
+if reducer phase is 100% done then it writes o/p to HDFS
