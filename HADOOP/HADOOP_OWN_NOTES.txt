@@ -252,8 +252,8 @@ SESSION 8 21th NOV
 MapReduce
 ----------
 
-Hadoop is meant for storage and processing.For storage we are going with HDFS(Hadoop Distributed File System) and for processing
-we are going with Map Reduce.
+Hadoop is meant for storage and processing.For storage we are going with HDFS(Hadoop Distributed File System) and for 
+processing we are going with Map Reduce.
 
 HDFS has three components
 
@@ -393,3 +393,7 @@ one after another because one phase o/p is given as i/p to another phase.
 once mapper phase is 100% done then it executes partioner phase
 if partioner phase is 100% done , then it executes Reducer phase,
 if reducer phase is 100% done then it writes o/p to HDFS
+
+
+
+
