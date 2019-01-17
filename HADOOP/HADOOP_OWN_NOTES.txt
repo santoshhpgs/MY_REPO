@@ -373,6 +373,13 @@ increasing the no of reducer
 jobname.setNumReduceTask(2);
 
 
+Partioner phase
+---------------
+
+No of mapper tasks == No of unique blocks
+
+
+
 
 SESSION 11 24nd NOV
 -------------------
