@@ -1,0 +1,532 @@
+Indexing:
+
+Problems with Partitioning:
+
+problem 1:
+ex: Amazon------->has 1 lakh products
+                      (p1,p2,p3...................1 lakh products)
+
+                      for every product-------> 1 partition
+
+                      for 1 lakh products-----> 1 lakh partitions
+
+                      Each partition has 1 directory and file
+
+                      Let if Each file occupying 10 blocks 
+             
+                      1lakh files x 10 blocks  = 10 lakh blocks
+
+                      10lakh blocks x3 replicas= 30 lakh blocks 
+
+                      means burden on master(Name node) ,which has to maintain metadata of 30 lakh blocks
+                      i.e which block is stored in which slave
+
+                      so perormance degrades and system hangs.
+
+------------------------------------------------------------------------------------------
+problem 2:
+
+If a table has multiple files
+
+we can load multiple files into a table, 
+
+ex: day1----->file1
+    day2----->file2
+    day3----->file3
+    day4----->file4
+    dayn----->filen
+
+select * from sales where prodprice=1000
+
+if there are 1lakh products-----> then we have 1 lakhpartitions,
+here to scan the prodprice=1000,then it should read all the files and partitions
+
+problem 3:
+
+Table having a file------>size=7GB
+how many blocks.....?
+Let 1GB=200 blocks
+then 7GB x 200 blocks= 1400blocks
+
+means 1400 unique blocks====>means 1400 mappers runs in parallel
+
+select * from sales where pid=105
+
+if pid=105 is present only in 5 blocks such as b2,b70,b107,b200,b925
+but for that 1400 mappers are running in parallel.
+
+
+
+
+
+
+
+
+so the solution for all these is indexing...
+
+Indexing Advantage : Random Access
+
+ex:
+
+index on pid on table1
+pid=105
+
+105 available in file1
+105 available in file3
+
+if there r 20files
+
+then hive reads only these 2 files ,it wont read all files
+if there are 100 files, p105 is available in only 7 files, then hive reads only these 7 files but not 100 files
+
+
+
+ex:
+
+accessing pid=107 records from a file having blocks in different slave machines
+
+if pid=107 records present in s1,s3,s9 systems
+
+then we access only these 3 systems using offsetvalues instead of reading all
+
+ex: for block b1 storing 10 records
+   0 is offset value of 1st record
+   0+length of 1st record will be the offset value of 2nd record
+
+
+
+
+ex: create index idx_emp_id on emp(id)
+
+here emp is table name
+id is column name
+
+select * from emp where id=103
+
+when a query is applied based on id column,first hive will contact metastore and
+
+verifies whether index object available based on given column
+
+if available, then it fetches the offset numbers ,then it will select the file blocks and assign tasks to selected slave machines.
+
+ex:
+
+table1  has file1 and file2 
+
+index on table1 on pid
+
+pid=101
+pid=102
+pid=103.........so on
+
+fetches offset nos and blocks for each pid 
+101----file1---[0(B1),122(B7),199(B8),300(B11),870(B12)]
+       file2---[23(B4),39(B6),122(B9) ........]   //122---->same offset we can have in different files
+102----file1---[750(B5),960(B7)]
+103....
+
+select * from table1 where pid=102
+
+so if 1400 blocks are available, it reads only those blocks having offsetvalues of pid=102
+
+means reads only 2 blocks, intead of reading all 1400 blocks
+
+Hive index allows duplicates but
+RDBMS index wont allow duplicates.
+
+
+Advantage: instead of scanning all file blocks, it scans selected blocks, performance improved 
+
+
+
+
+
+
+
+
+
+
+Practicals:
+
+
+hive>create database bucks;
+hive >use bucks;
+
+gedit marchsales
+101,p1,1000
+102,p1,2000
+103,p3,4000
+101,p1,1200
+101,p3,5000
+101,p4,6000
+101,p7,9000
+102,p2,4000
+102,p3,5000
+102,p4,6000
+103,p1,1000
+103,p1,2000
+103,p1,4000
+102,p2,4000
+101,p1,5000
+101,p2,3000
+
+
+hive> create table sales(cid int, pid string, amt int)
+     row format delimited
+     fields terminated by ',';
+
+hive> load data local inpath 'marchsales' into table sales;
+
+hive> select * from sales;
+OK
+101    p1    1000
+102    p1    2000
+103    p3    4000
+101    p1    1200
+101    p3    5000
+101    p4    6000
+101    p7    9000
+102    p2    4000
+102    p3    5000
+102    p4    6000
+103    p1    1000
+103    p1    2000
+103    p1    4000
+102    p2    4000
+101    p1    5000
+101    p2    3000
+
+
+
+hive> create INDEX cid_index on table sales(cid)
+     as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+     WITH deferred rebuild;
+//This is also a table containing indexed data
+//Here index on cid
+//here rebuild means to get new & old addresses
+
+hive> show tables;
+OK
+buckpartemp
+bucks__sales_cid_index__
+bucksemp
+buckstab
+buckstab1
+emp
+emp1
+junesales
+sales
+
+
+hive> describe bucks__sales_cid_index_
+OK
+cid                 	int                 	                    
+_bucketname         	string              	                    
+_offsets            	array<bigint>       	
+
+
+hive> select * from bucks__sales_cid_index__;
+//empty
+
+//To build index,perform the following
+hive> ALTER INDEX  cid_index  ON sales REBUILD;
+
+//MRjob runs
+
+
+now
+hive> select * from bucks__sales_cid_index__;      //we have data
+OK
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[0,36,48,60,72,168,180]
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[12,84,96,108,156]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[24,120,132,144]
+
+//fetches the offset values
+
+hive> select * from sales where cid=103;
+OK
+103	p3	4000
+103	p1	1000
+103	p1	2000
+103	p1	4000
+
+here hive reads only those blocks where 103 is available,insteadof reading all blocks
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex:2 with 2 files
+
+
+cat marchsales > marchsales001
+cat marchsales001
+101,p1,1000
+102,p1,2000
+103,p3,4000
+101,p1,1200
+101,p3,5000
+101,p4,6000
+101,p7,9000
+102,p2,4000
+102,p3,5000
+102,p4,6000
+103,p1,1000
+103,p1,2000
+103,p1,4000
+102,p2,4000
+101,p1,5000
+101,p2,3000
+
+
+
+hive> load data local inpath 'marchsales001' into table sales;
+
+Table default.sales stats: [numFiles=2, totalSize=384]
+OK
+Time taken: 0.248 seconds
+hive> select * from sales;
+OK
+101    p1    1000
+102    p1    2000
+103    p3    4000
+101    p1    1200
+101    p3    5000
+101    p4    6000
+101    p7    9000
+102    p2    4000
+102    p3    5000
+102    p4    6000
+103    p1    1000
+103    p1    2000
+103    p1    4000
+102    p2    4000
+101    p1    5000
+101    p2    3000
+101    p1    1000
+102    p1    2000
+103    p3    4000
+101    p1    1200
+101    p3    5000
+101    p4    6000
+101    p7    9000
+102    p2    4000
+102    p3    5000
+102    p4    6000
+103    p1    1000
+103    p1    2000
+103    p1    4000
+102    p2    4000
+101    p1    5000
+101    p2    3000
+Time taken: 0.073 seconds, Fetched: 32 row(s)
+hive>
+hive> select * from bucks__sales_cid_index__;
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[0,36,48,60,72,168,180]
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[12,84,96,108,156]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[24,120,132,144]
+
+but here 2nd file data is not available, so for that alter and rebuild the index 
+
+hive> ALTER INDEX  cid_index  ON sales REBUILD;
+
+hive> select * from bucks__sales_cid_index__;
+OK
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[0,36,48,60,72,168,180]   //file1 
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[0,36,48,60,72,168,180]   //file2
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[12,84,96,108,156]
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[12,84,96,108,156]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[24,120,132,144]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[24,120,132,144]
+
+now both files data available
+
+hive> select * from sales where cid=103;
+OK
+103	p3	4000
+103	p1	1000
+103	p1	2000
+103	p1	4000
+103	p3	4000
+103	p1	1000
+103	p1	2000
+103	p1	4000
+
+here it reads only those blocks and offset values of 103,instead of reading all
+
+
+
+
+
+
+
+
+
+
+
+
+ex:3 with 3 files
+
+cat > marchsales002
+101,p1,1000
+101,p1,1200
+101,p3,5000
+101,p4,6000
+101,p7,9000
+105,p1,9000
+105,p4,10000
+105,p6,9000
+
+hive> load data local inpath 'marchsales002' into table sales;
+
+Table default.sales stats: [numFiles=3, totalSize=481]
+OK
+Time taken: 0.233 seconds
+hive> select * from sales;
+OK
+101    p1    1000
+102    p1    2000
+103    p3    4000
+101    p1    1200
+101    p3    5000
+101    p4    6000
+101    p7    9000
+102    p2    4000
+102    p3    5000
+102    p4    6000
+103    p1    1000
+103    p1    2000
+103    p1    4000
+102    p2    4000
+101    p1    5000
+101    p2    3000
+101    p1    1000
+102    p1    2000
+103    p3    4000
+101    p1    1200
+101    p3    5000
+101    p4    6000
+101    p7    9000
+102    p2    4000
+102    p3    5000
+102    p4    6000
+103    p1    1000
+103    p1    2000
+103    p1    4000
+102    p2    4000
+101    p1    5000
+101    p2    3000
+101    p1    1000
+101    p1    1200
+101    p3    5000
+101    p4    6000
+101    p7    9000
+105    p1    9000
+105    p4    10000
+105    p6    9000
+Time taken: 0.085 seconds, Fetched: 40 row(s)
+hive>
+
+-- in above table , 105  is available only in bucket3(marchsales002)
+
+hive> select * from bucks__sales_cid_index__;
+OK
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[0,36,48,60,72,168,180]
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[0,36,48,60,72,168,180]
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[12,84,96,108,156]
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[12,84,96,108,156]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[24,120,132,144]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[24,120,132,144]
+
+
+-- in above output no information about 3rd bucket.
+ -- bcoz, index is not rebuild.
+
+
+hive> ALTER INDEX  cid_index  ON sales REBUILD;
+
+hive> select * from bucks__sales_cid_index__;
+OK
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[0,36,48,60,72,168,180]//file1
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[0,36,48,60,72,168,180]//file2
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales002	[0,12,24,36,48]//file3
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[12,84,96,108,156]
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[12,84,96,108,156]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales	[24,120,132,144]
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales001	[24,120,132,144]
+105	hdfs://localhost:9000/user/hive/warehouse/bucks.db/sales/marchsales002	[60,72,85]
+Time taken: 0.229 seconds, Fetched: 8 row(s)
+
+
+-- after rebuild index, bucket3(marchsales002) information available.
+
+hive> select * from sales where cid=105;
+OK
+105	p1	9000
+105	p4	10000
+105	p6	9000
+Time taken: 0.283 seconds, Fetched: 3 row(s)
+
+-- now it reads only bucket3(marchsales002),but not everything
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+  
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

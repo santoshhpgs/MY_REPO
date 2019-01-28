@@ -1,0 +1,84 @@
+
+
+Hive 5 : xml data processing
+
+
+[training@localhost ~]$ cat xml1
+<rec><name>Ravi</name><age>25</age><city>hyd</city></rec>
+<rec><name>Rani</name><age>24</age><sex>f</sex></rec>
+<rec><name>Sampath</name><sex>m</sex><city>Del</city></rec>
+
+
+
+hive> create table xmlsamp1(line string);
+
+hive> load data local inpath 'xml1'into table xmlsamp1; 
+
+
+hive> select * from xmlsamp1;
+OK
+<rec><name>Ravi</name><age>25</age><city>hyd</city></rec>
+<rec><name>Rani</name><age>24</age><sex>f</sex></rec>
+<rec><name>Sampath</name><sex>m</sex><city>Del</city></rec>
+
+hive> select count(*) from xmlsamp1;
+<rec><name>Ravi</name><age>25</age><city>hyd</city></rec>
+<rec><name>Rani</name><age>24</age><sex>f</sex></rec>
+<rec><name>Sampath</name><sex>m</sex><city>Del</city></rec>
+
+hive> select xpath_string(line,'rec/name') from xmlsamp1;
+Ravi
+Rani
+Sampath
+
+hive> select 
+    >  xpath_string(line,'rec/name'),
+    >  xpath_int(line,'rec/age'),
+    >  xpath_string(line,'rec/sex'),
+    >  xpath_string(line,'rec/city')
+    > from xmlsamp1;
+
+Ravi    25              hyd
+Rani    24      f
+Sampath 0       m       Del
+
+if string fields is missed, it returns blank string, if numeric field is missed it returns 0.
+
+
+
+
+_ex:2________________
+
+xml with nested tags.
+
+[training@localhost ~]$ cat xml2
+<rec><name><fname>Ravi</fname><lname>kumar</lname></name><age>25</age><contact><email><personal>ravi@gmail.com</personal><official>ravi@infy.com</official></email><phone><mobile>9988665544</mobile><office>9977665544</office><residence>9955443333</residence></phone></contact></rec>
+
+
+hive> create table xmlsamp2(line string);
+
+hive> load data local inpath 'xml2' into table xmlsamp2;
+
+hive> select * from xmlsamp2;
+OK
+<rec><name><fname>Ravi</fname><lname>kumar</lname></name><age>25</age><contact><email><personal>ravi@gmail.com</personal><official>ravi@infy.com</official></email><phone><mobile>9988665544</mobile><office>9977665544</office><residence>9955443333</residence></phone></contact></rec>
+
+hive> create table xmlsamp3(fname string,lname string,age int, personal_email string,official_email string,mobile string, office string, residence string);
+
+hive> insert overwrite table xmlsamp3
+    >   select 
+    > xpath_string(line,'rec/name/fname'),
+    > xpath_string(line,'rec/name/lname'),
+    > xpath_int(line,'rec/age'),          
+    > xpath_string(line,'rec/contact/email/personal'),
+    > xpath_string(line,'rec/contact/email/official'),
+    > xpath_string(line,'rec/contact/phone/mobile'),
+    > xpath_string(line,'rec/contact/phone/office'),
+    > xpath_string(line,'rec/contact/phone/residence') 
+    >  from xmlsamp2;
+
+hive> select * from xmlsamp3;
+OK
+Ravi    kumar   25      ravi@gmail.com  ravi@infy.com     9988665544   9977665544   9955443333
+
+

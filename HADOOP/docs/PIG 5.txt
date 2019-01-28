@@ -1,0 +1,402 @@
+order by:
+
+ex 1:
+
+$ cat emp5
+101,miller,10000,m,11
+102,Blake,20000,m,12
+103,sony,30000,f,11
+104,Sita,40000,f,12
+105,Dhoni,50000,m,13
+
+
+grunt> e1 =load 'emp5' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+
+grunt> e2 =order e1 by ename desc;
+grunt> dump e2;
+
+output:
+(102,Blake,20000.0,m,12)
+(105,Dhoni,50000.0,m,13)
+(104,Sita,40000.0,f,12)
+(101,miller,10000.0,m,11)
+(103,sony,30000.0,f,11)
+--------------------------------------------------------------------------------------------------------------
+ex:2
+
+grunt> e3 =order e1 by sal desc;
+grunt> dump e3;
+
+output:
+(105,Dhoni,50000.0,m,13)
+(104,Sita,40000.0,f,12)
+(103,sony,30000.0,f,11)
+(102,Blake,20000.0,m,12)
+(101,miller,10000.0,m,11)
+-------------------------------------------------------------------------------------------------------------
+ex 3:
+
+order can be applied on mutiple columns
+
+grunt> e4 =order e1 by dno desc,sal,sex desc;
+grunt> dump e4;
+
+output:
+
+(105,Dhoni,50000.0,m,13)
+(102,Blake,20000.0,m,12)
+(104,Sita,40000.0,f,12)
+(101,miller,10000.0,m,11)
+(103,sony,30000.0,f,11)
+
+--- no limit for max number of sort fields.
+
+------------------------------------------------------------------------------------------------------------
+
+Task : I want top 2 departments with highest income
+
+select dno,sum(sal) from emp
+
+we perform following operations
+
+1)group by dno
+2)sum aggregation
+3)order by income desc
+4)limit 2
+
+grunt> e1 =load 'emp5' using PigStorage(',') as (eid:int,ename:chararray,sal:double,sex:chararray,dno:int);
+
+grunt> grp =group e1 by dno;
+grunt> res =foreach grp generate group as dno,SUM(e1.sal) as income;
+grunt> dump res;
+(11,40000.0)
+(12,60000.0)
+(13,50000.0)
+
+
+grunt> res1 =order res by income desc;
+grunt> res2 =limit res1 2;
+grunt> dump res2;
+output:
+(12,60000.0)
+(13,50000.0)
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+cartesian product:
+
+cross:every row of A will combine with every row of B.
+
+ex: A=a     B=1
+      b       2
+      c       3
+ cross A,B-----> a,1
+                 a,2
+                 a,3
+                 b,1
+                 b,2
+                 b,3
+                 c,1
+                 c,2
+                 c,3
+
+Matrimony Example:
+cat > matrimony
+Ravi,25,m
+Rani,24,f
+Rakesh,25,m
+kohli,30,m 
+Anushka,28,f
+alia,27,f
+Ranbir,30,m
+salman,50,m
+kareena,48,f
+modi,60,m
+aaa,58,f
+raju,59,m
+Abu,26,m
+magan,25,m
+priya,47,flenovo@lenovo-Lenovo-G450:~$ 
+
+grunt> m1 =load 'matrimony' using PigStorage(',') as (name:chararray,age:int,sex:chararray);
+
+grunt> males =filter m1 by (sex=='m');
+grunt> females =filter m1 by (sex=='f');
+grunt> describe males;
+males: {name: chararray,age: int,sex: chararray}
+grunt> cr =cross males,females;
+
+(raju,59,m,priya,47,f)
+(raju,59,m,aaa,58,f)
+(raju,59,m,kareena,48,f)
+(raju,59,m,alia,27,f)
+(raju,59,m,Anushka,28,f)
+(raju,59,m,Rani,24,f)
+(modi,60,m,priya,47,f)
+(modi,60,m,aaa,58,f)
+(modi,60,m,kareena,48,f)
+(modi,60,m,alia,27,f)
+(modi,60,m,Anushka,28,f)
+(modi,60,m,Rani,24,f)
+(salman,50,m,priya,47,f)
+(salman,50,m,aaa,58,f)
+(salman,50,m,kareena,48,f)
+(salman,50,m,alia,27,f)
+(salman,50,m,Anushka,28,f)
+(salman,50,m,Rani,24,f)
+(Ranbir,30,m,priya,47,f)
+(Ranbir,30,m,aaa,58,f)
+(Ranbir,30,m,kareena,48,f)
+(Ranbir,30,m,alia,27,f)
+(Ranbir,30,m,Anushka,28,f)
+(Ranbir,30,m,Rani,24,f)
+(kohli,30,m,priya,47,f)
+(kohli,30,m,aaa,58,f)
+(kohli,30,m,kareena,48,f)
+(kohli,30,m,alia,27,f)
+(kohli,30,m,Anushka,28,f)
+(kohli,30,m,Rani,24,f)
+(Rakesh,25,m,priya,47,f)
+(Rakesh,25,m,aaa,58,f)
+(Rakesh,25,m,kareena,48,f)
+(Rakesh,25,m,alia,27,f)
+(Rakesh,25,m,Anushka,28,f)
+(Rakesh,25,m,Rani,24,f)
+(Ravi,25,m,priya,47,f)
+(Ravi,25,m,aaa,58,f)
+(Ravi,25,m,kareena,48,f)
+(Ravi,25,m,alia,27,f)
+(Ravi,25,m,Anushka,28,f)
+(Ravi,25,m,Rani,2
+
+grunt> describe cr;
+cr: {males::name: chararray,males::age: int,males::sex: chararray,females::name: chararray,females::age: int,females::sex: chararray}
+
+grunt> mf =foreach cr generate males::name as mname,females::name as fname,males::age as mage,females::age as fage;
+grunt> dump mf;
+
+grunt> res =filter mf by (mage > fage) and (mage-fage<=4);
+grunt> dump res;
+(magan,Rani,25,24)
+(Abu,Rani,26,24)
+(raju,aaa,59,58)
+(modi,aaa,60,58)
+(salman,priya,50,47)
+(salman,kareena,50,48)
+(Ranbir,alia,30,27)
+(Ranbir,Anushka,30,28)
+(kohli,alia,30,27)
+(kohli,Anushka,30,28)
+(Rakesh,Rani,25,24)
+(Ravi,Rani,25,24)
+
+
+---------------------------------------------------------------------------------------------------------------------
+Word count:
+
+$cat comment
+java is simple
+java is compiled
+java is interpreted
+java is secure
+
+grunt> lines =load 'comment' as (line:chararray);
+grunt> words =foreach lines generate TOKENIZE(line) as word;
+({(java),(is),(simple)})
+({(java),(is),(compiled)})
+({(java),(is),(interpreted)})
+({(java),(is),(secure)})
+
+grunt> res =foreach words generate FLATTEN(word) as word1;
+
+note: Flatten converts inner bag to outer bag
+
+output:
+(java)
+(is)
+(simple)
+(java)
+(is)
+(compiled)
+(java)
+(is)
+(interpreted)
+(java)
+(is)
+(secure)
+
+grunt> grp =group res by word1;
+grunt> res1 =foreach grp generate group as word1,COUNT(res) as count;
+grunt> dump res1;
+
+
+output:
+(is,4)
+(java,4)
+(secure,1)
+(simple,1)
+(compiled,1)
+(interpreted,1)
+
+
+--------------------------------------------------------------------------------------------------
+
+
+submitting pig scripts:
+
+we have3 commands:
+  i) Pig
+ ii) exec
+ iii)run 
+
+
+
+ 1)pig:Here we submit pig script from command prompt(terminal)
+       Here relations cannot be reused.
+
+writing pig script:
+
+[training@localhost ~]$ cat > script1.pig
+
+emp = load 'emp5' using PigStorage(',') as (id:int, name:chararray, sal:int,sex:chararray, dno:int);
+e = foreach emp generate sex, sal;
+grp = group e by sex;
+res = foreach grp generate group as sex, SUM(e.sal) as tot;
+dump res;
+store res into 'resdir1' using PigStorage(','); 
+
+
+submitting pig script in local mode:
+$ pig -x local script1.pig
+
+submitting pig script in HDFS mode:
+$ pig script1.pig
+
+output: (f,60000)
+        (m,90000)
+
+
+Advantage: 1.Used for Production Operators
+           2.can be called from other environments like shell script
+
+Disadvantage:Here Relations cannot be reused.
+
+dump grp;
+dump res;
+these relations cannot be reused,not available
+
+----------------------------------------------------------------------------------------------------
+
+2)exec: Here we submit script from grunt shell. 
+        Here also relation aliases will not be available or reused.
+
+grunt>exec script1.pig
+output: (f,60000)
+        (m,90000)
+
+dump grp;
+dump res;
+these relations cannot be reused,not available
+----------------------------------------------------------------------------------------------------
+
+3)run: Here also we submit script from grunt shell. 
+       Here relation aliases will be available and reused
+
+grunt>run script1.pig
+output: (f,60000)
+        (m,90000)
+
+dump grp;
+dump res;
+output:  (f,60000)
+         (m,90000)
+these relations can be reused,will be available
+
+-------------------------------------------------------------------------------------------------------
+
+
+$ pig script1.pig
+
+grunt> exec script1.pig
+
+grunt> run script1.pig
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

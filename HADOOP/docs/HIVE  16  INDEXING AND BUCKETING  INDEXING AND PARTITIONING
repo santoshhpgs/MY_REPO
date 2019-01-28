@@ -1,0 +1,622 @@
+
+case 1: Bucketing and Indexing
+
+case 2: Partitioning and Indexing
+
+case 3: partitioning,Bucketing and Indexing.
+
+
+
+
+case 1:
+
+Hive Bucketing and Indexing
+-----------------------------------------------------------------
+
+hive> create table bucks_sales(cid int, pid string,amt int)
+    clustered by (pid)
+    into 4 buckets
+    row format delimited
+    fields terminated by ',';
+
+
+hive> set hive.enforce.bucketing=true;
+hive> insert overwrite table bucks_sales
+       select * from sales;
+
+hive> select * from bucks_sales;
+OK
+105	p4	10000
+101	p4	6000
+101	p4	6000
+101	p4	6000
+102	p4	6000
+102	p4	6000
+101	p1	1000
+105	p1	9000
+101	p1	1200
+101	p1	1000
+101	p1	5000
+103	p1	4000
+103	p1	2000
+103	p1	1000
+101	p1	1200
+102	p1	2000
+101	p1	1000
+101	p1	5000
+103	p1	4000
+103	p1	2000
+103	p1	1000
+101	p1	1200
+102	p1	2000
+102	p2	4000
+101	p2	3000
+102	p2	4000
+105	p6	9000
+102	p2	4000
+102	p2	4000
+101	p2	3000
+101	p3	5000
+102	p3	5000
+102	p3	5000
+103	p3	4000
+101	p7	9000
+101	p7	9000
+101	p7	9000
+101	p3	5000
+101	p3	5000
+103	p3	4000
+Time taken: 0.235 seconds, Fetched: 40 row(s)
+
+-- now data(all rows) divided into 4 buckets.
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db/bucks_sales
+Found 4 items
+-rwxr-xr-x   1 lenovo supergroup         73 2017-07-24 00:48 /user/hive/warehouse/bucks.db/bucks_sales/000000_0
+-rwxr-xr-x   1 lenovo supergroup        204 2017-07-24 00:48 /user/hive/warehouse/bucks.db/bucks_sales/000001_0
+-rwxr-xr-x   1 lenovo supergroup         84 2017-07-24 00:48 /user/hive/warehouse/bucks.db/bucks_sales/000002_0
+-rwxr-xr-x   1 lenovo supergroup        120 2017-07-24 00:48 /user/hive/warehouse/bucks.db/bucks_sales/000003_0
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/bucks_sales/000000_0
+105,p4,10000
+101,p4,6000
+101,p4,6000
+101,p4,6000
+102,p4,6000
+102,p4,6000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/bucks_sales/000001_0
+101,p1,1000
+105,p1,9000
+101,p1,1200
+101,p1,1000
+101,p1,5000
+103,p1,4000
+103,p1,2000
+103,p1,1000
+101,p1,1200
+102,p1,2000
+101,p1,1000
+101,p1,5000
+103,p1,4000
+103,p1,2000
+103,p1,1000
+101,p1,1200
+102,p1,2000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/bucks_sales/000002_0
+102,p2,4000
+101,p2,3000
+102,p2,4000
+105,p6,9000
+102,p2,4000
+102,p2,4000
+101,p2,3000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/bucks_sales/000003_0
+101,p3,5000
+102,p3,5000
+102,p3,5000
+103,p3,4000
+101,p7,9000
+101,p7,9000
+101,p7,9000
+101,p3,5000
+101,p3,5000
+103,p3,4000
+
+
+
+-- in above output,
+ all p4 s available in bucket1 (000000_0)
+
+ all p1 s available in bucket2 (000001_0)
+
+ all p2 and p6 available in bucket3 (000002_0)
+
+ all p3 and p7 available in bucket4 (000003_0)
+
+
+hive> select * from bucks_sales where pid='p3';
+OK
+101	p3	5000
+102	p3	5000
+102	p3	5000
+103	p3	4000
+101	p3	5000
+101	p3	5000
+103	p3	4000
+Time taken: 0.236 seconds, Fetched: 7 row(s)
+
+-- to read p3 rows, hive will read all buckets of the table.
+ -- bcoz, hive does not know in which bucket 'p3' s available.
+
+thats why,
+  lets create index object on bucks_sales table on column pid.
+
+hive> create index pid_index on table bucks_sales(pid)
+     as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+     with deferred rebuild;
+
+hive> show tables;
+OK
+buckpartemp
+bucks__bucks_sales_pid_index__
+bucks__sales_cid_index__
+bucks_sales
+bucksemp
+buckstab
+buckstab1
+emp
+emp1
+junesales
+sales
+
+hive> select * from bucks__bucks_sales_pid_index__;
+OK
+Time taken: 0.137 seconds
+
+-- now index table is empty. bcoz, index is not rebuild(altered).
+
+
+hive> ALTER INDEX  pid_index  ON bucks_sales REBUILD;
+
+hive> select * from bucks__bucks_sales_pid_index__;
+OK
+p1	hdfs://localhost:9000/user/hive/warehouse/bucks.db/bucks_sales/000001_0	[0,12,24,36,48,60,72,84,96,108,120,132,144,156,168,180,192]
+p2	hdfs://localhost:9000/user/hive/warehouse/bucks.db/bucks_sales/000002_0	[0,12,24,48,60,72]
+p3	hdfs://localhost:9000/user/hive/warehouse/bucks.db/bucks_sales/000003_0	[0,12,24,36,84,96,108]
+p4	hdfs://localhost:9000/user/hive/warehouse/bucks.db/bucks_sales/000000_0	[0,13,25,37,49,61]
+p6	hdfs://localhost:9000/user/hive/warehouse/bucks.db/bucks_sales/000002_0	[36]
+p7	hdfs://localhost:9000/user/hive/warehouse/bucks.db/bucks_sales/000003_0	[48,60,72]
+Time taken: 0.213 seconds, Fetched: 6 row(s)
+
+
+hive> select * from bucks_sales where pid='p3';
+OK
+101	p3	5000
+102	p3	5000
+102	p3	5000
+103	p3	4000
+101	p3	5000
+101	p3	5000
+103	p3	4000
+Time taken: 0.168 seconds, Fetched: 7 row(s)
+
+
+-- when you ask 'p3' data hive will read only from  4th bucket    (000003_0) but not all the buckets.
+
+------------------------------------------------------------------
+
+
+
+
+
+case 2:  
+
+Hive partitioning and indexing
+
+ex: 
+
+schema--->cid,pid,price
+
+if 10 unique products are there----->then partitioning based on Pid--->recommended
+
+if 1 lakh unique customers--------->then partitioning based on cid-->not recommended ,so indexing is recommended
+
+ex: select * from sales where cid=105 
+    Here no partitioning is required, so go for indexing
+
+ex:2 select * from sales where cid=105 and pid='p3'
+     Here partitioning is required,
+     partitioning based on pid and indexing based on cid
+
+
+
+
+ex:
+
+hive> select * from sales;
+OK
+101	p1	1000
+102	p1	2000
+103	p3	4000
+101	p1	1200
+101	p3	5000
+101	p4	6000
+101	p7	9000
+102	p2	4000
+102	p3	5000
+102	p4	6000
+103	p1	1000
+103	p1	2000
+103	p1	4000
+102	p2	4000
+101	p1	5000
+101	p2	3000
+101	p1	1000
+102	p1	2000
+103	p3	4000
+101	p1	1200
+101	p3	5000
+101	p4	6000
+101	p7	9000
+102	p2	4000
+102	p3	5000
+102	p4	6000
+103	p1	1000
+103	p1	2000
+103	p1	4000
+102	p2	4000
+101	p1	5000
+101	p2	3000
+101	p1	1000
+101	p1	1200
+101	p3	5000
+101	p4	6000
+101	p7	9000
+105	p1	9000
+105	p4	10000
+105	p6	9000
+Time taken: 1.03 seconds, Fetched: 40 row(s)
+
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=nonstrict;
+
+Create partitioned table:
+
+hive> create table part_sales(cid int, pid string,amt int)
+    > partitioned by(p string)
+    > row format delimited
+    > fields terminated by ',';
+
+hive> insert overwrite table part_sales
+    > partition(p)
+    > select cid,pid,amt,pid from sales;
+
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db/part_sales
+Found 6 items
+drwxr-xr-x   - lenovo supergroup          0 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p1
+drwxr-xr-x   - lenovo supergroup          0 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p2
+drwxr-xr-x   - lenovo supergroup          0 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p3
+drwxr-xr-x   - lenovo supergroup          0 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p4
+drwxr-xr-x   - lenovo supergroup          0 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p6
+drwxr-xr-x   - lenovo supergroup          0 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p7
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db/part_sales/p=p1
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup        204 2017-07-24 10:09 /user/hive/warehouse/bucks.db/part_sales/p=p1/000000_0
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/part_sales/p=p1/000000_0
+101,p1,1000
+102,p1,2000
+101,p1,1200
+103,p1,1000
+103,p1,2000
+103,p1,4000
+101,p1,5000
+101,p1,1000
+102,p1,2000
+101,p1,1200
+103,p1,1000
+103,p1,2000
+103,p1,4000
+101,p1,5000
+101,p1,1000
+101,p1,1200
+105,p1,9000
+
+hive> select * from part_sales where cid=105;
+OK
+105	p1	9000	p1
+105	p4	10000	p4
+105	p6	9000	p6
+Time taken: 0.375 seconds, Fetched: 3 row(s)
+
+-- to read cid=105 rows, hive will read all partitions of the table.
+ -- bcoz, hive does not know in which partition cid=105 rows available.
+
+thats why,
+  lets create index object on part_sales table on column cid.
+
+hive> create index cid_index on table part_sales(cid)
+     as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+     with deferred rebuild;
+
+hive> show tables;
+OK
+buckpartemp
+bucks__bucks_sales_pid_index__
+bucks__part_sales_cid_index__
+bucks__sales_cid_index__
+bucks_sales
+bucksemp
+buckstab
+buckstab1
+emp
+emp1
+junesales
+part_sales
+sales
+Time taken: 0.06 seconds, Fetched: 13 row(s)
+
+hive> select * from bucks__part_sales_cid_index__
+    > ;
+OK
+Time taken: 0.151 seconds
+ //empty 
+
+
+hive> ALTER INDEX  cid_index  ON part_sales REBUILD;
+
+for 6 partitions, 6 MR jobs executes
+
+o/p:
+Loading data to table bucks.bucks__part_sales_cid_index__ partition (p=p1)
+Loading data to table bucks.bucks__part_sales_cid_index__ partition (p=p2)
+Loading data to table bucks.bucks__part_sales_cid_index__ partition (p=p3)
+Loading data to table bucks.bucks__part_sales_cid_index__ partition (p=p4)
+Loading data to table bucks.bucks__part_sales_cid_index__ partition (p=p6)
+Loading data to table bucks.bucks__part_sales_cid_index__ partition (p=p7)
+Partition bucks.bucks__part_sales_cid_index__{p=p1} stats: [numFiles=1, numRows=0, totalSize=378, rawDataSize=0]
+Partition bucks.bucks__part_sales_cid_index__{p=p2} stats: [numFiles=1, numRows=0, totalSize=177, rawDataSize=0]
+Partition bucks.bucks__part_sales_cid_index__{p=p3} stats: [numFiles=1, numRows=0, totalSize=260, rawDataSize=0]
+Partition bucks.bucks__part_sales_cid_index__{p=p4} stats: [numFiles=1, numRows=0, totalSize=257, rawDataSize=0]
+Partition bucks.bucks__part_sales_cid_index__{p=p6} stats: [numFiles=1, numRows=0, totalSize=82, rawDataSize=0]
+Partition bucks.bucks__part_sales_cid_index__{p=p7} stats: [numFiles=1, numRows=0, totalSize=88, rawDataSize=0]
+
+hive> select * from bucks__part_sales_cid_index__;
+OK
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p1/000000_0	[0,24,72,84,108,156,168,180]	p1
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p1/000000_0	[12,96]	p1
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p1/000000_0	[36,48,60,120,132,144]	p1
+105	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p1/000000_0	[192]	p1
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p2/000000_0	[24,60]	p2
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p2/000000_0	[0,12,36,48]	p2
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p3/000000_0	[12,48,72]	p3
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p3/000000_0	[24,60]	p3
+103	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p3/000000_0	[0,36]	p3
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p4/000000_0	[0,24,48]	p4
+102	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p4/000000_0	[12,36]	p4
+105	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p4/000000_0	[60]	p4
+105	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p6/000000_0	[0]	p6
+101	hdfs://localhost:9000/user/hive/warehouse/bucks.db/part_sales/p=p7/000000_0	[0,12,24]	p7
+Time taken: 0.254 seconds, Fetched: 14 row(s)
+
+
+hive> select * from part_sales where cid=105 and pid='p1';   //without partition reads all records
+OK
+105	p1	9000	p1
+Time taken: 0.246 seconds, Fetched: 1 row(s)
+
+
+ 
+hive> select * from part_sales where cid=105 and p='p1';  //here reads only particular partition and particular block 
+OK
+105	p1	9000	p1
+Time taken: 0.171 seconds, Fetched: 1 row(s)           //very less time
+
+hive> select * from part_sales where cid=101 and p='p1'; 
+//here reads only only 101 offset values of partition 'p1' 
+OK
+101	p1	1000	p1
+101	p1	1200	p1
+101	p1	5000	p1
+101	p1	1000	p1
+101	p1	1200	p1
+101	p1	5000	p1
+101	p1	1000	p1
+101	p1	1200	p1
+Time taken: 0.686 seconds, Fetched: 8 row(s)
+
+
+hive> select * from part_sales where cid=101;   //here reads all 101 offset values and blocks of all partitions
+OK
+101	p1	1000	p1
+101	p1	1200	p1
+101	p1	5000	p1
+101	p1	1000	p1
+101	p1	1200	p1
+101	p1	5000	p1
+101	p1	1000	p1
+101	p1	1200	p1
+101	p2	3000	p2
+101	p2	3000	p2
+101	p3	5000	p3
+101	p3	5000	p3
+101	p3	5000	p3
+101	p4	6000	p4
+101	p4	6000	p4
+101	p4	6000	p4
+101	p7	9000	p7
+101	p7	9000	p7
+101	p7	9000	p7
+Time taken: 0.335 seconds, Fetched: 19 row(s)
+
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+
+case 3:
+partitioning,bucketing and indexing
+
+
+ex1:
+partitioning by----->pid
+bucketing by-------->cid
+index on cid
+
+ex:each partition having 20 buckets based on cid
+     all c1's into bucket5
+     all c2's into bucket6
+     but c1's can also be available in other partitions
+     i.e c1 can purchase pid='p1'
+         c1 can purchase pid='p3'
+         c1 can purchase pid='p4'
+
+
+      so c1 can be available on all partitions.
+
+
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=nonstrict;
+hive> set hive.enforce.bucketing=true;
+
+
+hive> create table part_bucks_sales(cid int, pid string,amt int)
+      partitioned by(p string)
+      clustered by(cid)
+      into 4 buckets
+      row format delimited
+      fields terminated by ',';
+
+hive> insert overwrite table part_bucks_sales
+      partition(p)
+      select cid,pid,amt,pid from sales;
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/test1.db/part_bucks_sales1
+Found 5 items
+drwxr-xr-x   - lenovo supergroup          0 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p1
+drwxr-xr-x   - lenovo supergroup          0 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p2
+drwxr-xr-x   - lenovo supergroup          0 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p3
+drwxr-xr-x   - lenovo supergroup          0 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p4
+drwxr-xr-x   - lenovo supergroup          0 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p7
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/test1.db/part_bucks_sales1/p=p1
+Found 4 items
+-rwxr-xr-x   1 lenovo supergroup          0 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p1/000000_0
+-rwxr-xr-x   1 lenovo supergroup         72 2018-07-16 12:54 /user/hive/warehouse/test1.db/part_bucks_sales/p=p1/000001_0
+-rwxr-xr-x   1 lenovo supergroup         24 2018-07-16 12:54 /user/hive/warehouse/test1.db/part_bucks_sales/p=p1/000002_0
+-rwxr-xr-x   1 lenovo supergroup         72 2018-07-16 12:55 /user/hive/warehouse/test1.db/part_bucks_sales/p=p1/000003_0
+
+
+
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -cat /user/hive/warehouse/test1.db/part_bucks_sales/p=p1/000001_0
+101,p1,5000
+101,p1,1200
+101,p1,1000
+101,p1,5000
+101,p1,1200
+101,p1,1000
+
+
+
+hive>create index cid_index on table part_bucks_sales(cid)
+     as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+     with deferred rebuild;
+
+hive> show tables;
+OK
+buckpartemp
+bucks__bucks_sales_pid_index__
+bucks__part_bucks_sales_cid_index__
+bucks__part_sales_cid_index__
+bucks__sales_cid_index__
+bucks_sales
+bucksemp
+buckstab
+buckstab1
+emp
+emp1
+junesales
+part_bucks_sales
+part_sales
+sales
+
+hive> describe bucks__part_bucks_sales_cid_index__;
+OK
+cid                 	int                 	                    
+_bucketname         	string              	                    
+_offsets            	array<bigint>       	                    
+p                   	string              	                    
+	 	 
+# Partition Information	 	 
+# col_name            	data_type           	comment             
+	 	 
+p                   	string              	        
+
+hive> select * from bucks__part_bucks_sales_cid_index__;
+OK
+Time taken: 0.13 seconds
+
+hive>ALTER INDEX  cid_index  ON part_bucks_sales REBUILD;
+
+  //6 MR job executes for all 6 partitions
+
+Loading data to table bucks.bucks__part_bucks_sales_cid_index__ partition (p=p1)
+Loading data to table bucks.bucks__part_bucks_sales_cid_index__ partition (p=p2)
+Loading data to table bucks.bucks__part_bucks_sales_cid_index__ partition (p=p3)
+Loading data to table bucks.bucks__part_bucks_sales_cid_index__ partition (p=p4)
+Loading data to table bucks.bucks__part_bucks_sales_cid_index__ partition (p=p6)
+Loading data to table bucks.bucks__part_bucks_sales_cid_index__ partition (p=p7)
+Partition bucks.bucks__part_bucks_sales_cid_index__{p=p1} stats: [numFiles=1, numRows=0, totalSize=402, rawDataSize=0]
+Partition bucks.bucks__part_bucks_sales_cid_index__{p=p2} stats: [numFiles=1, numRows=0, totalSize=189, rawDataSize=0]
+Partition bucks.bucks__part_bucks_sales_cid_index__{p=p3} stats: [numFiles=1, numRows=0, totalSize=278, rawDataSize=0]
+Partition bucks.bucks__part_bucks_sales_cid_index__{p=p4} stats: [numFiles=1, numRows=0, totalSize=275, rawDataSize=0]
+Partition bucks.bucks__part_bucks_sales_cid_index__{p=p6} stats: [numFiles=1, numRows=0, totalSize=88, rawDataSize=0]
+Partition bucks.bucks__part_bucks_sales_cid_index__{p=p7} stats: [numFiles=1, numRows=0, totalSize=94, rawDataSize=0]
+MapReduce Jobs Launched: 
+
+
+hive> select * from test1__part_bucks_sales_cid_index__;
+OK
+101	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p1/000001_0	[0,12,24,36,48,60]	p1
+102	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p1/000002_0	[0,12]	p1
+103	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p1/000003_0	[0,12,24,36,48,60]	p1
+101	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p2/000001_0	[0,12]	p2
+102	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p2/000002_0	[0,12,24,36]	p2
+101	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p3/000001_0	[0,12]	p3
+102	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p3/000002_0	[0,12]	p3
+103	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p3/000003_0	[0,12]	p3
+101	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p4/000001_0	[0,12]	p4
+102	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p4/000002_0	[0,12]	p4
+101	hdfs://localhost:9000/user/hive/warehouse/test1.db/part_bucks_sales1/p=p7/000001_0	[0,12]	p7
+
+
+hive> select * from part_bucks_sales where cid=101 and p='p1';
+OK
+101	p1	1000	p1
+101	p1	1200	p1
+101	p1	5000	p1
+101	p1	1000	p1
+101	p1	1200	p1
+101	p1	5000	p1
+101	p1	1000	p1
+101	p1	1200	p1
+Time taken: 0.219 seconds, Fetched: 8 row(s)
+
+
+ 
+ex2:
+i have 3 branches------->go for partitioning
+i have 100 products--->go for bucketing ex:10 buckets
+i have 10 customers---->indexing
+
+
+
+
+
+
+
+
+
+
+
+
+

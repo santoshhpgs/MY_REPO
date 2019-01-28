@@ -1,0 +1,463 @@
+Partitioned and non-partitioned tables
+
+There are 4 types of tables
+1)internal tables---->here we have 1)partitioned tables 2)non-partitioned tables
+2)External tables----> here we have 1)partitioned tables 2)non-partitioned tables
+
+Partitioned tables:
+partition is a sub-directory in table's directory of HDFS
+whenever we create a partition table, then a sub-directory is going to be created under table's directory.
+How to create partitions?
+we create partition table based on a particular column or columns 
+
+ex:partition based on city, or
+   partition based on dno
+
+when data is requested based on particular column,directly hive will point to that particular subdirectory of table and reads all rows of that sub-directory instead of reading all unnecessary
+records
+
+Non-partitioned tables:Table having only one HDFS directory
+The directory might have one or more data files
+
+why partitioning?
+
+ex:select sum(amt)from sales where pid='p7';   
+here sales having 1 crore records,in that p7 records are only 15, so for that it should scan entire 1cr records,
+so this approach is bad,to ovecome this we use partitioned tables
+
+ex: if we have 10 products, then partitioning based on pid
+here data is to be partitioned  as,
+all p1 into one category
+all p2 into one category
+.
+.
+.
+
+p=p1------>partition1 ---->sub-directory1----->contains all p1 products
+p=p2------>partition2----->sub-directory2----->contains all p2 products
+.
+.
+.
+.
+.
+p=p10------>partition10--->sub-directory10--->contains all p10 products
+
+select sum(amt) from sales where pid=p2; ---->it goes to p=p2 sub-directory and reads only 
+those p2 records instead of reading all.
+
+
+ex:2 
+
+partition based on sex means,we get 2 partitions i.e 2 sub-directories
+
+s='m'
+
+s='f'
+
+if total------>1lakh records, in that males=60000,females=40000
+
+if u make query based on males------->goes to s='m' sub-directory and reads only male records instead of reading a11.
+
+
+
+
+cat > emp
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+
+hive>create table emp(id int,name string,sal int,sex string, dno int)
+row format delimited
+fields terminated by ',';
+
+hive>load data local inpath 'emps' into table emp
+hive>select * from emp;
+101	aaa	1000	m	11
+102	bbb	2000	f	12
+103	ccc	3000	m	12
+104	ddd	4000	f	13
+105	eee	5000	m	11
+
+
+
+
+Creating Partitioned table:
+
+create table emppart(id int,name string,sal int,sex string, dno int)
+partitioned by (s string)
+row format delimited
+fields terminated by ',';
+
+here we have 5 physical columns and 1 logical column,this logical column acts as partitioning column
+but backend data file contains only 5 fields
+partitions are not created,whenever a table is created,these partitions(sub-directories) are created when data is loaded/inserted
+
+hive>insert overwrite table emppart
+     partition(s='m')
+     select * from emp where sex='m';
+
+
+hive>select * from emp;
+
+It is non-partitioned, displays all
+
+hive>select * from emppart;
+It is partitioned,displays only males
+
+loading female data also
+
+hive>insert overwrite table emppart
+      partition(s='f')
+     select * from emp where sex='f';
+hive>select * from emppart;
+
+displays both male and female data
+1st 4 rows female 
+and next 4 rows male
+
+select * from emppart where sex='m'
+here it takes more time becoz,reads both partitions,bcoz sex is not partitioned
+select * from emppart where s='m';
+here it takes less time becoz,s='m' is partitioned condition,reads only one partition
+
+$ hadoop fs /ls/user/hive/warehouse/newdb.db/epart
+here we see 2 sub-directories
+  ..................../emppart/s=f
+ ...................../emppart/s=m
+
+hadoop fs -ls/.........../s=m/000000_0
+hadoop fs -ls/.........../s=f/000000_0
+
+
+
+
+
+
+
+ex:2
+
+now partitions based on deptno
+i.e i want particular dept data
+
+hive> create table sample1(id int,name string,sal int,sex string,dno int)
+    > partitioned by(d int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+
+now load all dept 11 data
+
+hive> insert overwrite table sample1
+    > partition(d=11)
+    > select * from emp where dno=11;
+
+hive> select * from sample1;
+OK
+101	aaa	1000	m	11	11
+105	eee	5000	m	11	11
+
+
+hive> insert overwrite table sample1
+    > partition(d=12)
+    > select * from emp where dno=12;
+
+hive> select * from sample1;
+OK
+101	aaa	1000	m	11	11
+105	eee	5000	m	11	11
+102	bbb	2000	f	12	12
+103	ccc	3000	m	12	12
+
+hive> insert overwrite table sample1
+    > partition(d=13)
+    > select * from emp where dno=13;
+
+hive> select * from sample1;
+OK
+101	aaa	1000	m	11	11
+105	eee	5000	m	11	11
+102	bbb	2000	f	12	12
+103	ccc	3000	m	12	12
+104	ddd	4000	f	13	13
+
+
+here the disadvantage is if 100 deptno's are there----->then 100 partitions to be created and
+we need to insert data into 100 partitions
+
+select * from sample1;
+reads all 3 partitions bcoz condition is not given
+
+select * from sample1 where dno=11
+reads all 3 partitions 
+
+select * from sample1 where d=11
+reads only one partition bcoz,partion condition
+
+select * from sample1 where d=11 or d=13
+reads 2 parttions
+
+select * from sample where d!=11
+reads 2 partitions
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+multi-column partitioning:
+
+dno wise,sex wise partitioning
+we get the following
+
+d=11
+    ------s='f'
+    ------s='m'
+d=12
+    ------s='f'
+    -----s='m'
+d=13
+    ------s='f'
+    ------s='m'
+
+
+create table mpart(id:int,name string,sal int,sex string, dno int)
+partitioned by (d int,s string)
+row format delimited
+fields terminated by ',';
+
+hive>insert overwrite table mpart
+     partition(d=11,s='m')
+     select * from emp where dno=11 and sex='m';
+
+hive> select * from mpart;
+OK
+101	aaa	1000	m	11	11	m
+105	eee	5000	m	11	11	m
+
+hive>insert overwrite table mpart
+     partition(d=11,s='f')
+     select * from emp where dno=11 and sex='f';
+hive>insert overwrite table mpart
+     partition(d=12,s='f')
+     select * from emp where dno=12 and sex='f';
+hive>insert overwrite table mpart
+     partition(d=12,s='m')
+     select * from emp where dno=12 and sex='m
+hive>insert overwrite table mpart
+     partition(d=13,s='f')
+     select * from emp where dno=13 and sex='f';
+hive>insert overwrite table mpart
+     partition(d=13,s='m')
+     select * from emp where dno=13 and sex='m';
+';
+
+
+$ hadoop fs -ls /user/hive/warehouse/newdb.db/mpart
+here we see 3 sub-directories
+  ..................../mpart/d=11
+ ...................../mpart/d=12
+...................../mpart/d=13
+
+$ hadoop fs =ls/user/hive/warehouse/newdb.db/mpart/d=11
+here we see 2 sub-directories
+  ..................../mpart/d=11/s=f
+
+    ..................../mpart/d=11/s=m
+
+
+select * from mpart where d=11 and s='f'
+reads only one partition
+ 
+select * from mpart where d=12
+reads 2 partitions s='f' and s='m'
+
+select * from mpart where s='f'
+reads 3 partitions d=11,d=12,d=13
+
+disadvantage of partitioning:
+if 100 depts and 2 sex values are there means 100x2=200 partitions we need to do and
+into 200 partitons we need to insert manually ,so to to overcome this
+
+so we go with dynamic partitions: 
+
+
+
+
+
+Dynamic Partitions:
+
+before going with dynamic partition,we need to set the following property
+hive>set hive.exec.dynamic.partition=true;
+
+here we are enabling dynamic partition,default it is disabled
+here except primary partition,all remaining partitions,we are making dynamic,
+to make primary partition also dynamic,set the following property
+
+hive>set hive.exec.dynamic.partition.mode=nonstrict;
+by default it is strict
+
+create table dynpart(id:int,name string,sal int,sex string, dno int)
+partitioned by (d int,s string)
+row format delimited
+fields terminated by ',';
+
+hive>insert overwrite table dynpart
+     partition(d,s)
+     select id,name,sal,sex,dno,dno,sex from emp
+
+here dont give * ,   *means we get 5 columnns,but we are expecting 7 columns,2 dynamic,so mention col names
+here we wont specify d and s value
+
+101	aaa	1000	m	11	11	m
+105	eee	5000	m	11	11	m
+102	bbb	2000	f	12	12	f
+103	ccc	3000	m	12	12	m
+104	ddd	4000	f	13	13	f
+
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/hivedb14.db/dynpart
+Found 3 items
+drwxr-xr-x   - lenovo supergroup          0 2018-10-30 16:10 /user/hive/warehouse/hivedb14.db/dynpart/d=11
+drwxr-xr-x   - lenovo supergroup          0 2018-10-30 16:10 /user/hive/warehouse/hivedb14.db/dynpart/d=12
+drwxr-xr-x   - lenovo supergroup          0 2018-10-30 16:10 /user/hive/warehouse/hivedb14.db/dynpart/d=13
+lenovo@lenovo-Lenovo-G450:~$ hdfs dfs -ls /user/hive/warehouse/hivedb14.db/dynpart/d=11
+Found 2 items
+drwxr-xr-x   - lenovo supergroup          0 2018-10-30 16:10 /user/hive/warehouse/hivedb14.db/dynpart/d=11/s=f
+drwxr-xr-x   - lenovo supergroup          0 2018-10-30 16:10 /user/hive/warehouse/hivedb14.db/dynpart/d=11/s=m
+
+-----------------------------------------------------------------------------------------------------
+
+note:shortcut to create table:
+
+create table dpart like mpart;
+
+here dpart will be created like mpart;
+
+
+--------------------------------------------------------------------------------------------------------
+
+Hive Partitioned Tables (A simple Case)
+
+[training@localhost ~]$ cat trans
+01/01/2010,30000
+01/07/2010,40000
+01/08/2010,30000
+01/26/2010,40000
+02/01/2010,30000
+02/07/2010,40000
+02/09/2010,30000
+02/28/2010,40000
+03/01/2010,80000
+03/07/2010,40000
+04/01/2010,30000
+04/17/2010,70000
+04/18/2010,80000
+04/26/2010,90000
+05/01/2010,10000
+05/07/2010,20000
+05/08/2010,30000
+05/26/2010,60000
+06/01/2010,30000
+06/17/2010,50000
+07/01/2010,30000
+07/07/2010,40000
+08/08/2010,10000
+08/26/2010,20000
+09/01/2010,90000
+09/07/2010,40000
+09/18/2010,30000
+09/30/2010,40000
+10/01/2010,30000
+10/07/2010,40000
+10/08/2010,30000
+11/26/2010,40000
+11/01/2010,30000
+12/07/2010,40000
+12/08/2010,30000
+12/26/2010,40000
+[training@localhost ~]$ 
+
+hive> create table sales(dt string, amt int)
+    >  row format delimited
+    >   fields terminated by ',';
+
+hive> load data local inpath 'trans'into table sales;
+
+hive> create table sales2(dt string, amt int)
+ insert overwrite table sales2
+     select * from (
+        select dt, amt from sales
+          union all
+   select concat(substr(dt,1,9),"1") as dt,
+    amt+1000 as amt  from sales 
+    union all
+  select concat(substr(dt,1,9),"2") as dt,amt+3000  as amt from sales         
+
+union all
+  select concat(substr(dt,1,9),"3") as dt,amt+5000 as amt from sales          
+
+union all
+  select concat(substr(dt,1,9),"4") as dt,amt+10000 as amt from sales ) x;    
+hive> create table sales02(dt array<string>,amt int);
+OK
+Time taken: 0.042 seconds
+hive> insert overwrite table sales02
+    >   select split(dt,'/'), amt from sales2;
+
+hive> select * from sales02 limit 5;
+OK
+["01","01","2010"]      30000
+["01","01","2013"]      35000
+["01","01","2011"]      31000
+["01","01","2014"]      40000
+["01","01","2012"]      33000
+Time taken: 0.083 seconds
+hive> 
+hive> create table sales3 like sales;
+hive> insert overwrite table sales3
+    >   select concat(dt[2],'-',dt[0],'-',dt[1]),
+    >  amt from sales02;
+
+hive> create table salespart(dt string,amt int)      
+    > partitioned by (y int, m int, d int) 
+    > row format delimited           
+    >   fields terminated by ',';
+OK
+Time taken: 0.034 seconds
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=nonstrict;
+hive> set hive.exec.max.dynamic.partitions.pernode=10000;
+hive> set hive.exec.max.dynamic.partitions=100000;
+
+
+hive> insert overwrite table salespart
+      partition(y,m,d)
+      select dt, amt, year(dt), month(dt),
+       day(dt) from sales3;
+
+-- to access a perticular day
+
+hive> select * from salespart
+   where y=2010 and m=1 and d=8; --> 1 part
+
+-- to access a perticular month.
+hive> select * from salespart
+   where y=2010 and m=1; ---> 31 parts
+
+-- to access a year.
+
+hive> select * from salespart
+   where y=2014; ---> 366 part
+
+---> range of dates.
+Hive> select * from salespart
+   where (y=2002 and m>=5)
+             or
+         (y>2002 and y<2009)
+              or
+         (y=2009 and m<=6);
+
+______________________________________
+
+___
+

@@ -1,0 +1,129 @@
+
+
+Json Data Processing Using Hive.
+
+[training@localhost ~]$ cat > json1
+
+{"name":"Blake","age":25,"sex":"m"}
+{"name":"Ramya","age":27,"sex":"f"}
+{"name":"John","age":22,"sex":"m","city":"pune"}
+{"name":"Thanu","age":24,"sex":"f","city":"hyd"}
+
+[training@localhost ~]$ 
+
+hive> create database jsonlab;
+
+hive> use jsonlab;
+OK
+
+hive> create table jsonsamp1(line string);
+
+hive> load data local inpath 'json1' into table jsonsamp1;
+
+hive> select * from jsonsamp1;
+
+{"name":"Blake","age":25,"sex":"m"}
+{"name":"Ramya","age":27,"sex":"f"}
+{"name":"John","age":22,"sex":"m","city":"pune"}
+{"name":"Thanu","age":24,"sex":"f","city":"hyd"}
+
+Now making this data structured
+
+hive> select get_json_object(line,'$.name') from jsonsamp1;
+
+Blake
+Ramya
+John
+Thanu
+
+hive> select                
+       get_json_object(line,'$.name') ,
+       get_json_object(line,'$.age') , 
+       get_json_object(line,'$.sex') ,
+       get_json_object(line,'$.city')  
+       from jsonsamp1;
+
+Blake	25	m	NULL
+Ramya	27	f	NULL
+John	22	m	pune
+Thanu	24	f	hyd
+
+
+    (or) another method
+
+hive> select x.* from jsonsamp1
+       lateral view json_tuple(line,'name','age','sex','city') x as n,a,s,c;
+
+in above x.* means n,a,s,c
+
+Now creating a table and storing this result in it
+
+hive> create table jsonsamp2(name string, age int,sex string, city string);
+
+hive> insert overwrite table jsonsamp2
+      select x.* from jsonsamp1
+       lateral view json_tuple(line,'name','age','sex','city') x as n,a,s,c;
+
+
+
+hive> select * from jsonsamp2;  
+
+Blake	25	m	NULL
+Ramya	27	f	NULL
+John	22	m	pune
+Thanu	24	f	hyd                                     
+
+  
+
+
+
+ex:2 :nested records
+
+[training@localhost ~]$ cat json2
+{"name":"Ravi","age":25,"wife":{"name":"banu","age":24},"city":"hyd"}
+{"name":"Ajay","age":26,"wife":{"name":"kavitha","age":21},"city":"pune"}
+{"name":"John","age":32,"wife":{"name":"sony","age":27},"city":"pune"}
+
+hive> create table jsamp1(line string);
+
+hive> load data local inpath 'json2' into table jsamp1;
+
+hive> select * from jsamp1;
+
+{"name":"Ravi","age":25,"wife":{"name":"banu","age":24},"city":"hyd"}
+{"name":"Ajay","age":26,"wife":{"name":"kavitha","age":21},"city":"pune"}
+{"name":"John","age":32,"wife":{"name":"sony","age":27},"city":"pune"}
+Time taken: 0.574 seconds, Fetched: 3 row(s)
+
+now making data structured
+
+hive> create table jsamp2(name string, age int, wife string, city string);
+
+hive> insert overwrite table jsamp2
+       select x.* from jsamp1
+      lateral view json_tuple(line,'name','age','wife','city') x as n,a,w,c;
+
+hive> select * from jsamp2;
+OK
+Ravi	25	{"name":"banu","age":24}	hyd
+Ajay	26	{"name":"kavitha","age":21}	pune
+John	32	{"name":"sony","age":27}	pune
+Time taken: 0.162 seconds, Fetched: 3 row(s)
+
+still making data structured
+
+hive> create table jsamp3(hname string, wname string,hage int, wage int, city string);
+
+hive> insert overwrite table jsamp3
+        select name, get_json_object(wife,'$.name'),
+        age , get_json_object(wife,'$.age'),
+       city from jsamp2;
+
+hive> select * from jsamp3;
+OK
+Ravi	banu	25	24	hyd
+Ajay	kavitha	26	21	pune
+John	sony	32	27	pune
+Time taken: 0.175 seconds, Fetched: 3 row(s)
+
+

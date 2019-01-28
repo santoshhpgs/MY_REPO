@@ -1,0 +1,139 @@
+
+
+Datatypes in Hive:
+
+1.simple data types  :   int,float,long,double,string
+2.complex data types :  array,struct,map
+
+array-->homogeneous  ex: [11,12,13]--->representing homogeneous values deptnos
+
+struct--->heterogeneos ex:[p1,2000,hyd]-->heterogeneous values-->product,price,city
+
+map--->set of (k,v)pairs ---><B.Tech:2010,M.Tech:2014> set of (k,v)pairs
+
+
+
+
+
+
+
+
+ : Loading Array, Struct, Map collection Items
+
+Ex:working with array
+
+
+[training@localhost ~]$ cat profile1
+
+101,Ajay,btech#mtech,25,hyd
+102,sanjay,bsc#msc#mtech,26,pune
+ 
+
+
+
+hive> create database pract;
+
+hive> use pract;
+
+hive> create table profile1(id int, name string, qual  array<string>, age int,city string) 
+    > row format delimited        
+    >     fields terminated by ','
+    >     collection items terminated by '#';
+
+hive> load data local inpath 'profile1' into table profile1;
+
+hive> select * from profile1;
+OK
+101     Venu    ["btech","mtech"]       25      hyd
+102     Veni    ["bsc","msc","mtech"]   26      pune
+
+
+
+
+
+
+working with heterogeneous(struct)
+
+__________________
+[training@localhost ~]$ cat profile2
+
+101,Arun,smitha#25#btech,hyd
+102,Varun,Aruna#24#mba,pune
+[training@localhost ~]$ 
+
+hive> create table profile2(
+      id int, name string, 
+       wife struct<name:string,age:int,qual:string>, city string)
+       row format delimited 
+         fields terminated by ','
+         collection items terminated by '#';
+
+hive> load data local inpath 'profile2' into table profile2;
+
+hive> select * from profile2;
+OK
+101     Venu    {"name":"Vani","age":25,"qual":"btech"}   hyd
+102     Varun   {"name":"Varuna","age":24,"qual":"mba"}   pune
+
+hive> select name, wife.name from profile2;
+
+Venu    Vani
+Varun   Varuna
+
+hive> create table info(id int, name string,wname string, wage int, wqual string, city string);
+
+hive> insert overwrite table info
+       select id, name, wife.name, wife.age,
+       wife.qual , city  from profile2;
+
+hive> select * from info;
+OK
+101     Venu    Vani    25      btech   hyd
+102     Varun   Varuna  24      mba     pune
+
+
+
+ex:3 working with map collection
+____________________________________
+[training@localhost ~]$ cat profile3
+101,p1#1000$p3#2000$p7#4000,hyd
+102,p1#1200$p2#5000,delhi
+
+
+hive> create table  trans(cid int, 
+    >   plist map<string,int>,
+    >  city string)
+    > row format delimited 
+    >    fields terminated by ','
+    >    collection items terminated by '$'
+    >   map keys terminated by '#';
+
+hive> load data local inpath 'profile3'into table trans;
+
+hive> select cid, plist['p1'] , city from trans;
+
+hive>
+101     1000    hyd
+102     1200    del
+
+hive> select plist["p1"] from trans;
+OK
+1000
+5000
+
+
+
+hive> create table sales(cid int, prid  array<string>,pr array<int>);
+
+hive> insert overwrite table sales
+    >   select cid, map_keys(plist),
+    >    map_values(plist)  from trans;
+
+
+hive> select * from sales;
+OK
+101     ["p1","p3","p7"]        [1000,2000,4000]
+102     ["p1","p2"]     [1200,5000]
+Time taken: 0.056 seconds
+hive> 
+____________________________

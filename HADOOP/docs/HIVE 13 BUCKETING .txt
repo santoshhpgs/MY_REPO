@@ -1,0 +1,378 @@
+Advantage of Partition:
+
+1) No need to scan entire table data, it scans a particular partition and reads data
+
+
+
+Disadvantage of Partition:
+
+If Partitioning column has more no of groups(partitions)
+then for each group,one sub-directory to be created with one data file in it
+
+ex: if partitioning column is sex,
+    then we have only 2 groups i.e only 2 partitions i.e  
+    sex='m'
+    sex='f'
+    These 2 sub directories created, in 1st partition male records are stored
+                                     in 2nd partition female records are stored
+
+Here no problem with partition
+
+But if no of partitions are more......
+
+
+ex: Amazon------->has 1 lakh products
+                      (p1,p2,p3...................1 lakh products)
+
+                      for every product-------> 1 partition
+
+                      for 1 lakh products-----> 1 lakh partitions
+
+                      Each partition has 1 directory and file
+
+                      Let if Each file occupying 10 blocks 
+             
+                      1lakh files x 10 blocks  = 10 lakh blocks
+
+                      10lakh blocks x3 replicas= 30 lakh blocks 
+
+                      means buden on master(Name node) ,which has to maintain metadata of 30 lakh blocks
+                      i.e which block is stored in which slave
+
+                      so perormance degrades and system hangs.
+
+
+
+
+ex:2         
+
+
+                      If a Bank has 7 Lakh customers,
+
+                      Each customer performing 1000 transactions
+
+                      so for every customer,one partition should be created
+
+                      for 7lakh customers------>7 Lakh partitions to be created
+                      
+                     means much burden on Name Node and performance degrades
+
+                  
+
+
+so partitions advantages are only when the no of partitions are less,
+but when partitions are more--------go for bucketing
+
+so to overcome above problem
+
+product1   to  product 100------->create one partition p1(bucket1)
+product 101 to  product 200------->partition p2(bucket2)
+product 201 to  product 300------->partition p3(bucket3)..........so on...
+
+
+
+
+
+Bucketing:
+
+Bucketing are useful for producing different data samples
+Each sample treated as a bucket.
+
+whenever hive table is created means,one directory created in back-end with one data file in it
+
+
+ex: if table divided into 4 buckets , means we get 4 files, such as
+    000000_0------->B1
+    000001_0------->B2
+    000002_0------->B3
+    000003_0------->B4
+    
+
+ex:
+gedit junesales
+p1,1000
+p2,3000
+p3,5000
+p4,7000
+p5,9000
+p1,1000
+p3,5000
+p2,3000
+p1,1000
+p4,7000
+p5,9000
+p3,5000
+p2,3000
+p1,1000
+p4,7000
+p5,9000
+p3,5000
+p2,3000
+p1,1000
+p4,7000
+p4,7000
+p5,9000
+p3,5000
+p2,3000
+p1,1000
+p4,7000
+p5,9000
+p1,1000
+p3,5000
+p2,3000
+p1,1000
+p4,7000
+
+
+
+hive> create database bucks;
+
+hive> use bucks;
+
+hive> create table junesales(pid string,price int)
+    > row format delimited
+    > fields terminated by ',';
+
+hive> load data local inpath 'junesales' into table junesales;
+
+hive> select * from junesales;
+
+now making it bucketed table
+for bucketing set th following property, by default it is disabled, so enable it
+
+hive> set hive.enforce.bucketing=true;
+
+
+for partitioning a table based on particular column----->we say partitioned by(colname datatype)
+for bucketing a table on a particular column --------->we say clustered by(colname)
+
+hive> create table buckstab(pid string,price int)
+    > clustered by(pid)
+    > into 3 buckets;
+
+//now loading data
+hive> insert overwrite table buckstab
+    > select * from junesales;
+
+[numFiles=1, numRows=32, 
+
+here only one file we got, bcoz by default bucketing is disabled, so we need to enable it
+
+hive> set hive.enforce.bucketing=true;
+
+//now again u load
+
+hive> insert overwrite table buckstab
+    > select * from junesales;
+
+ [numFiles=3, numRows=32,
+
+This time we get no of files as 3
+i.e 3 samples
+
+hadoop fs -ls /user/hive/warehouse/bucks.db/junesales
+Found 1 items
+-rwxr-xr-x   1 lenovo supergroup        256 2017-07-21 12:43 /user/hive/warehouse/bucks.db/junesales/junesales
+
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db
+Found 2 items
+drwxr-xr-x   - lenovo supergroup          0 2017-07-21 12:59 /user/hive/warehouse/bucks.db/buckstab
+drwxr-xr-x   - lenovo supergroup          0 2017-07-21 12:43 /user/hive/warehouse/bucks.db/junesales
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db/buckstab
+Found 3 items
+-rwxr-xr-x   1 lenovo supergroup         88 2017-07-21 12:59 /user/hive/warehouse/bucks.db/buckstab/000000_0
+-rwxr-xr-x   1 lenovo supergroup         48 2017-07-21 12:59 /user/hive/warehouse/bucks.db/buckstab/000001_0
+-rwxr-xr-x   1 lenovo supergroup        120 2017-07-21 12:59 /user/hive/warehouse/bucks.db/buckstab/000002_0
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab/000000_0
+p59000
+p23000
+p59000
+p59000
+p59000
+p23000
+p23000
+p59000
+p23000
+p23000
+p23000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab/000000_1
+cat: `/user/hive/warehouse/bucks.db/buckstab/000000_1': No such file or directory
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab/000001_0
+p35000
+p35000
+p35000
+p35000
+p35000
+p35000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab/000002_0
+p47000
+p11000
+p11000
+p47000
+p11000
+p47000
+p47000
+p11000
+p47000
+p11000
+p47000
+p11000
+p11000
+p47000
+p11000
+
+
+
+
+
+ex:2
+
+now into 5 buckets
+
+hive> create table buckstab1(pid string,price int)
+    > clustered by(pid)
+    > into 5 buckets;
+OK
+
+hive> insert overwrite table buckstab1
+    > select * from junesales;
+
+[numFiles=5, numRows=32,
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db/buckstab1
+Found 5 items
+-rwxr-xr-x   1 lenovo supergroup         40 2017-07-21 13:09 /user/hive/warehouse/bucks.db/buckstab1/000000_0
+-rwxr-xr-x   1 lenovo supergroup         64 2017-07-21 13:09 /user/hive/warehouse/bucks.db/buckstab1/000001_0
+-rwxr-xr-x   1 lenovo supergroup         48 2017-07-21 13:09 /user/hive/warehouse/bucks.db/buckstab1/000002_0
+-rwxr-xr-x   1 lenovo supergroup         48 2017-07-21 13:09 /user/hive/warehouse/bucks.db/buckstab1/000003_0
+-rwxr-xr-x   1 lenovo supergroup         56 2017-07-21 13:09 /user/hive/warehouse/bucks.db/buckstab1/000004_0
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab1/000000_0
+p59000
+p59000
+p59000
+p59000
+p59000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab1/000001_0
+p11000
+p11000
+p11000
+p11000
+p11000
+p11000
+p11000
+p11000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab1/000002_0
+p23000
+p23000
+p23000
+p23000
+p23000
+p23000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab1/000003_0
+p35000
+p35000
+p35000
+p35000
+p35000
+p35000
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/buckstab1/000004_0
+p47000
+p47000
+p47000
+p47000
+p47000
+p47000
+p47000
+
+
+There is no limit on-------->no of partitions or no of buckets
+
+but generally 1 node can have upto 100partitions
+but we can increase them by setting
+
+hive>set hive.exec.max.dynamic.partitions.pernode=10000
+
+we can go upto 10000 partitions max per node
+
+for entire cluster, we can go upto 100000partitions
+
+hive>set hive.exec.max.dynamic.partitions=100000;
+
+
+
+
+
+
+
+
+ex:3 Bucketing with 2 columns
+
+
+hive> create table emp(id int,name string,sal int,sex string,dno int)
+    > row format delimited
+    > fields terminated by ',';
+
+hive> load data local inpath 'emps' into table emp;
+
+Table bucks.emp stats: [numFiles=1, totalSize=108]
+
+hive> select * from emp;
+OK
+101	miller	10000	m	11
+102	Rohini	20000	f	12
+103	Blake	30000	m	12
+104	sajini	40000	f	13
+105	Rahul	50000	m	11
+
+
+hive> create table bucksemp(id int,name string,sal int,sex string,dno int)
+    > clustered by(dno,sex)
+    > into 2 buckets;
+
+hive> insert overwrite table bucksemp
+    > select * from emp;
+
+[numFiles=2, numRows=5
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/bucks.db/bucksemp
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup         65 2017-07-21 13:32 /user/hive/warehouse/bucks.db/bucksemp/000000_0
+-rwxr-xr-x   1 lenovo supergroup         43 2017-07-21 13:32 /user/hive/warehouse/bucks.db/bucksemp/000001_0
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/bucksemp/000000_0
+105Rahul50000m11
+102Rohini20000f12
+101miller10000m11
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/bucks.db/bucksemp/000001_0
+104sajini40000f13
+103Blake30000m12
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+

@@ -1,0 +1,225 @@
+
+Advantage of Indexing:
+
+index on cid column of sales table
+
+select * from sales where cid=103
+
+here hive index will construct offset numbers for each index column value 
+during task assignment, hive will select specific blocks of file in which these offsets are available,
+once blocks  are selected,hive will assign tasks to the slaves in which selected blocks are available
+
+in the above query accessing 103 records having offset values present in different blocks of different slave machines
+ex: 103 records present in blocks of s1,s3,s10 slave machines
+then hive will directly access these 3 slave machines instead of reading all
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+case 1: problem with indexing (when to go for indexing and when to go for partitioning)
+
+ex:select * from emp where sex='m'
+
+Ans: partitioning
+
+   if index-------->on sex------> it doesn't work
+   bcoz if m is present in 100 blocks,
+   then it should read 100 blocks
+
+   i.e here sex groups 'm' or 'f' will exist on all file blocks
+   
+  so here when index created on sex column, it extracts all offset values and blocks for 'm' and 'f'
+  m  - [b1,b2,b3,b4......................b100]
+  f  - [b1,b2,b3,b4......................b100]
+so during task assignment,here hive should read max all blocks
+so there is no specific advantage of index in this case 
+
+so to overcome this,  go for partitioning.
+partitioning based on sex
+so reads any one parttion only,
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+case 2: Either indexing or partitioning
+
+
+watch this ex:
+
+males-99000
+females-1000
+
+here which is preferable?......either indexing or partitioning?
+Ans: none 
+
+
+
+case I : If partitioning
+              s=m                                               s=f 
+
+       -here 99% data                                    -here 1% data available
+ select * from emp where sex='m'                   select * from emp where sex='f'
+ here reads almost all records(99%)-99000         This partition is good for sex='f' records, bcoz skips 99000(99%)records
+ skipped only 1000(less) records,                        but this partition is bad for sex='m' records
+ so partitioning is bad here                             hadoop is bad for less volumes of data
+
+ex: if males=52000 and females-48000, then partitioning is good(bcoz skips nearly 50% records if condition applied)
+
+
+case II: If indexing:
+         also bad, bcoz sex='m' is spread across almost all the blocks, so should read almost all the blocks
+         but females will be in 4 or 5 blocks only
+         so this indexing gives bad performance for males and good performance for females
+         but query should give good performance for all data groups 
+
+so here in this case, we cannot improve the performance by using any one 
+but  if we use both partitioning and indexing then performance will be improved 
+I.e partitioning  on sex and indexing on city , 
+ select * from emp where sex ='m' and city='hyd'
+so here  hive reads only hyd records present in sex='m' partition
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+case 3: Indexing or partitioning
+
+select * from emp where sex='m' and dno in(11,13,18)
+
+Ans: partitioning
+
+here go for partitioning with mutiple columns
+
+go with primary partition using sex and sub-partition with deptno
+
+ex:  sex=m
+            d=11 
+            d=12
+            d=13
+            d=14
+            ....
+            ....    
+     sex=f 
+            d=11
+            d=12
+            d=13
+            d=14
+            ....
+            ....  
+   here ony 2 sex groups,so only 2 partitions and if 50 dno's then 50 sub-partitions in each sex group
+  means 2 x 50 =100 partitions
+  means 100 datafiles in it
+  means name node has to maintain 100 files metadata, which is not a big issue for name node
+
+---------------------------------------------------------------------------------------------------------------------------
+
+case 4:  Need for partitioning and indexing
+
+      select * from Amazon where prid in(p1,p250,p900) and category="toys";
+
+ex: 
+        2 lakh products available
+        600 categories are avaialble such as toys,books,music,home appliances etc.....
+       
+       case i: if partition based on prid,--------->then 2 lakh partitions,2 lakh directories,2 lakh files,20 lakh blocks
+               these 20 lakh blocks metadata cant be maintained by name node
+
+       case ii: if partition based on category----->then only 600 partitions, name node can maintain this
+               This solution gives good performance in following queriespartition
+
+
+               a)select * from Amzon where categoryid="c04"
+                means it reads only this partition
+
+               b)select * from Amazon where categoryid in("c04"c06,"","c09")
+                means reads only these 3 partitions
+
+               but this is bad in following
+               
+               select * from Amazon where categoryid="c03" and prid in ("p1","p90")
+               here it is bad bcoz, on an avg, each category has atleast 4000 unique products
+               so here to have fast sub access in each category, create sub partitions---->nearly 4000 sub partitions, 
+               4000 sub partitions means----->4000 sub directories  means----->4000 datafiles------>30 lakhs blocks
+               so burden on name node.
+
+               so the solution is---->partition by categoryid and indexing on prid
+                 so in each category,no need to read or scan each product we fetch only specific products randomly
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+case 5: Partitioning , Bucketing and indexing
+
+        for more performance improving in the above query, we can go with ,partitioning, bucketing and indexing
+        
+        -partitioned by categoryid
+        -clusterred by(prid)
+         into 100 buckets
+
+         index on prid
+
+        o/p:
+        cid="c01"
+         000000_0
+         000001_0..........0000099_0  each bucket containing on an avg of 30 products
+                                      100 buckets contains 3000products
+
+        select * from Amazon where categoryid="c03" and prid='p4'
+        here directly reads p4 product present in specified bucket of specified partition
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+
+
+
+
+
+
+
+ 
+
+

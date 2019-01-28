@@ -1,0 +1,112 @@
+working with delimiters:
+
+hive> create table emp1(eid int,ename string,sal int,sex string,dno int);
+OK
+Time taken: 0.311 seconds
+hive> load data local inpath 'emp7' into table emptab1;
+Loading data to table hivedb9.emptab1
+OK
+Time taken: 0.618 seconds
+hive> select * from emptab1;
+OK
+NULL	NULL	NULL	NULL	NULL
+NULL	NULL	NULL	NULL	NULL
+NULL	NULL	NULL	NULL	NULL
+NULL	NULL	NULL	NULL	NULL
+NULL	NULL	NULL	NULL	NULL
+
+Here all Nulls becoz, here delimiter is not specified.
+
+Note: Default delimiter in hive is diamond('\001')
+
+hive> create table emp(eid int,ename string,sal int,sex string,dno int)
+    > row format delimited
+    > fields terminated by ',';
+
+hive> load data local inpath 'emp7' into table emp;
+hive> select * from emp;
+OK
+101	miller	10000	m	11
+102	Blake	20000	m	12
+103	sony	30000	f	11
+104	sita	40000	f	12
+105	John	50000	m	13
+
+--------------------------------------------------------------------------------
+case 1: single grouping single aggregation
+ex: select sex,sum(sal) from emp group by sex;
+
+hive> create table sexsaltab(sex string,sumsal int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.438 seconds
+hive> insert overwrite table sexsaltab 
+    > select sex,sum(sal) from emp group by sex;
+hive> select * from sexsaltab;
+OK
+f	70000
+m	80000
+
+goto default storage location and check
+$ hdfs dfs -cat /user/hive/warehouse/hivedb14.db/sexsaltab/000000_0
+f,70000
+m,80000
+
+-----------------------------------------------------------------------------------
+case 2:multi grouping single aggregation
+ex: select dno,sex,sum(sal) from emp group by dno,sex
+
+hive> create table dnosexgrp(dno int,sex string,sumsal int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.342 seconds
+hive> insert overwrite table dnosexgrp
+    > select dno,sex,sum(sal) from emp group by dno,sex;
+hive> select * from dnosexgrp;
+OK
+11	f	30000
+12	f	40000
+11	m	10000
+12	m	20000
+13	m	50000
+-----------------------------------------------------------------------------------
+case 3: single grouping multiple aggregation
+ex:select dno,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp
+   group by dno;
+
+hive> create table multiaggr(dno int,sum double,avg double,max double,min double,count int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.289 seconds
+hive> insert overwrite table multiaggr
+ > select dno,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp group by dno;
+
+hive> select * from multiaggr;
+OK
+11	40000.0	20000.0	30000.0	10000.0	2
+12	60000.0	30000.0	40000.0	20000.0	2
+13	50000.0	50000.0	50000.0	50000.0	1
+
+-----------------------------------------------------------------------------------
+case 4: multi grouping multiple aggregation
+ex:select dno,sex,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp
+   group by dno,sex;
+
+hive> create table multigrpaggr(dno int,sex string,sum double,avg double,max double,min double,count int)
+    > row format delimited
+    > fields terminated by ',';
+
+hive> insert overwrite table multigrpaggr
+    > select dno,sex,sum(sal),avg(sal),max(sal),min(sal),count(*) from emp group by dno,sex; 
+
+hive> select * from multigrpaggr;
+OK
+11	f	30000.0	30000.0	30000.0	30000.0	1
+12	f	40000.0	40000.0	40000.0	40000.0	1
+11	m	10000.0	10000.0	10000.0	10000.0	1
+12	m	20000.0	20000.0	20000.0	20000.0	1
+13	m	50000.0	50000.0	50000.0	50000.0	1
+

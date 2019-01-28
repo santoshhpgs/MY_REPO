@@ -1,0 +1,302 @@
+
+Hive 11: Joins in Hive
+
+ Joins : used to collect data from two or more tables.
+
+Horizontal Merging: Merging cols horizontally
+
+ex:Joins
+
+There are 2 types of JOINs
+1)Inner Join
+2)Outer Join : 3 types
+              i)Left Outer Join
+             ii)Right Outer Join
+             iii)Full outer Join
+
+ex:1
+
+ex: 
+     A=1   B=1
+       2     2
+       3     3
+       4     7
+       5     8
+       6     9
+
+1)Inner Join : Only Matching fields
+o/p:
+      (1,1)
+      (2,2)
+      (3,3)
+
+2)Left Outer Join :Matchings + unmatched fields of left side i.e Total presence of
+                                                                 left side
+       
+      (1,1)
+      (2,2)
+      (3,3)  matchings +
+      (4, )  unmatched of left side
+      (5, )
+      (6, )
+2)Right Outer Join :Matchings + unmatched fields of rightt side i.e Total presence of
+                                                                 right side
+       
+      (1,1)
+      (2,2)
+      (3,3)  matchings +
+      ( ,7)  unmatched of right side
+      ( ,8)
+      ( ,9)
+2)Full Outer Join :Matchings + unmatched fields of left side +
+                  unmatched fields of right side                                      
+       
+      (1,1)
+      (2,2)
+      (3,3)  matchings +
+      (4, )  unmatched of left side
+      (5, )
+      (6, )
+      ( ,7)  unmatched of right side
+      ( ,8)
+      ( ,9)
+
+
+--------------------------------------------------------------------------------------------------------------
+ex:2
+Inner Joins: only Matching rows
+   matching rows with given join condition.
+
+   ex:
+  tab1 ---> name,city
+___________
+  A,hyd
+  B,del
+  c,hyd
+  d,del
+  e,pune
+  f,mumbai   
+
+tab2 ---> city, dept
+_________
+  hyd,production
+  del,hr
+  pune,accounts
+  chennai,admin
+_______________
+
+ inner join --> based on city.
+
+
+ a,hyd,hyd,production
+ B,del,del,hr
+ c,hyd,hyd,production
+ d,del,del,hr
+ e,pune,pune,accounts
+
+outer join:
+   matching records and non-matching records.
+
+
+ outer joins are 3 types.
+  i) left outer join.
+ ii) right outer join
+ iii) full outer join.
+
+i)left outer join:
+
+   matchings + non matchings of left side.
+   ( complete presence from left side table).
+   
+ tab1:--> id, dno
+____________
+ 101,11
+ 102,14
+___________
+
+ tab2 ---> dno,loc
+ _____________
+ 11,hyd
+ 13,del
+ _____________--
+
+
+ tab1  lefter outer join tab2 --> based on dno.
+
+
+   101,11,11,hyd
+   102,14,null,null
+
+
+
+ ii)right outer join :matchings + non matchings of right side table.
+
+                     (complete presence from right side table ).
+
+ tab1 right outer join tab2 -->based on dno.
+
+   101,11,11,hyd
+   null,null,13,del
+
+iii) full outer join : matchings+non matchings of left side,
+                                +non matchings of right side table.
+
+ tab1 full outer join tab2 ---> based on dno.
+
+   101,11,11,hyd
+   102,14,null,null
+   null,null,13,del
+
+
+
+-----------------------------------------------------------------------------------------------------------
+Ex:
+
+[training@localhost ~]$ cat emps1
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+
+
+[training@localhost ~]$ cat dept1
+11,mrkt,hyd
+12,HR,delhi
+13,fin,pune
+17,HR,hyd
+18,fin,pune
+19,mrkt,delhi
+
+
+
+hive> create database joinsdb;
+
+hive> use joinsdb;
+
+hive> create table emp(id int, name string,sal int, sex string, dno int)
+      row format delimited 
+      fields terminated by ',';
+
+hive> load data local inpath 'emps1' into table emp;
+
+hive> select * from emp;
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+
+hive> create table dept(dno int, dname string,city string)
+      row format delimited 
+      fields terminated by ',';
+
+
+hive> load data local inpath 'dept1'into table dept;
+
+hive> select * from dept;
+11,mrkt,hyd
+12,HR,delhi
+13,fin,pune
+17,HR,hyd
+18,fin,pune
+19,mrkt,delhi
+
+ 
+
+1)Inner Join:
+
+hive> select id,name,sal,sex,e.dno,d.dno,dname,city
+      from  emp e join dept d 
+      on (e.dno=d.dno);
+101	aaa	1000	m	11	11	mrkt	hyd
+102	bbb	2000	f	12	12	HR	delhi
+103	ccc	3000	m	12	12	HR	delhi
+104	ddd	4000	f	13	13	fin	pune
+105	eee	5000	m	11	11	mrkt	hyd
+
+
+
+2)Left outer Join :
+
+hive> select id,name,sal,sex,e.dno,d.dno,dname,city                       
+      from  emp e left outer join dept d
+      on (e.dno=d.dno);                 
+101	aaa	1000	m	11	11	mrkt	hyd
+102	bbb	2000	f	12	12	HR	delhi
+103	ccc	3000	m	12	12	HR	delhi
+104	ddd	4000	f	13	13	fin	pune
+105	eee	5000	m	11	11	mrkt	hyd
+106	fff	6000	f	14	NULL	NULL	NULL
+107	ggg	7000	m	15	NULL	NULL	NULL
+108	hhh	8000	f	16	NULL	NULL	NULL
+
+
+
+3)Right outer Join:
+
+hive> select id,name,sal,sex,e.dno,d.dno,dname,city                       
+      from  emp e right outer join dept d
+      on (e.dno=d.dno); 
+101	aaa	1000	m	11	11	mrkt	hyd
+105	eee	5000	m	11	11	mrkt	hyd
+102	bbb	2000	f	12	12	HR	delhi
+103	ccc	3000	m	12	12	HR	delhi
+104	ddd	4000	f	13	13	fin	pune
+NULL	NULL	NULL	NULL	NULL	17	HR	hyd
+NULL	NULL	NULL	NULL	NULL	18	fin	pune
+NULL	NULL	NULL	NULL	NULL	19	mrkt	delhi
+
+
+Full outer Join;
+
+hive> select id,name,sal,sex,e.dno,d.dno,dname,city                       
+      from  emp e full outer join dept d
+      on (e.dno=d.dno); 
+105	eee	5000	m	11	11	mrkt	hyd
+101	aaa	1000	m	11	11	mrkt	hyd
+103	ccc	3000	m	12	12	HR	delhi
+102	bbb	2000	f	12	12	HR	delhi
+104	ddd	4000	f	13	13	fin	pune
+106	fff	6000	f	14	NULL	NULL	NULL
+107	ggg	7000	m	15	NULL	NULL	NULL
+108	hhh	8000	f	16	NULL	NULL	NULL
+NULL	NULL	NULL	NULL	NULL	17	HR	hyd
+NULL	NULL	NULL	NULL	NULL	18	fin	pune
+NULL	NULL	NULL	NULL	NULL	19	mrkt	delhi
+
+
+Denormalizing:
+
+hive> create table fullouter(id int, name string,sal int, sex string ,dno int, dname string,city string);
+
+hive> insert overwrite table fullouter
+       select id, name, sal, sex,e.dno,d.dno,dname, city
+       from emp l full outer join dept r
+       on (l.dno=r.dno);
+
+hive> select * from fullouter;
+
+105	eee	5000	m	11	11	mrkt	hyd
+101	aaa	1000	m	11	11	mrkt	hyd
+103	ccc	3000	m	12	12	HR	delhi
+102	bbb	2000	f	12	12	HR	delhi
+104	ddd	4000	f	13	13	fin	pune
+106	fff	6000	f	14	NULL	NULL	NULL
+107	ggg	7000	m	15	NULL	NULL	NULL
+108	hhh	8000	f	16	NULL	NULL	NULL
+NULL	NULL	NULL	NULL	NULL	17	HR	hyd
+NULL	NULL	NULL	NULL	NULL	18	fin	pune
+NULL	NULL	NULL	NULL	NULL	19	mrkt	delhi
+
+
+
+_________________
+
+

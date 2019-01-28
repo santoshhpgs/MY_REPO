@@ -1,0 +1,473 @@
+
+Hive 12 : Eliminating Duplicates and Unions (merging)
+
+[training@localhost ~]$ cat dupes
+101,aaa,10000
+101,bbb,20000
+101,aaa,10000
+101,aaa,10000
+101,aaa,10000
+102,bbb,40000
+103,ccc,50000
+102,bbb,40000
+102,bbb,40000
+[training@localhost ~]$ 
+
+hive> create database dupesdb;
+
+hive> use dupesdb;
+
+hive> create table dupesamp1(id int, name string, sal int)
+      row format delimited 
+      fields terminated by ',';
+
+hive> load data local inpath 'dupes' into table dupesamp1;
+
+hive> select * from dupesamp1;
+OK
+101	aaa	10000
+101	bbb	20000
+101	aaa	10000
+101	aaa	10000
+101	aaa	10000
+102	bbb	40000
+103	ccc	50000
+102	bbb	40000
+102	bbb	40000
+
+way-1)
+hive> select distinct(id),name,sal from dupesamp1;
+
+
+101     aaa     10000
+101     bbb     20000
+102     bbb     40000
+103     ccc    50000
+
+way2)
+hive> select id,name,sal from dupesamp1         
+      group by id,name,sal;
+
+101     aaa     10000
+101     bbb     20000
+102     bbb     40000
+103     ccc   50000
+
+Way3)
+ if table has so many columns
+
+hive> create table dupesamp2(line string);
+
+Loading from HDFS:
+
+hive> load data inpath '/user/hive/warehouse/dupesdb.db/dupesamp1/dupes'
+  into table dupesamp2;
+Here loading from HDFS,so Cut+paste, so in dupesamp1.....there will be no data
+
+hive> select * from dupesamp2;
+OK
+101,aaa,10000
+101,bbb,20000
+101,aaa,10000
+101,aaa,10000
+101,aaa,10000
+102,bbb,40000
+103,ccc,50000
+102,bbb,40000
+102,bbb,40000
+
+
+ hive> insert overwrite table dupesamp2
+    select line from dupesamp2 group by line;
+
+hive> select * from dupesamp2;
+
+101,aaa,10000
+101,bbb,20000
+102,bbb,40000
+103,ccc,50000
+
+Here table doesnt have schema...so create another table with schema and load the output of this
+
+hive> create table dupesamp3(id int, name string, sal int)
+      row format delimited 
+      fields terminated by ',';
+
+hive>load data inpath '/user/hive/warehouse/dupedb.db/dupesamp2/000000_0' into table dupesamp3;
+
+hive> select * from dupesamp3;
+OK
+101	aaa	10000
+101	bbb	20000
+102	bbb	40000
+103	ccc	50000
+
+
+  hive> drop table dupesamp2;
+_______________________________________
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------
+Vertical Merging:
+
+Ex: Performing Union operation
+
+hive> create table emp1(id int, name string,sal int, sex string, dno int) 
+      row format delimited
+      fields terminated by ',';
+
+hive> load data local inpath 'emps1' into table emp1;
+
+hive> select * from emp1;
+OK
+101	aaa	1000	m	11
+102	bbb	2000	f	12
+103	ccc	3000	m	12
+104	ddd	4000	f	13
+105	eee	5000	m	11
+106	fff	6000	f	14
+107	ggg	7000	m	15
+108	hhh	8000	f	16
+
+hive> create table emp2(id int, name string,sal int, sex string, dno int) 
+      row format delimited
+      fields terminated by ',';
+
+hive> load data local inpath 'emps2' into table emp2;
+
+hive> select * from emp2;
+OK
+201	ddd	2000	m	11
+201	eee	3000	f	12
+
+hive> create table emp3(id int, name string,sal int, sex string, dno int) 
+      row format delimited
+      fields terminated by ',';
+
+
+Now performing union:
+
+
+way1)
+  insert overwrite table emp3
+    select * from (
+      select * from emp1
+            union all
+      select * from emp2) e;
+
+hive> select * from emp3;
+OK
+101	aaa	1000	m	11
+102	bbb	2000	f	12
+103	ccc	3000	m	12
+104	ddd	4000	f	13
+105	eee	5000	m	11
+106	fff	6000	f	14
+107	ggg	7000	m	15
+108	hhh	8000	f	16
+201	ddd	2000	m	11
+201	eee	3000	f	12
+
+
+
+ -- if first table has 1lakh and 2nd has 10 rows, just to 10 rows, hive is scanning 1lakh+10 rows.  [ bad ]
+
+ way2).
+
+  if delimiters of both tables is same.
+
+ copy or append 2nd table data to first table
+  hadoop fs -cp /user/hive/warehouse/dupesdb.db/emp2/emps2   /user/hive/warehouse/dupesdb.db/emp1
+   
+_______________________________________
+
+way3)
+
+ union all:
+
+    if table schema is different.
+
+
+ tab1 --> id name  sal   sex dno
+ tab2  ---> id name dno sex sal
+
+  select * from (
+      select id, name,sal,sex,dno from tab1
+           union all
+   select id, name,sal,sex,dno from tab2 ) t;
+------------------------------------------------------------------------
+ex:
+$ cat emps3
+301,miller,150000,11,m
+302,Ajay,25000,12,m
+303,Anu,35000,11,f
+304,Aksha,45000,12,f
+305,Anil,55000,13,m
+
+hive> create table emp3(eid int,ename string,sal int,dno int,sex string)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.229 seconds
+hive> load data local inpath 'emps3' into table emp3;
+Loading data to table hivedb14.emp3
+OK
+Time taken: 0.556 seconds
+hive> select * from emp3;
+OK
+301	miller	150000	11	m
+302	Ajay	25000	12	m
+303	Anu	35000	11	f
+304	Aksha	45000	12	f
+305	Anil	55000	13	m
+
+hive> create table emp3_1(eid int,ename string,sal int,sex string,dno int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.226 seconds
+hive> insert overwrite table emp3_1
+    > select eid,ename,sal,sex,dno from emp3;
+
+hive> select * from emp3_1;
+OK
+301	miller	150000	m	11
+302	Ajay	25000	m	12
+303	Anu	35000	f	11
+304	Aksha	45000	f	12
+305	Anil	55000	m	13
+
+hive> create table emps(eid int,ename string,sal int,sex string,dno int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.169 seconds
+hive> insert overwrite table emps
+    > select * from (
+    >             select * from emps1
+    >                   union all
+    >             select * from emps2
+    >                   union all
+    >             select * from emp3_1 )x;
+
+101	aaa	1000	m	11
+102	bbb	2000	f	12
+103	ccc	3000	m	12
+104	ddd	4000	f	13
+105	eee	5000	m	11
+106	fff	6000	f	14
+107	ggg	7000	m	15
+108	hhh	8000	f	16
+301	miller	150000	m	11
+302	Ajay	25000	m	12
+303	Anu	35000	f	11
+304	Aksha	45000	f	12
+305	Anil	55000	m	13
+201	ddd	20000	m	11
+202	eee	30000	f	12
+203	fff	40000	m	11
+204	ggg	50000	f	12
+
+
+
+
+
+________________
+way 4)
+
+ if tables have different columns.
+
+ tab1 --> id, name,  sal, sex , dno , desig
+
+ tab2 --> id, name, income, gender, city
+
+
+
+  select * from (
+    select id, name, sal, sex, dno, desig, 'city1' as city from  tab1
+           union all
+ select id,name,income as sal, gender as sex,
+   0 as dno , 'desig1' as desig, city 
+    from tab2 ) t;
+--------------------------------------------------------------------
+ex:
+if no of cols are different
+
+$ cat emps1
+101,aaa,1000,m,11
+102,bbb,2000,f,12
+103,ccc,3000,m,12
+104,ddd,4000,f,13
+105,eee,5000,m,11
+106,fff,6000,f,14
+107,ggg,7000,m,15
+108,hhh,8000,f,16
+
+
+lenovo@lenovo-Lenovo-G450:~$ cat emps4
+401,miller,10000,m,hyd
+402,Blake ,20000,m,pune
+403,Amar,30000,m,hyd
+
+lenovo@lenovo-Lenovo-G450:~$ cat emps5
+501,Kalyan,25000,m,11,manager
+502,Venkatesh,35000,m,12,HR
+
+
+hive> create table emps1(eid int,ename string,sal int,sex string,dno int)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.296 seconds
+hive> load data local inpath 'emps1' into table emps1;
+Loading data to table hivedb14.emps1
+OK
+Time taken: 0.592 seconds
+hive> select * from emps1;
+OK
+101	aaa	1000	m	11
+102	bbb	2000	f	12
+103	ccc	3000	m	12
+104	ddd	4000	f	13
+105	eee	5000	m	11
+106	fff	6000	f	14
+107	ggg	7000	m	15
+108	hhh	8000	f	16
+
+
+hive> create table emps4(eid int,ename string,sal int,sex string,city string)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.425 seconds
+hive> load data local inpath 'emps4' into table emps4;
+Loading data to table hivedb14.emps4
+OK
+Time taken: 0.569 seconds
+hive> select * from emps4;
+OK
+401	miller	10000	m	hyd
+402	Blake 	20000	m	pune
+403	Amar	30000	m	hyd
+Time taken: 0.24 seconds, Fetched: 3 row(s)
+hive> create table emps5(eid int,ename string,sal int,sex string,dno string,desig string)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.227 seconds
+hive> load data local inpath 'emps5' into table emps5;
+Loading data to table hivedb14.emps5
+OK
+Time taken: 0.606 seconds
+hive> select * from emps5;
+OK
+501	Kalyan	25000	m	11	manager
+502	Venkatesh	35000	m	12	HR
+503	Anisha	40000	f	13	Accountant
+Time taken: 0.214 seconds, Fetched: 3 row(s)
+
+hive> create table emps6(eid int,ename string,sal int,sex string,dno string,desig string,city string)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.436 seconds
+hive> insert overwrite table emps6
+    > select * from (
+    >     select eid,ename,sal,sex,dno,'xxxxxx' as desig,'******' as city from  emps1    
+                    union all
+    > select eid,ename,sal,sex,0 as dno,'xxxxxx' as desig,city from emps4 
+    >               union all
+    > select eid,ename,sal,sex,dno,desig,'******' as city from emps5 )x; 
+
+hive> select * from emps6;
+OK
+101	aaa	1000	m	11	xxxxxx	******
+102	bbb	2000	f	12	xxxxxx	******
+103	ccc	3000	m	12	xxxxxx	******
+104	ddd	4000	f	13	xxxxxx	******
+105	eee	5000	m	11	xxxxxx	******
+106	fff	6000	f	14	xxxxxx	******
+107	ggg	7000	m	15	xxxxxx	******
+108	hhh	8000	f	16	xxxxxx	******
+501	Kalyan	25000	m	11	manager	******
+502	Venkatesh	35000	m	12	HR	******
+503	Anisha	40000	f	13	Accountant	******
+401	miller	10000	m	0	xxxxxx	hyd
+402	Blake 	20000	m	0	xxxxxx	pune
+403	Amar	30000	m	0	xxxxxx	hyd
+
+__________________________________________
+
+--------------------------------------------------------------------------------------------------------
+Loading Zipped file into hive table from HDFS
+
+$cat sales
+
+hyd 2015 apr 35
+pun 2015 may 25
+ban 2015 jun 40
+hyd 2016 apr 45
+pun 2016 may 33
+ban 2016 jun 43
+hyd 2017 apr 44
+pun 2017 may 51
+ban 2017 jun 49
+
+$gzip sales
+$ cat sales
+cat: sales: No such file or directory
+$ cat sales.gz
+�fKYsales=��	�0
+                  @�{�m�$8N�C�"x��Jc<~�kcÒ2��
+                                              ��ߧ�a
+                                                    �j_���	�{���^�'
+
+
+
+$ hadoop fs -put sales.gz /hadooplab1
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /hadooplab1/sales.gz
+�fKYsales=��	�0
+                  @�{�m�$8N�C�"x��Jc<~�kcÒ2��
+                                              ��ߧ�a
+                                                    �j_���	�{���^�'
+/�)����uz��������lenovo@lenovo-Lenovo-G450:~$ hadoop fs -text /hadooplab1/sales.gz
+hyd 2015 apr 35
+pun 2015 may 25
+ban 2015 jun 40
+hyd 2016 apr 45
+pun 2016 may 33
+ban 2016 jun 43
+hyd 2017 apr 44
+pun 2017 may 51
+ban 2017 jun 49
+
+
+hive> create table ziptab1(city string,year int,month string,temp int)
+    > row format delimited
+    > fields terminated by ' ';
+
+hive> load data inpath '/hadooplab1/sales.gz' into table ziptab1;
+
+hive> select * from ziptab1;
+OK
+hyd	2015	apr	35
+pun	2015	may	25
+ban	2015	jun	40
+hyd	2016	apr	45
+pun	2016	may	33
+ban	2016	jun	43
+hyd	2017	apr	44
+pun	2017	may	51
+ban	2017	jun	49
+
+
+
+
+
+
+

@@ -1,0 +1,242 @@
+
+xml with collections
+
+  $ cat > xml3
+<rec><name>Miller</name><qual>Btech</qual><qual>Mtech</qual></rec>
+<rec><name>John</name><qual>Bsc</qual><qual>Msc</qual><qual>Mtech</qual></rec>
+<rec><name>Arjun</name><qual>Btech</qual><qual>Mba</qual></rec>
+
+hive> create table xmlsamp1(line string);
+
+hive> load data local inpath 'xml3'into table xmlsamp1;
+
+hive> select * from xmlsamp1;
+
+<rec><name>Miller</name><qual>Btech</qual><qual>Mtech</qual></rec>
+<rec><name>John</name><qual>Bsc</qual><qual>Msc</qual><qual>Mtech</qual></rec>
+<rec><name>Arjun</name><qual>Btech</qual><qual>Mba</qual></rec>
+
+1)removing XML tags and making data structured
+
+extracting only name and qualification:
+
+hive> create table xmlsamp2(name string,qual  array<string>);
+
+
+hive>insert overwrite table xmlsamp2
+       select xpath_string(line,'rec/name'),
+       xpath(line,'rec/qual/text()')
+       from xmlsamp1;
+
+here text() method extracts all text of qual tag
+xpath returns array of strings
+
+hive> select * from xmlsamp2;
+OK
+Miller	["Btech","Mtech"]
+John	["Bsc","Msc","Mtech"]
+Arjun	["Btech","Mba"]
+
+1)size of array
+hive> select name, size(qual) from xmlsamp2;
+OK
+Miller	2
+John	3
+Arjun	2
+
+
+2)Accessing array elements by using index numbers
+
+hive> select qual[0], qual[1],qual[2] from xmlsamp2;
+OK
+Btech	Mtech	NULL
+Bsc	Msc	Mtech
+Btech	Mba	NULL
+
+3)searching for element within array
+I want qualification M.Tech
+
+hive> select * from xmlsamp2 where array_contains(qual,'Mtech');
+OK
+Miller	["Btech","Mtech"]
+John	["Bsc","Msc","Mtech"]
+
+array_contains() is a method to search for an element in an array
+
+4)Flattening Array elements:
+
+To flatten array elements,we use a UDTF called explode() method,with column name within it and alias name
+
+hive> select explode(qual) as q from xmlsamp2;
+OK
+Btech
+Mtech
+Bsc
+Msc
+Mtech
+Btech
+Mba
+
+explode() is a UDTF(user defined Tabular function)
+
+hive> select name, explode(qual) as q from xmlsamp2;
+FAILED: SemanticException [Error 10081]: UDTF's are not supported outside the SELECT clause, nor nested in expressions
+
+-- above statement is invalid,
+   bcoz, udtf s can not be applied with other column expressions.
+
+Removing array and making data structured
+
+so creating table for name and qualification
+
+hive> create table  xmlsamp3(name string, qual string);
+
+hive>insert overwrite table xmlsamp3
+       select name, myqual from xmlsamp2
+        lateral view explode(qual) q as myqual;
+
+here lateral view is a temporary table,once entire work is completed,it is destructed
+we can apply UDTF's along with lateral view
+
+hive> select * from xmlsamp3;
+OK
+Miller	Btech
+Miller	Mtech
+John	Bsc
+John	Msc
+John	Mtech
+Arjun	Btech
+Arjun	Mba
+
+5)I want only those who have qual as Msc or Mtech
+
+hive> select * from xmlsamp3 where qual in ('Msc','Mtech');
+OK
+Miller	Mtech
+John	Msc
+John	Mtech
+
+6) Grouping based on qual 
+
+hive> create table xmlsamp4(qual string, cnt int);
+
+hive>insert overwrite table xmlsamp4
+      select qual, count(*) from xmlsamp3
+       group by qual;
+
+hive> select * from xmlsamp4;
+OK
+Bsc	1
+Btech	2
+Mba	1
+Msc	1
+Mtech	2
+
+----------------------------------------------------------------------------------
+
+Ex:2
+
+[training@localhost ~]$ cat xml4
+<tr><cid>101</cid><pr>1000</pr><pr>3000</pr></tr>
+<tr><cid>102</cid><pr>1200</pr><pr>2000</pr><pr>5000</pr></tr>
+<tr><cid>103</cid><pr>4000</pr></tr>
+
+Task:for the above 3 customers,what is the total bill generated
+
+hive> create database sales;
+hive> use sales;
+
+hive> create table xsamp1(line string);
+
+hive> load data local inpath 'xml4'into table xsamp1;
+
+hive> select * from xsamp1;
+
+<tr><cid>101</cid><pr>1000</pr><pr>3000</pr></tr>
+<tr><cid>102</cid><pr>1200</pr><pr>2000</pr><pr>5000</pr></tr>
+<tr><cid>101</cid><pr>4000</pr></tr>
+
+1)making data structured(removing xml tags)
+
+hive> create table xsamp2(cid string,pr array<string>);
+
+hive> insert overwrite table xsamp2
+   select xpath_string(line,'tr/cid'),
+   xpath(line,'tr/pr/text()') from xsamp1;
+
+hive> select * from xsamp2;
+OK
+101	["1000","3000"]
+102	["1200","2000","5000"]
+103	["4000"]
+101	["1000","3000"]
+102	["1200","2000","5000"]
+
+
+
+we get cid,array of strings
+
+2)flattenning the array using explode() to make data structured
+hive> create table xsamp3(cid string,pr int);
+
+hive> insert overwrite table xsamp3
+    select cid, mypr from  xsamp2
+   lateral view explode(pr) p as mypr;
+
+hive> select  * from xsamp3;
+OK
+101	1000
+101	3000
+102	1200
+102	2000
+102	5000
+103	4000
+101	1000
+101	3000
+102	1200
+102	2000
+102	5000
+
+
+
+
+3)select cid, sum(pr) from xsamp3 group by cid;
+
+hive> create table xsamp4(cid string,totbill int);
+hive> insert overwrite table xsamp4
+   select cid, sum(pr) from xsamp3
+   group by cid;
+
+hive> select * from xsamp4;
+
+101	8000
+102	16400
+103	4000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

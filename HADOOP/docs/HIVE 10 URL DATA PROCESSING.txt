@@ -1,0 +1,159 @@
+
+Hive10 : Url Data Processing
+
+URL or weblogs are used for predicting user behavior
+
+
+$ cat  urls
+http://yoursite.com/bigdata/mongodb?name=Raj&age=25&city=hyd
+http://yoursite.com/bigdata/spark?name=Swapna&city=del&desig=se
+http://yoursite.com/bigdata/spark?name=Satwik&age=26&city=hyd
+http://yoursite.com/oops/java?name=Manoj&sex=m&age=35
+
+Url contains , 3 parts of information.
+
+ i) Host name:  yoursite.com
+
+ii) Path: /bigdata/mongodb
+
+iii) Query string:  name=Manoj&sex=m&age=35, 
+
+Hive hase predefined parsers , to extract basic entities of url.
+
+ i) parse_url() ---> udf
+ ii) parse_url_tuple() ---> udtf.
+
+
+Ex:
+
+hive> create database urldb;
+
+hive> use urldb;
+
+hive> create table urlsamp1(line string);
+
+hive> load data local inpath 'urls' into table urlsamp1;
+
+
+hive> select * from urlsamp1;
+
+http://yoursite.com/bigdata/mongodb?name=Raj&age=25&city=hyd
+http://yoursite.com/bigdata/spark?name=Swapna&city=del&desig=se
+http://yoursite.com/bigdata/spark?name=Satwik&age=26&city=hyd
+http://yoursite.com/oops/java?name=Manoj&sex=m&age=35
+
+//using UDF
+hive> select 
+         parse_url(line,'HOST'),            
+         parse_url(line,'PATH'),
+         parse_url(line,'QUERY')
+     from urlsamp1;
+
+ (or)
+//using UDTF
+hive>select x.* from urlsamp1
+      lateral view parse_url_tuple(line,'HOST','PATH','QUERY') x as h,p,q;
+
+
+yoursite.com	/bigdata/mongodb        name=Raj&age=25&city=hyd
+yoursite.com	/bigdata/spark	name=Swapna&city=del&desig=se
+yoursite.com	/bigdata/spark	name=Satwik&age=26&city=hyd
+yoursite.com	/oops/java	name=Manoj&sex=m&age=35
+Time taken: 0.605 seconds, Fetched: 4 row(s)
+
+
+
+
+hive> create table urlsamp2(host string, path string, query string);
+
+hive> insert overwrite table urlsamp2
+       select x.* from urlsamp1
+      lateral view parse_url_tuple(line,'HOST','PATH','QUERY') x as h,p,q;
+
+hive> select * from urlsamp2;
+yoursite.com	/bigdata/mongodb        name=Raj&age=25&city=hyd
+yoursite.com	/bigdata/spark	name=Swapna&city=del&desig=se
+yoursite.com	/bigdata/spark	name=Satwik&age=26&city=hyd
+yoursite.com	/oops/java	name=Manoj&sex=m&age=35
+Time taken: 0.605 seconds, Fetched: 4 row(s)
+
+
+hive> create table urlsamp3(host string, path array<string>,query map<string,string>);
+
+hive> insert overwrite table urlsamp3
+       select host, 
+       split(path,'/'),
+       str_to_map(query,'&','=')
+       from urlsamp2;
+
+hive> select * from urlsamp3;
+OK
+yoursite.com	["","bigdata","mongodb"]	{"name":"Raj","age":"25","city":"hyd"}
+yoursite.com	["","bigdata","spark"]	{"name":"Swapna","city":"del","desig":"se"}
+yoursite.com	["","bigdata","spark"]	{"name":"Satwik","age":"26","city":"hyd"}
+yoursite.com	["","oops","java"]	{"name":"Manoj","sex":"m","age":"35"}
+Time taken: 0.173 seconds, Fetched: 4 row(s)
+
+
+
+hive> create table urlsamp4(host string,category string, course string,name string,age int,sex string,city string, desig string);
+     
+
+Time taken: 0.038 seconds
+hive> insert overwrite table urlsamp4
+       select host, path[1], path[2],
+      query['name'], query['age'],
+      query['sex'], query['city'],
+      query['desig'] from  urlsamp3;
+
+select * from urlsamp4;
+OK
+yoursite.com	bigdata	mongodb	Raj	25	NULL	hyd	NULL
+yoursite.com	bigdata	spark	Swapna	NULL	NULL	del	se
+yoursite.com	bigdata	spark	Satwik	26	NULL	hyd	NULL
+yoursite.com	oops	java	Manoj	35	m	NULL	NULL
+Time taken: 0.16 seconds, Fetched: 4 row(s)
+
+
+--------------------------------------------
+to extract all keys of a map collection/
+
+hive> select  map_keys(query)  from urlsamp3;
+
+["age","name","city"]
+["desig","name","city"]
+["age","name","city"]
+["sex","age","name"]
+
+hive> select  map_values(query) from urlsamp3;
+
+
+["25","Raj","hyd"]
+["se","Swapna","del"]
+["26","Satwik","hyd"]
+["m","35","Manoj"]
+
+____________________________
+
+___________________________________
+
+
+
+hive> create table urlsamp3_1(host string,key array<string>,value array<string>);
+OK
+Time taken:
+hive> insert overwrite table urlsamp3_1
+       select host, 
+         map_keys(query), map_values(query) 
+       from urlsamp3;
+
+ select * from urlsamp3_1;
+OK
+yoursite.com	["name","age","city"]	["Raj","25","hyd"]
+yoursite.com	["name","city","desig"]	["Swapna","del","se"]
+yoursite.com	["name","age","city"]	["Satwik","26","hyd"]
+yoursite.com	["name","sex","age"]	["Manoj","m","35"]
+Time taken: 0.184 seconds, Fetched: 4 row(s)
+
+
+

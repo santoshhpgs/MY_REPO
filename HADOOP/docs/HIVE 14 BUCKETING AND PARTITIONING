@@ -1,0 +1,195 @@
+
+
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=nonstrict;
+hive> set hive.enforce.bucketing=true;
+
+
+
+
+hive> create table emp1(id int,name string,sal int,sex string,dno int)
+    >  row format delimited
+    > fields terminated by ',';
+OK
+
+
+hive> load data local inpath 'emps' into table emp1;
+
+hive> create table buckpartemp(id int,name string,sal int,sex string,dno int)
+    > partitioned by (d int)
+    > clustered by (id)
+    > into 2 buckets
+    > row format' delimited
+    > fields terminated by ',;
+
+
+hive> insert overwrite table buckpartemp
+    > partition(d)
+    > select id,name,sal,sex,dno,dno from emp1;
+
+/*
+Loading partition {d=13}
+	Loading partition {d=12}
+	Loading partition {d=11}
+	 Time taken for adding to write entity : 3
+Partition buckets.partbuckemp{d=11} stats: [numFiles=2, numRows=2, totalSize=43, rawDataSize=41]
+Partition buckets.partbuckemp{d=12} stats: [numFiles=2, numRows=2, totalSize=43, rawDataSize=41]
+Partition buckets.partbuckemp{d=13} stats: [numFiles=2, numRows=1, totalSize=22, rawDataSize=21]
+MapReduce Jobs Launched: 
+*/
+
+hive> select * from buckpartemp;
+OK
+105	Rahul	50000	m	11	11
+101	miller	10000	m	11	11
+102	Rohini	20000	f	12	12
+103	Blake	30000	m	12	12
+104	sajini	40000	f	13	13
+
+
+hadoop fs -ls /user/hive/warehouse/bucks.db/buckpartemp
+Found 3 items
+drwxr-xr-x   - lenovo supergroup          0 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=11
+drwxr-xr-x   - lenovo supergroup          0 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=12
+drwxr-xr-x   - lenovo supergroup          0 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=13
+
+
+ hadoop fs -ls /user/hive/warehouse/bucks.db/buckpartemp/d=11
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup          0 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=11/000000_0
+-rwxr-xr-x   1 lenovo supergroup         43 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=11/000001_0
+
+hadoop fs -cat /user/hive/warehouse/bucks.db/buckpartemp/d=11/000000_0
+
+empty
+hadoop fs -cat /user/hive/warehouse/bucks.db/buckpartemp/d=11/000001_0
+105,Rahul,50000,m,11
+101,miller,10000,m,11
+
+hadoop fs -ls /user/hive/warehouse/bucks.db/buckpartemp/d=12
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup         22 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=12/000000_0
+-rwxr-xr-x   1 lenovo supergroup         21 2017-07-22 08:41 /user/hive/warehouse/bucks.db/buckpartemp/d=12/000001_0
+
+hadoop fs -cat /user/hive/warehouse/bucks.db/buckpartemp/d=12/000000_0
+102,Rohini,20000,f,12
+hadoop fs -cat /user/hive/warehouse/bucks.db/buckpartemp/d=12/000001_0
+103,Blake,30000,m,12
+
+
+
+EX:2
+
+-partition based on city
+-perform bucketing on cid
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+ex: Partitioning based on dno and bucketing based on sex
+cat emp6
+101,miller,10000,m,11
+102,Blake,20000,m,12
+103,sony,30000,f,11
+104,Sita,40000,f,12
+105,Dhoni,50000,m,13
+106,kumar,60000,m,11
+107,reddy,70000,m,12
+108,ami,80000,f,11
+109,vani,90000,f,12
+110,anu,850000,f,13
+111,bhanu,750000,m,13
+
+hive> create table emp8(eid int,ename string,sal double,sex string,dno int)
+    > row format delimited
+    > fields terminated by ',';
+
+hive> load data local inpath 'emp6' into table emp8;
+
+hive> select * from emp8;
+OK
+101	miller	10000.0	m	11
+102	Blake	20000.0	m	12
+103	sony	30000.0	f	11
+104	Sita	40000.0	f	12
+105	Dhoni	50000.0	m	13
+106	kumar	60000.0	m	11
+107	reddy	70000.0	m	12
+108	ami	80000.0	f	11
+109	vani	90000.0	f	12
+110	anu	850000.0	f	13
+111	bhanu	750000.0	m	13
+
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=nonstrict;
+hive> set hive.enforce.bucketing=true;
+
+
+hive> create table partbuckemp1(eid int,ename string,sal double,sex string,dno int)
+    > partitioned by (d int)
+    > clustered by(sex)
+    > into 2 buckets
+    > row format delimited
+    > fields terminated by ',';
+
+hive> insert overwrite table partbuckemp1
+    > partition(d)
+    > select eid,ename,sal,sex,dno,dno from emp8;
+
+hive> select * from partbuckemp1;
+OK
+108	ami	80000.0	f	11	11
+103	sony	30000.0	f	11	11
+106	kumar	60000.0	m	11	11
+101	miller	10000.0	m	11	11
+109	vani	90000.0	f	12	12
+104	Sita	40000.0	f	12	12
+107	reddy	70000.0	m	12	12
+102	Blake	20000.0	m	12	12
+110	anu	850000.	f	13	13
+111	bhanu	750000.	m	13	13
+105	Dhoni	50000.0	m	13	13
+Time taken: 0.29 seconds, Fetched: 11 row(s)
+
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/partbuckemp1
+Found 3 items
+drwxr-xr-x   - lenovo supergroup          0 2018-04-03 08:44 /user/hive/warehouse/partbuckemp1/d=11
+drwxr-xr-x   - lenovo supergroup          0 2018-04-03 08:44 /user/hive/warehouse/partbuckemp1/d=12
+drwxr-xr-x   - lenovo supergroup          0 2018-04-03 08:44 /user/hive/warehouse/partbuckemp1/d=13
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -ls /user/hive/warehouse/partbuckemp1/d=11
+Found 2 items
+-rwxr-xr-x   1 lenovo supergroup         43 2018-04-03 08:44 /user/hive/warehouse/partbuckemp1/d=11/000000_0
+-rwxr-xr-x   1 lenovo supergroup         47 2018-04-03 08:44 /user/hive/warehouse/partbuckemp1/d=11/000001_0
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/partbuckemp1/d=11/000000_0
+108,ami,80000.0,f,11
+103,sony,30000.0,f,11
+lenovo@lenovo-Lenovo-G450:~$ hadoop fs -cat /user/hive/warehouse/partbuckemp1/d=11/000001_0
+106,kumar,60000.0,m,11
+101,miller,10000.0,m,11
+lenovo@lenovo-Lenovo-G450:~$ 
+
+---------------------------------------------------------------------------------------------------
+
+ex: if we have 6 categories and in each category if there r 1000 products then
+   partition based on category  
+   bucketing based on product
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
