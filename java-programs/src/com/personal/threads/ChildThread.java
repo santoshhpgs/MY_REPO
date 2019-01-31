@@ -6,6 +6,7 @@ public class ChildThread implements Runnable
 	@Override
 	public void run() {
 		for(int i=0;i<30;i++) {
+			//Thread.currentThread().yield();
 			System.out.println("child thread priority : " +Thread.currentThread().getPriority());
 			System.out.println("Child Thread : " + i);
 		}
