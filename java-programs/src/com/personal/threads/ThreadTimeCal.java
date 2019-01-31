@@ -6,7 +6,10 @@ public class ThreadTimeCal {
 		//System.out.println("Main thread time : " +System.currentTimeMillis());
 		ChildThread childThread = new ChildThread();
 		Thread thread = new Thread(childThread);
+		
+		//checking Thread priority (dbt)
 		//thread.setPriority(10);
+		
         thread.start();
         
         //checking join()
