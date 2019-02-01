@@ -75,8 +75,8 @@ Hadoop Advantages:
 2.High speed processing------>parallel processing
 3.can handle all varieties of data
 4.opensource-------->No licensing required			   
-			   
-			   
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 SESSION 2 13th NOV
 ------------------
@@ -90,14 +90,14 @@ Hadoop Components
 4.Hive------------------------------>Processing,DWH,hql-------->sql
 5.Sqoop---------------------------->sql+hadoop--------->import/export operations
 6.NoSql: Schemaless
-		 Random access
+         Random access
    Nosql database-------->Hbase,casandra,Mondgodb,,couvhdg,Riak,PNUT
 
 7.HBase:
 8.Flume --------> Streaming components ---->for streaming
 9.Kafka---------->for Advanced streaming
 10.YARN:
-11.ZooKeeper
+11.ZooKeeper:
 -----------------------------------------------------------------------------------------------------------------------------
 Data storage and processing in Hadoop:
 
