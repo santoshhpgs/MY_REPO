@@ -1,9 +1,29 @@
 package com.personal.objectclassmethods;
 
+/*if we are not overriding hashcode and equals method while adding key and value pair into the 
+hashmap hashcode of the key is calculated by calling object class hashcode and equals method 
+
+if we are overriding hashcode and equals method while adding key and value pair into the 
+hashmap hashcode of the key is calculated by calling customized class hashcode and equals method
+
+if we are overriding equals but not hashcode method while adding key and value pair into the 
+hashmap hashcode of the key is calculated by calling object class hashcode so, in this case the 
+for same keys different hashcodes will be generated and it will be stored in different buckets 
+but ideally same keys should come to same bucket because their hashcode should be same.
+
+if we are overriding hashcode but not equals method while adding key and value pair into the 
+hashmap hashcode of the key is calculated by calling customized class hashcode and same hashcode 
+will be generated for same keys and it will be stored in same bucket but while stored key value 
+pairs if hascode of the keys are same then equals method is called and if equals is not overridden
+by the class then object class equals method is getting called which is implemented for address
+comparison.so,for equal hashcode also the keys are not equal because of their address comparison
+so the key value pairs with same keys are stored in the same bucket in linked list form*/
+
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class Exec {
+public class HashCodeEqualsExec {
 
 	public static void main(String[] args) {
 		
