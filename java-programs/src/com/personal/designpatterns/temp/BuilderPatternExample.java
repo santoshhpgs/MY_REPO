@@ -1,4 +1,4 @@
-package com.personal.designpatterns;
+package com.personal.designpatterns.temp;
 
 public class BuilderPatternExample {
 	  

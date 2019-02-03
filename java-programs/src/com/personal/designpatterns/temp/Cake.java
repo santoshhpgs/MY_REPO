@@ -1,6 +1,6 @@
-package com.personal.designpatterns;
+package com.personal.designpatterns.temp;
 
-import com.personal.designpatterns.Cake.Builder;
+import com.personal.designpatterns.temp.Cake.Builder;
 
 public class Cake {
 	
