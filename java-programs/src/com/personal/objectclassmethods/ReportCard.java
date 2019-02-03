@@ -6,6 +6,10 @@ public class ReportCard {
 	{
 		this.mathScore=(int)(Math.random()*101)+1;
 	}
+	@Override
+	public String toString() {
+		return ""+mathScore ;
+	}
 	public int getMathScore() {
 		return mathScore;
 	}
