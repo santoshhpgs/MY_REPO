@@ -3,11 +3,20 @@ package com.personal.designpatterns.prototype;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookShop {
+public class BookShop implements Cloneable{
 
 	private String shopname;
 	List<Book> books = new ArrayList<Book>();
 	
+	@Override
+	protected BookShop clone() throws CloneNotSupportedException {
+
+		BookShop shop = new BookShop();
+		for (Book b:this.getBooks()) {
+			shop.getBooks().add(b);
+		}
+		 return shop;
+	}
 	public void loadData()
 	{
 		
