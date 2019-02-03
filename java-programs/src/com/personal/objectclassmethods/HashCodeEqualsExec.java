@@ -42,6 +42,10 @@ public class HashCodeEqualsExec {
 //checking both Student object are equal or not	
 //		System.out.println(s1.equals(s2));
 		
+		//checking hashcodes
+		/*System.out.println(s1.hashCode());
+		System.out.println(s2.hashCode());
+		*/
 		
 		Map<Student,ReportCard> studentReport = new HashMap<Student,ReportCard>();
 		

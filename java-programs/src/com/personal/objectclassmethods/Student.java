@@ -18,7 +18,7 @@ public class Student {
 		this.registrationNumber = registrationNumber;
 	}
 
-	public boolean equals(Object obj) {
+/*	public boolean equals(Object obj) {
 		System.out.println("Customized equals method invoked");
 		if (obj != null && obj instanceof Student) {
 			String regNumber = ((Student) obj).getRegistrationNumber();
@@ -27,7 +27,7 @@ public class Student {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	
 	public int hashCode() {
