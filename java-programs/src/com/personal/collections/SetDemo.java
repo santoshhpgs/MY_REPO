@@ -1,6 +1,8 @@
 package com.personal.collections;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class SetDemo {
 
@@ -14,9 +16,17 @@ public class SetDemo {
 		hs.add("6");
 		hs.add("7");
 		hs.add("8");
-		for(String s:hs)
+		
+		/*for(String s:hs)
 		{
 			System.out.print(" "+s);
+		}*/
+		
+		Iterator it = hs.iterator();
+		while(it.hasNext())
+		{
+			String element = (String)it.next();
+			System.out.println(element);
 		}
 
 	}

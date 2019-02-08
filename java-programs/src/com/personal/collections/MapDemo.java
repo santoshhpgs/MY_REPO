@@ -15,7 +15,7 @@ public class MapDemo {
 		hm.put(4, "four");
 		hm.put(5, "five");
 		hm.put(6, "six");
-		
+		System.out.println(hm.values());
 		/*for(Map.Entry<Integer, String> entr:hm.entrySet())
 		{
 			System.out.println(entr.getKey()+" "+entr.getValue());
