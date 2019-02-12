@@ -3,6 +3,12 @@ package com.personal.designpatterns.factory;
 import java.io.File;
 import java.util.List;
 
+/*Define an interface for creating an object,but let subclasss decide which object to instantiate.
+ * Factory method lets a class defer instantiation to subclasses
+ * Vailating the open close object oriented principle
+ * OCP principle says that a class should be open for extension and closed for modification
+ * */
+
 public abstract class BatchProcessor {
 	//public void processBatch(String filename, String format) {
 	public void processBatch(String filename) {

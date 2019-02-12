@@ -1,4 +1,4 @@
-package com.personal.designpatterns.factory;
+package com.personal.designpatterns.temp;
 
 public class USDollar implements Currency {
     @Override
