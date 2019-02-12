@@ -3,8 +3,11 @@ package com.personal.designpatterns.factory;
 import java.io.File;
 import java.util.List;
 
-public class TextParser 
+public class TextParser implements Parser
 {
+	public TextParser() {
+		
+	}
 	public TextParser(File file)
 	{
 		System.out.println("Creating Text Parser.....");
