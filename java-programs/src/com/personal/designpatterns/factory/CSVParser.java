@@ -3,7 +3,7 @@ package com.personal.designpatterns.factory;
 import java.io.File;
 import java.util.List;
 
-public class CSVParser extends TextParser {
+public class CSVParser implements Parser {
 
 	public CSVParser(File file) {
 		
