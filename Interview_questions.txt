@@ -29,4 +29,5 @@ coding
 ------
 printing own name
 array dulicate nos
+string
 
