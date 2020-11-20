@@ -1,0 +1,32 @@
+Interview questions
+-------------------
+oops concepts
+Exception handling
+checked and unchecked exceptions
+customized exceptions
+throw and throws
+Multithreading
+Cuncurrency
+Object class
+hashcode and equals
+serialization
+Singleton patten
+Final,Finally,Finalize
+JVM Architcure
+
+access modifiers
+----------------
+public
+private
+default
+protected
+final
+abstract
+transient
+volatile
+
+coding
+------
+printing own name
+array dulicate nos
+
