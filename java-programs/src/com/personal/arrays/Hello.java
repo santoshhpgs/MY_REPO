@@ -6,7 +6,7 @@ public class Hello {
 
 	    // given input
 	    int[] input = { 1, 1, 2, 3, 5, 5, 7, 9, 9, 9 };
-
+        System.out.println();
 	    // let's create another array with same length
 	    // by default all index will contain zero
 	    // default value for int variable
