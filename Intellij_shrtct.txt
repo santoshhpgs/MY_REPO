@@ -1,3 +1,21 @@
 IntelliJ ShortCuts
 ------------------
-ctrl+1
+ctrl+n/double shift ---> Searching files
+Ctrl+B              ---> Navigate | Declaration
+ctrl+alt+<          ---> go back
+Ctrl+Shift+A	    ---> Find Action
+Alt+Enter	        ---> Show Context Actions
+F2                  ---> Navigate between code issues
+Shift+F2            ---> Jump to the next or previous highlighted error.
+Ctrl+E	            ---> View recent files
+Ctrl+Shift+Enter	---> Complete Current Statement
+Ctrl+Alt+L	        ---> Reformat Code
+Ctrl+Alt+Shift+T	---> Invoke refactoring
+Ctrl+W              ---> Extend or shrink selection
+Ctrl+Shift+W	    ---> Increase or decrease the scope of selection according to specific code constructs.
+Ctrl+/              ---> Add/remove line or block comment
+Ctrl+Shift+/	    ---> Comment out a line or block of code.
+Ctrl+B	            ---> Go To Declaration
+Alt+F7	            ---> Find Usages
+Alt+1	            ---> Focus the Project tool window
+Escape	            ---> Focus the editor
