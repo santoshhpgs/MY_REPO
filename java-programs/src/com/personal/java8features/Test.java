@@ -1,15 +1,15 @@
 package com.personal.java8features;
 
-import com.sun.xml.internal.ws.util.StringUtils;
+import java.util.function.Function;
 
 public class Test {
-public static void main(String[] args) {
-	
-		/*
-		 * Function<Integer,Integer> f=i->i*i; System.out.println("the square of 4 is :"
-		 * +f.apply(4));
-		 */
-	
+	public static void main(String[] args) {
+
+		
+		  Function<Integer,Integer> f=i->i*i; System.out.println("the square of 4 is :"
+		  +f.apply(4));
+		 
+
 		/*
 		 * String filter = "(listID contains '*rej*')";
 		 * System.out.println(filter.split("contains")[1].replaceAll("\\)",
@@ -27,24 +27,26 @@ public static void main(String[] args) {
 		 * System.out.println("Map >>"+filterMap);
 		 */
 
-	//System.out.println(check.split("contains")[1].replaceAll("[^a-zA-Z0-9]", "%"));
-	//System.out.println(check.split("contains")[0]);
-	
-	//String[] arrOfStr = check.split("contains:");
-	//System.out.println(check.split("contains:")[1].replaceAll("\\)", "").replaceAll("\\'", "").replace("*", "%"));
-	//System.out.println("STR >>"+check);
-	//String str = check.replaceAll("[^a-zA-Z0-9]", " ");
-	//System.out.println("STR >>"+str);
-	//replace("*", "%")
-    //for (String a : arrOfStr)
-    //    System.out.println(a);
+		// System.out.println(check.split("contains")[1].replaceAll("[^a-zA-Z0-9]",
+		// "%"));
+		// System.out.println(check.split("contains")[0]);
+
+		// String[] arrOfStr = check.split("contains:");
+		// System.out.println(check.split("contains:")[1].replaceAll("\\)",
+		// "").replaceAll("\\'", "").replace("*", "%"));
+		// System.out.println("STR >>"+check);
+		// String str = check.replaceAll("[^a-zA-Z0-9]", " ");
+		// System.out.println("STR >>"+str);
+		// replace("*", "%")
+		// for (String a : arrOfStr)
+		// System.out.println(a);
 		/*
 		 * String str = "order.listID"; String[] arrOfStr = str.split("order.");
 		 * System.out.println(arrOfStr.length); System.out.println(arrOfStr[1]);
 		 * 
 		 * for (String a : arrOfStr) System.out.println(a);
 		 */
-	
+
 		/*
 		 * Map<String,Object> filterMap = new HashMap<String, Object>();
 		 * 
@@ -52,7 +54,7 @@ public static void main(String[] args) {
 		 * 
 		 * filterMap.put("pageNum",pageNum); filterMap.put("pageSize",pageSize);
 		 */
-    
+
 		/*
 		 * String check = "order.modificationDetails.updatedBy"; String[] arrOfStr =
 		 * check.split("\\."); System.out.println(arrOfStr.length);
@@ -69,19 +71,16 @@ public static void main(String[] args) {
 		 * tokens.split("contains")[1].replaceAll("\\)", "").replaceAll("\\'",
 		 * "").replaceAll("\\*", "%").trim()); } System.out.println(filterMap);
 		 */
-	
-/*	HashMap<Integer, String> hash_map = new HashMap<Integer, String>();
-	 
-    // Mapping string values to int keys
-    hash_map.put(10, "Geeks");
-    hash_map.put(15, "4");
-    hash_map.put(20, "Geeks");
-    hash_map.put(25, "Welcomes");
-    hash_map.put(30, "You");
-    System.out.println(hash_map);
-    hash_map.remove(20);
-    System.out.println(hash_map);*/
-    
+
+		/*
+		 * HashMap<Integer, String> hash_map = new HashMap<Integer, String>();
+		 * 
+		 * // Mapping string values to int keys hash_map.put(10, "Geeks");
+		 * hash_map.put(15, "4"); hash_map.put(20, "Geeks"); hash_map.put(25,
+		 * "Welcomes"); hash_map.put(30, "You"); System.out.println(hash_map);
+		 * hash_map.remove(20); System.out.println(hash_map);
+		 */
+
 		/*
 		 * List<Integer> al = new CopyOnWriteArrayList(); Object obj = al;
 		 * System.out.println(obj.getClass().isInstance(obj));
@@ -90,19 +89,24 @@ public static void main(String[] args) {
 		 * System.out.println(al); for(Integer i :al) { al.remove(i);
 		 * System.out.println(al); }
 		 */
-	
-	//String check = "order.updatedDate";
-	//System.out.println(check.split("order.")[1]);
-	
-	String test = "Santosh";
-	String one="%San";
-	String two = "";
-	String Three = "";
-	String four = "";
-	System.out.println(one.split("%")[1]);
-	System.out.println(test.startsWith(one.split("%")[1]));
-	//System.out.println(test.matches("San"));
-	//System.out.println(test.toLowerCase().replaceAll("[^a-zA-Z0-9]",""));
-			
-}
+
+		// String check = "order.updatedDate";
+		// System.out.println(check.split("order.")[1]);
+
+		/*
+		 * String test = "Santosh"; String one = "%San"; String two = ""; String Three =
+		 * ""; String four = ""; System.out.println(one.split("%")[1]);
+		 * System.out.println(test.startsWith(one.split("%")[1]));
+		 */
+		// System.out.println(test.matches("San"));
+		// System.out.println(test.toLowerCase().replaceAll("[^a-zA-Z0-9]",""));
+		  
+		  String filterquery = "modificationDetails.updatedBy%20contains%20%27*sam%27";
+		  System.out.println(filterquery.contains("modificationDetails."));
+		  filterquery = filterquery.replace("modificationDetails.", "");
+		  
+		  System.out.println("filterquery >>"+filterquery);
+		  
+
+	}
 }

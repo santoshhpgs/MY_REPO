@@ -4,7 +4,7 @@ public class Hello {
 
 	  public static void main(String[] args) {
 
-	    // given input
+	   /* // given input
 	    int[] input = { 1, 1, 2, 3, 5, 5, 7, 9, 9, 9 };
         System.out.println();
 	    // let's create another array with same length
@@ -30,8 +30,13 @@ public class Hello {
 	      if (register[i] == 0) {
 	        System.out.println(i);
 	      }
-	    }
+	    }*/
+		  
+		  String check = "order.createdby";
+			System.out.println(check.split("\\.")[check.split("\\.").length-1]);	  
 	  }
+		  
+		  
 
 	}
 
