@@ -26,4 +26,4 @@ Alt+1	            ---> Focus the Project tool window
 Escape	            ---> Focus the editor
 Ctrl+alt+M          ---> Method creation for selected lines
 Ctrl+alt+V          ---> Variable creation for selected 
-Alt+Insert          ---> Generate code(Tostring,getters and setters....)
+Alt+Insert          ---> Generate code(Tostring,getters and setters...)
