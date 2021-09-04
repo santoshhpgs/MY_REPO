@@ -10,10 +10,11 @@ Cuncurrency
 Object class
 hashcode and equals
 serialization
-Singleton patten
+Singleton pattern
 Final,Finally,Finalize
 JVM Architcure
 Strings
+
 access modifiers
 ----------------
 public
@@ -24,6 +25,9 @@ final
 abstract
 transient
 volatile
+
+java 8
+
 
 coding
 ------
