@@ -31,12 +31,10 @@ public class Hello {
 	        System.out.println(i);
 	      }
 	    }*/
-		  
-		  String check = "order.createdby";
-			System.out.println(check.split("\\.")[check.split("\\.").length-1]);	  
+		  String arr[] = new String[] {"a","b","c"};
+		  System.out.println(arr);
+		  for(String input:arr)
+			  System.out.println(input );
 	  }
-		  
-		  
-
 	}
 

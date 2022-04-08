@@ -6,8 +6,10 @@ public class Test {
 	public static void main(String[] args) {
 
 		
-		  Function<Integer,Integer> f=i->i*i; System.out.println("the square of 4 is :"
-		  +f.apply(4));
+		/*
+		 * Function<Integer,Integer> f=i->i*i; System.out.println("the square of 4 is :"
+		 * +f.apply(4));
+		 */
 		 
 
 		/*
@@ -101,11 +103,8 @@ public class Test {
 		// System.out.println(test.matches("San"));
 		// System.out.println(test.toLowerCase().replaceAll("[^a-zA-Z0-9]",""));
 		  
-		  String filterquery = "modificationDetails.updatedBy%20contains%20%27*sam%27";
-		  System.out.println(filterquery.contains("modificationDetails."));
-		  filterquery = filterquery.replace("modificationDetails.", "");
-		  
-		  System.out.println("filterquery >>"+filterquery);
+       InterfA ia = () -> System.out.println("Lambda expression implementataion");
+       ia.methodA();
 		  
 
 	}
