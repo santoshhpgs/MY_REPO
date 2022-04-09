@@ -2,17 +2,13 @@ package com.personal.designpatterns.Singleton;
 
 import java.io.Serializable;
 
-public class Singleton implements Serializable,Cloneable
-{
+public class Singleton implements Serializable, Cloneable {
 	private static volatile Singleton soleInstance = null;
 
 	private Singleton() {
-		/*
-		 * System.out.println("soleInstance >>" +soleInstance);
-		 * if(Singleton.soleInstance != null) {
-		 * System.out.println("inside condition.."); throw new
-		 * RuntimeException("cannot create please use getInstance()"); }
-		 */
+		if (Singleton.soleInstance != null) {
+			throw new RuntimeException("cannot create please use getInstance()");
+		}
 		System.out.println("instance created....");
 	}
 

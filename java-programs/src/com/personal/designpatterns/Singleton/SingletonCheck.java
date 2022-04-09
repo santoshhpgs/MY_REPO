@@ -1,29 +1,24 @@
 package com.personal.designpatterns.Singleton;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
 
 public class SingletonCheck {
 
 	public static void main(String[] args)throws Exception
 	{
-		/*Pattern p = Pattern.compile("aaabbababaa");
-		System.out.println("program executed");*/
-		Singleton s1 = Singleton.getInstance();
-		Singleton s2 = Singleton.getInstance();
+		Singleton  s1 = Singleton.getInstance();
+		Singleton  s2 = Singleton.getInstance();
 		//System.out.println("S1 hashcode :" +s1.hashCode());
 		//System.out.println("S2 hashcode :" +s2.hashCode());
 		print("s1",s1);
 		print("s2",s2);
 		
 		//reflection
-		/*Class classz = Class.forName("com.personal.Singleton");
+		Class classz = Class.forName("com.personal.designpatterns.Singleton.Singleton");
 		Constructor<Singleton> ctor = classz.getDeclaredConstructor();
 		ctor.setAccessible(true);
 		Singleton s3 = ctor.newInstance();
-		print("s3",s3);*/
+		print("s3",s3);
 		
 		//Serialization
 		
