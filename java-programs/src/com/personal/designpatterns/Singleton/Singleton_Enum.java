@@ -2,7 +2,6 @@ package com.personal.designpatterns.Singleton;
 
 /**
  * Singleton Class using Enum
- * @author KK JavaTutorials
  */
 public enum Singleton_Enum {
 	

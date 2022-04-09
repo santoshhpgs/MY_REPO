@@ -41,10 +41,6 @@ public class SingletonCheck {
 		
 		//multithreading
 		
-		
-		
-		
-		
 
 	}
  public static void print(String name,Singleton object)

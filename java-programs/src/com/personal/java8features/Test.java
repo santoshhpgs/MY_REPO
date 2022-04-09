@@ -1,6 +1,7 @@
 package com.personal.java8features;
 
-import java.util.function.Function;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Test {
 	public static void main(String[] args) {
@@ -105,7 +106,16 @@ public class Test {
 		  
        InterfA ia = () -> System.out.println("Lambda expression implementataion");
        ia.methodA();
-		  
+       
+       ArrayList al = new ArrayList();
+       al.add(1);
+       al.add(2);
+       al.add(3);
+       al.add(4);
+       al.add(5);
+	   System.out.println(al.stream().getClass().getName()); 
+	   LocalDate ld = LocalDate.now();
+	   System.out.println(ld);
 
 	}
 }
