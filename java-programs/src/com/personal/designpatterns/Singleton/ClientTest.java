@@ -14,6 +14,7 @@ public class ClientTest {
 		 * returns same hashcode that proves that
 		 * Singleton class creates only one instance
 		 */
+		
 		Singleton_Enum singleton1 = Singleton_Enum.GETINSTANCE;
 		Singleton_Enum singleton2 = Singleton_Enum.GETINSTANCE;
 		
