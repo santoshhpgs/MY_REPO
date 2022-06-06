@@ -134,11 +134,6 @@ public class Test {
 		InterfC iclambda = (a)->  a*a;
 		System.out.println("square is >"+iclambda.sqr(5));
 		
-		//normal excecution Threading
-		
-		
-		//Lambda excecution Threading
-		
 		
 	}
 }
