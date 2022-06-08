@@ -15,7 +15,7 @@ public enum RuleType {
             "categoryNameKey2",
             "packageNameKey2",
             true,
-            Arrays.asList(IBRVersion.COP,IBRVersion.COP)),
+            Arrays.asList(IBRVersion.COP,IBRVersion.OVC)),
     MARK_ORDER_LINES_SPLIT("businessrules.custom.rule.type.mark.order.lines.split",
             "categoryNameKey3",
             "packageNameKey3",

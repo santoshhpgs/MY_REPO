@@ -6,12 +6,10 @@ import java.util.ArrayList;
 public class Test {
 	public static void main(String[] args) {
 
-		
 		/*
 		 * Function<Integer,Integer> f=i->i*i; System.out.println("the square of 4 is :"
 		 * +f.apply(4));
 		 */
-		 
 
 		/*
 		 * String filter = "(listID contains '*rej*')";
@@ -112,8 +110,39 @@ public class Test {
 		  
        InterfA ia = () -> System.out.println("Lambda expression implementataion");
        ia.methodA();
-       
 
+		/*
+		 * ArrayList al = new ArrayList(); al.add(1); al.add(2); al.add(3); al.add(4);
+		 * al.add(5); System.out.println(al.stream().getClass().getName()); LocalDate ld
+		 * = LocalDate.now(); System.out.println(ld);
+		 */
 
+		//normal execution
+		InterfA ia = new ClassA();
+		ia.methodA();
+		
+		//lambda
+		InterfA ialamda = ()-> System.out.println("method one execution....");
+		ialamda.methodA();
+		
+		//normal excecution sum method
+		InterfB ib = new ClassB();
+		ib.sum(2, 3);
+		
+		//lambda execution sum method
+		
+		InterfB iblambda = (a,b)-> System.out.println("sum is >>"+(a+b));
+		iblambda.sum(2, 3);
+
+		//normal excecution sqr method
+		InterfC ic = new ClassC(); 
+		System.out.println("square is >"+ic.sqr(5));
+		
+		//lambda execution sqr method
+		
+		InterfC iclambda = (a)->  a*a;
+		System.out.println("square is >"+iclambda.sqr(5));
+		
+		
 	}
 }
