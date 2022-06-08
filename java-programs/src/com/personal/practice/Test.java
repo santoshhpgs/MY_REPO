@@ -1,5 +1,6 @@
 package com.personal.practice;
 
+import java.util.Collections;
 import java.util.Objects;
 
 public class Test {
@@ -20,17 +21,10 @@ public class Test {
 		 * Test test = new Test(); test.methodone(1,2,3);
 		 */
 		//IBRVersion value = IBRVersion.valueOf("Clearing on Process");
+		RuleType.values().stream().filter(x -> x.versions.contains(spp)).collection(Collections::toList);
 		for (RuleType ruleType: RuleType.values()) {
 			System.out.println(ruleType.getversions().contains(IBRVersion.COP));
 		}
-		System.out.println(IBRVersion.COP);
-		/*
-		 * for (RuleType ruleType: RuleType.values()) { String packagename =
-		 * ruleType.getGruop();
-		 * 
-		 * if(!Objects.isNull(ruleType.getGruop())) {
-		 * System.out.println("packagename >> "+packagename); } }
-		 */
 	}
 
 }
