@@ -6,35 +6,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Test {
-
-	
-	/* public void methodone(int...i) { System.out.println("var arg method"); } */
-	 
-	
-	/*
-	 * public void methodone(int i[]) { System.out.println("Array arg method"); }
-	 */
-	
-	/*
-	 * public void methodone(int i) { System.out.println("Single arg method"); }
-	 */
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		
-	    List<Integer> number = Arrays.asList(2,3,4,5);
-	    List<Integer> square = number.stream().map(x -> x*x).
-	                           collect(Collectors.toList());
-	    
-		/*
-		 * Test test = new Test(); test.methodone(1,2,3);
-		 */
-		//IBRVersion value = IBRVersion.valueOf("Clearing on Process");
-	    
-	    for (RuleType ruleType: Arrays.asList(RuleType.values()).stream().filter(x -> x.getversions().contains(IBRVersion.COP)).collect(Collectors.toList())) {
-	    	System.out.println(ruleType.getversions());
-	    }
-		for (RuleType ruleType: RuleType.values()) {
-			System.out.println(ruleType.getversions().contains(IBRVersion.COP));
-		}
+    	int arr[] = new int[6];
+    	int arrone[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+    	int arrtwo[] = new int[] {4,5,6,7};
+    	for (int i:arrtwo)
+    	{
+    		System.out.println(i);
+    	}
 	}
-
 }
