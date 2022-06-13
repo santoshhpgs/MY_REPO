@@ -1,19 +1,24 @@
 package com.personal.practice;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.IOException;
 
 public class Test {
-    public static void main(String[] args) {
-		
-    	int arr[] = new int[6];
-    	int arrone[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
-    	int arrtwo[] = new int[] {4,5,6,7};
-    	for (int i:arrtwo)
-    	{
-    		System.out.println(i);
-    	}
+
+	public void methodone(Parent p) {
+		System.out.println("parent method");
+	}
+
+	public void methodone(Child c) {
+		System.out.println("child method");
+	}
+
+	public static void main(String[] args) throws IOException {
+		Test test = new Test();
+		Parent p = new Parent();
+		p.methodOne();
+		Child c = new Child();
+		c.methodOne();
+		Parent parent = new Child();
+		parent.methodOne();
 	}
 }
