@@ -4,6 +4,7 @@ package com.personal.practice;
 @FunctionalInterface
 public interface interfA {
 
-	void methodone();
+	public void methodone();
+	public void methodTwo();
 	
 }
