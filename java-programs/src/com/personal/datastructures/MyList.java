@@ -18,7 +18,6 @@ public class MyList<E> {
         elements[size++] = e;
     }
 
-
     private void ensureCapa() {
         int newSize = elements.length * 2;
         elements = Arrays.copyOf(elements, newSize);

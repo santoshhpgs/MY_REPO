@@ -16,7 +16,6 @@ public abstract class BatchProcessor {
 		
 		Parser parser = createParser(file);//factory method
 		
-		
 		/*TextParser parser = null;
 		if (format.equals("text"))
 			parser = new TextParser(file);
