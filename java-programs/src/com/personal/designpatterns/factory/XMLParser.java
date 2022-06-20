@@ -1,21 +1,24 @@
 package com.personal.designpatterns.factory;
 
-import java.io.File;
-import java.util.List;
-
-public class XMLParser extends TextParser {
+public class XMLParser implements Parser {
 
 
-	public XMLParser(File file) {
+	public XMLParser() {
 		
 		System.out.println("created XML parser");
 	}
 	
-	public List<Record> parse()
-	{
-		System.out.println("parsing XML and creating record list ..");
-		return null;
+	public void openFile() {
+		System.out.println("opened XML file...");
 	}
 
+	public void parse() {
+		System.out.println("parsing XML and creating record list ..");
+	}
+
+	public void closeFile() {
+		System.out.println("closed XML file");
+
+	}
 
 }

@@ -1,21 +1,20 @@
 package com.personal.designpatterns.factory;
 
-import java.io.File;
-import java.util.List;
-
-public class TextParser implements Parser
-{
+public class TextParser implements Parser {
 	public TextParser() {
-		
-	}
-	public TextParser(File file)
-	{
 		System.out.println("Creating Text Parser.....");
 	}
-	
-	public List<Record> parse()
-	{
-		System.out.println("parsing text and creating record list ..");
-		return null;
+
+	public void openFile() {
+		System.out.println("opened Text file...");
+	}
+
+	public void parse() {
+		System.out.println("parsing Text and creating record list ..");
+	}
+
+	public void closeFile() {
+		System.out.println("closed Text file");
+
 	}
 }
