@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: santo
+Build-Jdk: 17.0.2
+Implementation-Title: springdatajpa
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.bharath.springdatajpa
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/springdatajpa
+Created-By: Maven Integration for Eclipse
+
