@@ -10,7 +10,4 @@
 	<bean name="emp" class="com.bharath.spring.springcore.Employee"
 		p:id="20" p:name="Bharath" />
 
-
-
-
 </beans>
