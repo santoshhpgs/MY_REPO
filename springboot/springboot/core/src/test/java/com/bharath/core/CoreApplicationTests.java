@@ -21,6 +21,8 @@ public class CoreApplicationTests {
 	public void testDependencyInjection() {
 		
 		assertNotNull(paymentServiceImpl.getPaymentDao());
+		
+		//assertNotNull(paymentServiceImpl.getPaymentDao());
 	}
 
 }

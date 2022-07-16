@@ -12,13 +12,14 @@ public class PaymentServiceImpl implements PaymentService {
 	private PaymentDao paymentDao;
 
 	public PaymentDao getPaymentDao() {
-		System.out.println("......... inside paymentDao ..........");
+		System.out.println("......... inside paymentDao modified..........");
 		return paymentDao;
 	}
 
-	public void setPaymentDao(PaymentDao paymentDao) {
-		this.paymentDao = paymentDao;
-	}
+	/*
+	 * public void setPaymentDao(PaymentDao paymentDao) { this.paymentDao =
+	 * paymentDao; }
+	 */
 	
 	
 }
