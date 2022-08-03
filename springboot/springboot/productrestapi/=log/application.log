@@ -1,0 +1,30 @@
+2022-07-17 17:59:21.287  INFO 5876 --- [main] c.b.springweb.ProductrestapiApplication  : Starting ProductrestapiApplication using Java 18.0.1.1 on LAPTOP-Q7QA528O with PID 5876 (C:\REPO\MY_REPO\springboot\springboot\productrestapi\target\classes started by santo in C:\REPO\MY_REPO\springboot\springboot\productrestapi)
+2022-07-17 17:59:21.290  INFO 5876 --- [main] c.b.springweb.ProductrestapiApplication  : The following 1 profile is active: "test"
+2022-07-17 17:59:22.003  INFO 5876 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-07-17 17:59:22.075  INFO 5876 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 1 JPA repository interfaces.
+2022-07-17 17:59:22.600  INFO 5876 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-07-17 17:59:22.607  INFO 5876 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-07-17 17:59:22.607  INFO 5876 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.64]
+2022-07-17 17:59:22.921  INFO 5876 --- [main] o.a.c.c.C.[.[localhost].[/productapi]    : Initializing Spring embedded WebApplicationContext
+2022-07-17 17:59:22.922  INFO 5876 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1593 ms
+2022-07-17 17:59:23.188  INFO 5876 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-07-17 17:59:23.503  INFO 5876 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-07-17 17:59:23.537  INFO 5876 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-07-17 17:59:23.584  INFO 5876 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.9.Final
+2022-07-17 17:59:23.783  INFO 5876 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-07-17 17:59:23.876  INFO 5876 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2022-07-17 17:59:24.330  INFO 5876 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-07-17 17:59:24.345  INFO 5876 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-07-17 17:59:24.627  WARN 5876 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-07-17 17:59:25.037  INFO 5876 --- [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2022-07-17 17:59:25.079  INFO 5876 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/productapi'
+2022-07-17 17:59:25.095  INFO 5876 --- [main] c.b.springweb.ProductrestapiApplication  : Started ProductrestapiApplication in 4.198 seconds (JVM running for 5.049)
+2022-07-17 17:59:27.672  INFO 5876 --- [RMI TCP Connection(3)-127.0.0.1] o.a.c.c.C.[.[localhost].[/productapi]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-07-17 17:59:27.673  INFO 5876 --- [RMI TCP Connection(3)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-07-17 17:59:27.674  INFO 5876 --- [RMI TCP Connection(3)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2022-07-17 18:13:56.864  WARN 5876 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10m3s188ms944µs700ns).
+2022-07-17 18:39:16.499  WARN 5876 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m19s289ms609µs300ns).
+2022-07-17 18:40:23.222  INFO 5876 --- [RMI TCP Connection(34)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2022-07-17 18:40:23.255  INFO 5876 --- [RMI TCP Connection(34)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-07-17 18:40:23.263  INFO 5876 --- [RMI TCP Connection(34)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-07-17 18:40:23.273  INFO 5876 --- [RMI TCP Connection(34)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

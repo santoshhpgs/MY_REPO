@@ -25,7 +25,7 @@ public class SpringdatajpaApplicationTests {
 		student.setName("Bharath");
 		student.setTestScore(100);
 		repository.save(student);
-
+		
 		Student savedStudent = repository.findById(1l).get();
 		
 		  System.out.println("Id >> " +savedStudent.getId());
