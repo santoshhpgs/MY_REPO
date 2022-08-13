@@ -6,5 +6,4 @@ public class ClassA implements InterfA{
 	public void methodA() {		
 		System.out.println("method one execution....");
 	}
-
 }
