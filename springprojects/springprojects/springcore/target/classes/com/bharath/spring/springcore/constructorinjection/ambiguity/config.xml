@@ -10,8 +10,9 @@
 	<bean
 		class="com.bharath.spring.springcore.constructorinjection.ambiguity.Addition"
 		name="addition">
-		<constructor-arg value="20.3" type="double" index="1" name="b"/>
-		<constructor-arg value="10" type="int" index="0" name="a"/>
+		
+		<constructor-arg value="20.3" type="double" />
+		<constructor-arg value="10" type="int"/>
 	</bean>
 
 

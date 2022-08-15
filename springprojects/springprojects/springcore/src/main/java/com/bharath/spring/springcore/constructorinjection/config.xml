@@ -12,6 +12,12 @@
 		name="address" p:hno="123" p:street="mira mesa" p:city="san diego" />
 
 	<bean class="com.bharath.spring.springcore.constructorinjection.Employee"
-		name="employee" c:id="123" c:address-ref="address"/>
+		name="employee" >
+		<!-- c:id="123" c:address-ref="address"/> -->
+		<constructor-arg value="123"/>
+		<constructor-arg ref="address"/>
+		</bean>
+		
+		
 
 </beans>

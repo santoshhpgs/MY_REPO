@@ -8,9 +8,7 @@
     http://www.springframework.org/schema/context/spring-context.xsd">
 
 <bean name="hospital" class="com.bharath.spring.springcore.list.Hospital">
-	<property name="name">
-		<value>Global Hospital</value>
-	</property>
+	<property name="name" value = "Global Hospital"/>
 	<property name="departments">
 		<list> 
 			<value>Front Office</value>
