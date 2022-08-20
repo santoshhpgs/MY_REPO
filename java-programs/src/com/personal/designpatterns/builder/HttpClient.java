@@ -59,7 +59,6 @@ public class HttpClient {
 			return this;
 		}
 
-		
 		public HttpClientBuilder body(String body) {
 			this.body = body;
 			return this;

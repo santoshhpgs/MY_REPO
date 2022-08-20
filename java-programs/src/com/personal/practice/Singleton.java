@@ -2,37 +2,29 @@ package com.personal.practice;
 
 import java.io.Serializable;
 
-public class Singleton implements Cloneable, Serializable {
-
-	/*
-	 * reflection serialization cloning multithreading
-	 */
-
-	private static volatile Singleton soleinstance = null;
+public class Singleton implements Serializable, Cloneable {
+	private static Singleton soleInstance = null;
 
 	private Singleton() {
-		if (soleinstance != null) {
-			throw new RuntimeException("Instance can not be created.....");
-		}
+
 	}
 
 	public static Singleton getInstance() {
-		if (soleinstance == null) {
+		if (soleInstance == null) {
 			synchronized (Singleton.class) {
-				if (soleinstance == null) {
-					soleinstance = new Singleton();
+				if (soleInstance == null) {
+					soleInstance = new Singleton();
 				}
 			}
 		}
-		return soleinstance;
+		return soleInstance;
+	}
+
+	protected Object readResolve() {
+		return soleInstance;
 	}
 
 	protected Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
-
-	protected Object readResolve() {
-		return soleinstance;
-	}
-
 }
