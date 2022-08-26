@@ -14,22 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bharath.springweb.entities.Product;
 import com.bharath.springweb.repos.ProductRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.vavr.control.Try;
+
 @RestController
 public class ProductRestController {
 
 	@Autowired
 	ProductRepository repository;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductRestController.class);
 
 	@RequestMapping(value = "/products/", method = RequestMethod.GET)
+	@CircuitBreaker(name = "default", fallbackMethod = "employeeFallback")
 	public List<Product> getProducts() {
 		return repository.findAll();
 	}
 
 	@RequestMapping(value = "/products/{id}", method = RequestMethod.GET)
 	public Product getProduct(@PathVariable("id") int id) {
-		LOGGER.info("Finding product by ID:"+id);
+		LOGGER.info("Finding product by ID:" + id);
 		return repository.findById(id).get();
 	}
 
