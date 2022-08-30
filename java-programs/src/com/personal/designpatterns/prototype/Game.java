@@ -8,7 +8,7 @@ public class Game implements Cloneable {
 
 	public Game clone() throws CloneNotSupportedException {
 		Game game =  (Game) super.clone();
-		game.setMemberShip(new MemberShip(2, "member2"));
+		game.setMemberShip((MemberShip) memberShip.clone());
 		return game;
 	}
 

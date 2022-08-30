@@ -20,6 +20,7 @@ public class PrototypeCheck {
 		game1.setName("game1");
 		game1.setMemberShip(new MemberShip(1,"member1"));
 		Game game2 = game1.clone();
+		game2.setMemberShip(new MemberShip(2,"member2"));
 		
 		System.out.println("game1 >>"+game1);
 		System.out.println("game2 >>"+game2);

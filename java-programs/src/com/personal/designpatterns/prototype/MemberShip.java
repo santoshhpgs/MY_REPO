@@ -1,9 +1,15 @@
 package com.personal.designpatterns.prototype;
 
-public class MemberShip {
+public class MemberShip implements Cloneable{
 
 	private int memberId;
 	private String meberName;
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
 
 	public String getMeberName() {
 		return meberName;
