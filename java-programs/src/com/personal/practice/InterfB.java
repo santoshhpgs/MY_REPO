@@ -4,6 +4,7 @@ package com.personal.practice;
 public interface InterfB {
 
 	public void methodone();
+	
 	 default void methodtwo()
 	 {
 		 System.out.println("inside InterfB methodtwo default.......");

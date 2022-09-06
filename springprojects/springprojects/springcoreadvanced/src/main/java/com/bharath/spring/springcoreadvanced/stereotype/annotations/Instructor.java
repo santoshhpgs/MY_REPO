@@ -25,9 +25,6 @@ public class Instructor {
 	@Autowired
 	private Profile profile;
 
-
-	
-
 	@Override
 	public String toString() {
 		return "Instructor [id=" + id + ", name=" + name + ", topics=" + topics + ", active=" + active + ", profile="

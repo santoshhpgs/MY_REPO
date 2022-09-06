@@ -4,19 +4,17 @@ import java.io.IOException;
 
 public class Parent {
 
-	int i =10;
-	public void methodOne() throws IOException{
-		System.out.println("executing parent class methodOne....");
+	public static int methodone() {
+		
+		return 0;
 	}
-
-	Object methodTwo() {
-		System.out.println("executing parent class methodTwo");
-		return null;
-	}
-	
+   
+    public void methodtwo()
+	 {
+		 System.out.println("inside InterfB methodtwo default.......");
+	 }
+   
 	public static void main(String[] args) {
-		Parent parent = new Child();
-		parent.methodTwo();
-		System.out.println(parent.i);
+		
 	}
 }
