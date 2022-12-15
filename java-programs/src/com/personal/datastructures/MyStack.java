@@ -28,6 +28,13 @@ public class MyStack {
 
 	}
 
+	public int peek() {
+		int data;
+		data = stack[top - 1];
+		top--;
+		return data;
+	}
+
 	void expand() {
 		int length = size();
 		int newstack[] = new int[capacity * 2];
@@ -44,13 +51,6 @@ public class MyStack {
 		int newstack[] = new int[capacity];
 		System.arraycopy(stack, 0, newstack, 0, length);
 		stack = newstack;
-	}
-
-	public int peek() {
-		int data;
-		data = stack[top - 1];
-		top--;
-		return data;
 	}
 
 	public int size() {
