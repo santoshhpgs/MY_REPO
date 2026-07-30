@@ -11,7 +11,7 @@ public class MissingNumberInArray {
 		{
 			if (!(array[i]+1 == array[i+1]))
 			{
-				System.out.println("misssing element in array " +(array[i]+1));
+				System.out.println("missing element in array " +(array[i]+1));
 			}
 		}
 		
