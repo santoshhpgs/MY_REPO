@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 1 - Adjectives (Describing Words) Quiz</title>
+<style>
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:"Trebuchet MS", Arial, sans-serif;
+  background:linear-gradient(135deg,#eef8ff,#fff8e8);
+  color:#263238;
+}
+.container { max-width:950px; margin:0 auto; padding:24px 16px 50px; }
+.header {
+  background:white; border-radius:22px; padding:26px; text-align:center;
+  box-shadow:0 6px 22px rgba(0,0,0,.08); margin-bottom:20px;
+}
+.header h1 { margin:0 0 8px; color:#1769aa; font-size:clamp(26px,5vw,38px); }
+.header p { margin:5px 0; font-size:17px; }
+.progress-wrap { margin-top:18px; background:#e7edf2; height:12px; border-radius:20px; overflow:hidden; }
+#progress { width:0%; height:100%; background:#42a5f5; transition:width .25s; }
+.question {
+  background:white; border-radius:20px; padding:22px; margin:18px 0;
+  box-shadow:0 4px 16px rgba(0,0,0,.07);
+}
+.q-title { font-size:19px; font-weight:bold; margin-bottom:16px; line-height:1.5; }
+.analogy {
+  display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap;
+  background:#f8fbfd; border:2px solid #dcecf7; border-radius:16px;
+  padding:18px 10px; margin-bottom:18px; text-align:center;
+}
+.big { font-size:48px; min-width:65px; text-align:center; }
+.label { font-size:15px; color:#607d8b; font-weight:bold; }
+.options { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.option { position:relative; }
+.option input { position:absolute; opacity:0; }
+.option label {
+  display:block; padding:14px 12px; border:2px solid #d7e1e7; border-radius:13px;
+  cursor:pointer; background:white; text-align:center; font-size:16px;
+  transition:.2s; min-height:54px; line-height:1.35;
+}
+.option label:hover { border-color:#42a5f5; background:#f1f8ff; transform:translateY(-1px); }
+.option input:checked + label {
+  border-color:#1769aa; background:#e3f2fd; box-shadow:0 0 0 2px #90caf9;
+}
+.submit-area { text-align:center; margin:28px 0; }
+button {
+  border:0; background:#1769aa; color:white; padding:15px 34px; border-radius:14px;
+  font-size:18px; font-weight:bold; cursor:pointer; box-shadow:0 5px 12px rgba(23,105,170,.25);
+}
+button:hover { background:#0d5b96; }
+#result {
+  display:none; background:white; border-radius:22px; padding:28px; text-align:center;
+  box-shadow:0 6px 22px rgba(0,0,0,.1); margin-top:20px;
+}
+#score { font-size:42px; color:#1769aa; font-weight:bold; }
+#message { font-size:20px; margin:10px 0 20px; }
+.review { text-align:left; margin-top:20px; }
+.review-item { padding:12px 14px; border-radius:12px; margin:8px 0; font-size:15px; line-height:1.5; }
+.correct { background:#e8f5e9; border-left:5px solid #43a047; }
+.wrong { background:#ffebee; border-left:5px solid #e53935; }
+.section-title { margin-top:32px; color:#1769aa; font-size:24px; }
+.footer-note { text-align:center; color:#78909c; margin-top:25px; font-size:14px; }
+.small-note { color:#607d8b; font-size:14px; }
+@media (max-width:650px) {
+  .options { grid-template-columns:1fr; }
+  .big { font-size:40px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🌟 Class 1 Adjectives Quiz 🌟</h1>
+    <p><strong>Adjectives (Describing Words)</strong></p>
+    <p>Choose the correct answer for each question.</p>
+    <div class="progress-wrap"><div id="progress"></div></div>
+    <p id="progressText" style="font-size:14px;color:#607d8b;margin-top:7px;">0 of 50 answered</p>
+  </div>
+
+  <form id="quiz"></form>
+
+  <div class="submit-area">
+    <button type="button" onclick="submitQuiz()">✅ Submit Answers</button>
+  </div>
+
+  <div id="result">
+    <div>🎉 Your Result 🎉</div>
+    <div id="score"></div>
+    <div id="message"></div>
+    <button type="button" onclick="location.reload()">🔄 Try Again</button>
+    <div class="review" id="review"></div>
+  </div>
+
+  <div class="footer-note">Keep trying — learning is fun! ⭐</div>
+</div>
+
+<script>
+const questions = [
+  {q:'Which word describes the boy? <br><small>The <b>happy</b> boy is playing.</small>', options:['boy','happy','playing','the'], answer:1}, {q:'Which word describes the flower? <br><small>The <b>pretty</b> flower is pink.</small>', options:['flower','pink','pretty','is'], answer:2}, {q:'Which word describes the dog? <br><small>I have a <b>small</b> dog.</small>', options:['have','dog','small','I'], answer:2}, {q:'Which word describes the house? <br><small>We live in a <b>big</b> house.</small>', options:['live','house','big','we'], answer:2}, {q:'Which word describes the ball? <br><small>It is a <b>red</b> ball.</small>', options:['ball','red','is','it'], answer:1}, {q:'Which word describes the ice? <br><small>The ice is <b>cold</b>.</small>', options:['ice','the','is','cold'], answer:3}, {q:'Which word describes the elephant? <br><small>The elephant is <b>huge</b>.</small>', options:['elephant','huge','the','is'], answer:1}, {q:'Which word describes the rabbit? <br><small>The <b>soft</b> rabbit has long ears.</small>', options:['rabbit','long','soft','ears'], answer:2}, {q:'Choose the best word: A lion is ________.', options:['tiny','brave','sweet'], answer:1}, {q:'Choose the best word: A lemon is usually ________.', options:['sour','soft','tall'], answer:0}, {q:'Choose the best word: Ice cream is ________.', options:['cold','rough','huge'], answer:0}, {q:'Choose the best word: A giraffe has a ________ neck.', options:['short','long','round'], answer:1}, {q:'Choose the best word: A feather is ________.', options:['heavy','light','hard'], answer:1}, {q:'Choose the best word: A stone is ________.', options:['hard','fluffy','sweet'], answer:0}, {q:'Choose the best word: A baby is ________.', options:['cute','square','cold'], answer:0}, {q:'Choose the best word: The sun is ________.', options:['dark','bright','tiny'], answer:1}, {q:'🐘 Which word best describes the elephant?', options:['small','big','tiny'], answer:1}, {q:'🦋 Which word best describes the butterfly?', options:['beautiful','heavy','rough'], answer:0}, {q:"🦒 Which word best describes the giraffe's neck?", options:['short','long','small'], answer:1}, {q:'🍋 Which word best describes a lemon?', options:['sour','sweet','soft'], answer:0}, {q:'🧊 Which word best describes ice?', options:['hot','cold','warm'], answer:1}, {q:'🪶 Which word best describes a feather?', options:['light','heavy','hard'], answer:0}, {q:"🐰 Which word best describes a rabbit's fur?", options:['soft','rough','hard'], answer:0}, {q:'🍰 Which word best describes a cake?', options:['sweet','salty','cold'], answer:0}, {q:'I have a ________ teddy bear. 🧸', options:['soft','sharp','sour'], answer:0}, {q:'The mango is ________. 🥭', options:['sweet','tall','rough'], answer:0}, {q:'The road is ________.', options:['long','sweet','soft'], answer:0}, {q:'The kitten is very ________. 🐱', options:['cute','huge','hard'], answer:0}, {q:'The pillow is ________.', options:['soft','sharp','sour'], answer:0}, {q:'The box is ________. 📦', options:['square','sweet','cold'], answer:0}, {q:'The night sky is ________. 🌙', options:['dark','bright','sour'], answer:0}, {q:'The flower is ________. 🌸', options:['pretty','hard','heavy'], answer:0}, {q:'Which word means the opposite of <b>big</b>?', options:['long','small','tall'], answer:1}, {q:'Which word means the opposite of <b>hot</b>?', options:['cold','warm','bright'], answer:0}, {q:'Which word means the opposite of <b>fast</b>?', options:['quick','slow','strong'], answer:1}, {q:'Which word means the opposite of <b>happy</b>?', options:['sad','kind','pretty'], answer:0}, {q:'Which word means the opposite of <b>old</b>?', options:['young','long','big'], answer:0}, {q:'Which word describes something you can eat and that tastes like sugar?', options:['sweet','rough','tall'], answer:0}, {q:'Which word describes a road that has a great distance from one end to the other?', options:['short','long','small'], answer:1}, {q:'Which word describes a person who is not afraid?', options:['brave','sad','tiny'], answer:0},
+  {q:'🖍️ Which colour is a blackboard?', options:['Black','Green','Red'], answer:0},
+{q:'🍃 Which colour are the leaves?', options:['Blue','Green','Yellow'], answer:1},
+{q:'🧑‍🏫 Which colour is chalk?', options:['White','Brown','Black'], answer:0},
+{q:'🍫 Which colour is chocolate?', options:['Pink','Brown','Orange'], answer:1},
+{q:'🚒 Which colour is a fire engine?', options:['Red','Purple','Green'], answer:0},
+{q:'🌿 Look at the leaves. Choose their colour.', options:['Green','Black','White'], answer:0},
+{q:'🍫 Look at the chocolate. Choose its colour.', options:['Brown','Blue','Red'], answer:0},
+{q:'🚒 Look at the fire engine. Choose its colour.', options:['Yellow','Red','Green'], answer:1},
+{q:'⬛ Which colour word completes this clue: A blackboard is ________.', options:['black','white','green'], answer:0},
+{q:'🧩 Which set has the correct colour names?', options:['Leaves–green, Chalk–white, Chocolate–brown','Leaves–red, Chalk–black, Chocolate–blue','Leaves–yellow, Chalk–green, Chocolate–pink'], answer:0}
+];
+
+const sectionStarts = [0,8,16,24,32,40];
+const sectionNames = ['🌟 Find the Describing Word','🎨 Choose the Right Describing Word','🖼️ Look and Choose','✏️ Complete the Sentence','🧩 Adjective Practice','🎨 Colours – Picture Clues & Crossword Practice'];
+
+const quiz = document.getElementById("quiz");
+
+function renderQuiz() {
+  let html = "";
+  questions.forEach((q, i) => {
+    if (sectionStarts.includes(i)) {
+      const idx = sectionStarts.indexOf(i);
+      html += `<h2 class="section-title">${sectionNames[idx]}</h2>`;
+    }
+    html += `
+      <div class="question">
+        <div class="q-title">${i+1}. ${q.q}</div>
+        <div class="options">
+          ${q.options.map((opt,j)=>`
+            <div class="option">
+              <input type="radio" id="q${i}_${j}" name="q${i}" value="${j}" onchange="updateProgress()">
+              <label for="q${i}_${j}">${String.fromCharCode(65+j)}) ${opt}</label>
+            </div>
+          `).join("")}
+        </div>
+      </div>`;
+  });
+  quiz.innerHTML = html;
+}
+
+function updateProgress() {
+  let answered = 0;
+  questions.forEach((q,i) => {
+    if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+  });
+  document.getElementById("progress").style.width =
+    (answered/questions.length*100)+"%";
+  document.getElementById("progressText").textContent =
+    `${answered} of ${questions.length} answered`;
+}
+
+function submitQuiz() {
+  let score = 0;
+  let unanswered = 0;
+  let reviewHTML = "";
+
+  questions.forEach((q,i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const selectedValue = selected ? Number(selected.value) : null;
+
+    if (selectedValue === null) {
+      unanswered++;
+      reviewHTML += `<div class="review-item wrong">
+        <strong>Q${i+1}:</strong> Not answered.
+        Correct answer: <strong>${q.options[q.answer]}</strong>
+      </div>`;
+      return;
+    }
+
+    if (selectedValue === q.answer) {
+      score++;
+      reviewHTML += `<div class="review-item correct">
+        <strong>Q${i+1}:</strong> ✅ Correct
+      </div>`;
+    } else {
+      reviewHTML += `<div class="review-item wrong">
+        <strong>Q${i+1}:</strong> ❌ Your answer:
+        ${q.options[selectedValue]} &nbsp; | &nbsp;
+        Correct: <strong>${q.options[q.answer]}</strong>
+      </div>`;
+    }
+  });
+
+  const percent = Math.round(score/questions.length*100);
+  document.getElementById("score").textContent =
+    `${score} / ${questions.length} (${percent}%)`;
+
+  let message;
+  if (percent >= 90) message = "🌟 Excellent! You are a describing-word superstar!";
+  else if (percent >= 75) message = "👏 Very good! Keep practicing!";
+  else if (percent >= 50) message = "😊 Good effort! A little more practice will help.";
+  else message = "💪 Keep practicing! You can do it!";
+
+  if (unanswered > 0)
+    message += ` You left ${unanswered} question${unanswered>1?"s":""} unanswered.`;
+
+  document.getElementById("message").textContent = message;
+  document.getElementById("review").innerHTML = reviewHTML;
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

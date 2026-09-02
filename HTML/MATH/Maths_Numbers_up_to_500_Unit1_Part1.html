@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Standard 1 Maths - Numbers up to 500 - 40 Question Quiz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;background:linear-gradient(135deg,#fff4e0,#eaf6ff);color:#25313a}
+.wrap{max-width:980px;margin:auto;padding:15px}
+header{background:#e2761f;color:#fff;border-radius:24px;padding:23px;box-shadow:0 10px 25px #0002}
+.title{display:flex;align-items:center;gap:10px}
+.badge{width:46px;height:46px;border-radius:50%;background:#ffe066;color:#7a3d00;display:grid;place-items:center;font-weight:900;font-size:24px;flex:0 0 46px}
+h1{margin:0;font-size:clamp(22px,5vw,36px);line-height:1.15}
+header p{margin:7px 0;font-size:14px}
+.lesson{margin-top:15px;background:#fff;color:#5a3a12;border:3px solid #ffcf6b;border-radius:18px;padding:14px;line-height:1.55;font-size:14px}
+.progress-wrap{position:sticky;top:0;z-index:10;background:#ffffffef;padding:11px 0}
+.progress-row{display:flex;justify-content:space-between;font-weight:900;font-size:14px}
+.progress-track{height:14px;background:#ddd;border-radius:20px;overflow:hidden;margin-top:7px}
+.progress-fill{height:100%;width:0;background:#3fa65a;transition:.25s}
+.section{display:flex;align-items:center;gap:9px;margin:24px 0 10px;color:#b85c0f}
+.section span{font-size:26px}
+.section h2{margin:0;font-size:20px}
+.question{background:#fff;border:2px solid #f0e2cf;border-radius:18px;margin:11px 0;padding:17px;box-shadow:0 5px 14px #0001}
+.qtext{font-size:16px;font-weight:900;line-height:1.5;margin-bottom:10px}
+.qno{display:inline-grid;place-items:center;background:#fff0c9;color:#b85c0f;border-radius:9px;padding:4px 8px;margin-right:7px}
+.visual{background:#fff8ec;border:2px dashed #f0c98a;border-radius:14px;padding:10px;margin-bottom:12px;font-size:22px;line-height:1.7;letter-spacing:2px;text-align:center}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0}
+.opt label{display:block;border:2px solid #ecdfc9;border-radius:13px;padding:12px;cursor:pointer;font-size:14px;line-height:1.35}
+.opt label:hover{background:#fff6e5;border-color:#e2761f}
+.opt input:checked+label{background:#fff0d6;border-color:#e2761f;font-weight:900}
+.opt input:focus-visible+label{outline:3px solid #bfe1ff}
+.actions{text-align:center;padding:25px 0}
+button{border:0;border-radius:15px;padding:14px 25px;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 6px 12px #0002}
+#submit{background:#3fa65a;color:#fff}
+#retry{background:#e2761f;color:#fff}
+#result{display:none;background:#fff;border:3px solid #f0e2cf;border-radius:22px;padding:21px;box-shadow:0 8px 22px #0002}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#fff4e0;border-radius:15px;padding:14px;text-align:center}
+.stat strong{display:block;font-size:26px;color:#b85c0f}
+.message{margin:14px 0;background:#fff5c9;border:2px solid #e5c75c;border-radius:15px;padding:14px;font-weight:900}
+.review{margin:9px 0;border-radius:14px;padding:12px;border-left:6px solid #aaa;background:#f7f7f7}
+.review.correct{border-left-color:#42a95b;background:#effaf1}
+.review.wrong{border-left-color:#df5260;background:#fff0f2}
+.review.unanswered{border-left-color:#dda620;background:#fff8e6}
+.review-q{font-weight:900}
+.small{font-size:13px;line-height:1.5}
+footer{text-align:center;color:#6c777a;font-size:12px;padding:20px}
+@media(max-width:650px){.wrap{padding:10px}.options{grid-template-columns:1fr}.stats{grid-template-columns:1fr}header{padding:18px}.question{padding:14px}.visual{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="title"><div class="badge">4</div><h1>MATHS<br>NUMBERS UP TO 500</h1></div>
+<p><b>Standard 1 Maths • Interactive 40-Question Chapter Quiz</b></p>
+<p>Counting &amp; Number Formation • Number Names • Place Value &amp; Face Value • Comparing Numbers • Forward &amp; Backward Counting • Ascending &amp; Descending Order • Odd &amp; Even Numbers • Number Riddles</p>
+<div class="lesson"><b>🔢 Chapter focus:</b> This quiz follows the Numbers up to 500 chapter: counting objects and beads to form 2 and 3-digit numbers, reading and writing number names, face value and place value, comparing numbers with &lt; and &gt;, forward and backward counting, arranging numbers in ascending and descending order, and identifying odd and even numbers.</div>
+</header>
+
+<div class="progress-wrap">
+<div class="progress-row"><span>📚 Your Progress</span><span id="pt">0 of 40 answered</span></div>
+<div class="progress-track"><div class="progress-fill" id="pf"></div></div>
+</div>
+
+<main id="quiz"></main>
+
+<div class="actions"><button id="submit" type="button">✅ Submit Answers</button></div>
+
+<section id="result">
+<h2>🎉 Final Result</h2>
+<div class="stats">
+<div class="stat"><strong id="score">0/40</strong>Score</div>
+<div class="stat"><strong id="pct">0%</strong>Percentage</div>
+<div class="stat"><strong id="answered">0/40</strong>Answered</div>
+</div>
+<div class="message" id="msg"></div>
+<h2 style="color:#b85c0f">📝 Complete Question-by-Question Review</h2>
+<div id="review"></div>
+<div class="actions"><button id="retry" type="button">🔄 Try Again</button></div>
+</section>
+
+<footer>Standard 1 Maths • Unit 1, Part 1: Numbers up to 500</footer>
+</div>
+
+<script>
+const questions=[
+{section:"Counting & Number Formation",icon:"🔢",q:"Count the stars. How many are there in all?",v:"⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ ⭐⭐⭐⭐",o:["34","43","24","30"],a:0},
+{q:"1 hundred, 2 tens and 5 ones make which number?",o:["125","152","215","512"],a:0},
+{q:"3 hundreds, 5 tens and 2 ones make which number?",o:["352","325","235","532"],a:0},
+{q:"4 hundreds, 8 tens and 3 ones make which number?",o:["483","438","843","384"],a:0},
+{q:"47 is made up of how many tens and ones?",o:["4 tens and 7 ones","7 tens and 4 ones","4 tens and 0 ones","47 tens and 0 ones"],a:0},
+{q:"10 tens make one ___.",o:["hundred","ten","thousand","unit"],a:0},
+
+{section:"Number Names",icon:"🔤",q:"What is the number name of 68?",o:["Sixty-eight","Eighty-six","Sixty-nine","Sixteen-eight"],a:0},
+{q:"What is the numeral for Seventy-four?",o:["74","47","40","704"],a:0},
+{q:"What is the number name of 58?",o:["Fifty-eight","Eighty-five","Fifty-five","Fifteen-eight"],a:0},
+{q:"What is the numeral for Eighty-nine?",o:["89","98","80","819"],a:0},
+{q:"What is the number name of 124?",o:["One hundred twenty-four","One hundred forty-two","Two hundred fourteen","Twelve hundred four"],a:0},
+{q:"What is the number name of 231?",o:["Two hundred thirty-one","Two hundred thirteen","Three hundred twenty-one","Two hundred three"],a:0},
+
+{section:"Place Value & Face Value",icon:"🏷️",q:"What is the face value of 4 in 456?",o:["4","40","400","6"],a:0},
+{q:"What is the place value of 2 in 425?",o:["20","2","200","25"],a:0},
+{q:"What is the place value of 3 in 235?",o:["30","3","300","35"],a:0},
+{q:"What is the place value of 7 in 217?",o:["7","70","700","17"],a:0},
+{q:"What is the face value of 7 in 217?",o:["7","70","700","21"],a:0},
+{q:"In a 3-digit number, what does the digit at the hundreds place represent?",o:["Hundreds","Tens","Ones","Thousands"],a:0},
+{q:"The place value of the digit 0 at any place is always ___.",o:["0","10","1","100"],a:0},
+
+{section:"Comparing Numbers",icon:"⚖️",q:"Which is greater, 112 or 95?",o:["112","95","Both are equal","Cannot say"],a:0},
+{q:"Compare 138 and 108. Which is smaller?",o:["108","138","Both are equal","Cannot say"],a:0},
+{q:"Compare 224 and 234. Which is greater?",o:["234","224","Both are equal","Cannot say"],a:0},
+{q:"Which symbol makes this true: 142 ___ 143?",o:["<",">","=","+"],a:0},
+{q:"Which symbol makes this true: 329 ___ 224?",o:[">","<","=","-"],a:0},
+
+{section:"Forward & Backward Counting",icon:"➡️",q:"Count forward: 345, 346, 347, ___, 349. What is the missing number?",o:["348","350","344","347"],a:0},
+{q:"Count forward: 327, 328, 329, ___, 331. What is the missing number?",o:["330","332","329","328"],a:0},
+{q:"Count backward: 212, 211, 210, ___, 208. What is the missing number?",o:["209","213","207","211"],a:0},
+{q:"Count backward: 456, 455, ___, 453, 452. What is the missing number?",o:["454","457","451","450"],a:0},
+{q:"What number comes just before 213?",o:["212","214","211","210"],a:0},
+
+{section:"Ascending & Descending Order",icon:"📶",q:"Arrange 100, 102, 201, 210, 286 in ascending order. Which number comes first?",o:["100","286","210","102"],a:0},
+{q:"Arrange 25, 31, 18, 12 in ascending order. Which number comes first?",o:["12","31","25","18"],a:0},
+{q:"Arrange 120, 108, 304, 216 in descending order. Which number comes first?",o:["304","108","120","216"],a:0},
+{q:"585 comes just after ___.",o:["584","586","585","583"],a:0},
+
+{section:"Odd and Even Numbers",icon:"🔵",q:"Which of these is an even number?",o:["8","3","5","7"],a:0},
+{q:"Which of these is an odd number?",o:["9","4","6","2"],a:0},
+{q:"Which group of digits can be at the ones place of an even number?",o:["0, 2, 4, 6, 8","1, 3, 5, 7, 9","only 5","only 0"],a:0},
+{q:"Can every odd number be shared equally into two exact groups (paired without anything left over)?",o:["No","Yes","Sometimes","Cannot say"],a:0},
+
+{section:"Number Riddles",icon:"🧩",q:"I am less than 44 but more than 42. Who am I?",o:["43","42","44","41"],a:0},
+{q:"I am greater than 84 and less than 87. I have 4 more than 82. Who am I?",o:["86","82","87","80"],a:0},
+{q:"Amit's father planted 32 mango trees, 73 apple trees and 89 banana trees. Arranged in descending order, which number of trees comes first?",o:["89","73","32","0"],a:0}
+];
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+
+const quiz=document.getElementById("quiz");
+let currentSection="";
+questions.forEach((item,i)=>{
+  if(item.section && item.section!==currentSection){
+    currentSection=item.section;
+    const s=document.createElement("div");
+    s.className="section";
+    s.innerHTML=`<span>${item.icon}</span><h2>${escapeHtml(item.section)}</h2>`;
+    quiz.appendChild(s);
+  }
+  const card=document.createElement("article");
+  card.className="question";
+  const visual=item.v?`<div class="visual">${item.v}</div>`:"";
+  const order=shuffle(item.o.map((_,j)=>j));
+  const optionsHtml=order.map((srcIdx,slot)=>`
+    <div class="opt">
+      <input type="radio" id="q${i+1}_${slot}" name="q${i+1}" value="${escapeHtml(item.o[srcIdx])}">
+      <label for="q${i+1}_${slot}"><b>${String.fromCharCode(65+slot)}.</b> ${escapeHtml(item.o[srcIdx])}</label>
+    </div>`).join("");
+  card.innerHTML=`<div class="qtext"><span class="qno">${i+1}</span>${escapeHtml(item.q)}</div>${visual}<div class="options">${optionsHtml}</div>`;
+  quiz.appendChild(card);
+});
+
+function updateProgress(){
+  let n=0;
+  for(let i=1;i<=40;i++) if(document.querySelector(`input[name="q${i}"]:checked`)) n++;
+  document.getElementById("pt").textContent=`${n} of 40 answered`;
+  document.getElementById("pf").style.width=(n/40*100)+"%";
+}
+document.querySelectorAll('input[type="radio"]').forEach(x=>x.addEventListener("change",updateProgress));
+
+document.getElementById("submit").addEventListener("click",()=>{
+  let score=0,answered=0,review="";
+  questions.forEach((item,i)=>{
+    const selected=document.querySelector(`input[name="q${i+1}"]:checked`);
+    const val=selected?selected.value:null;
+    if(val!==null) answered++;
+    const correct=item.o[item.a];
+    const ok=val===correct;
+    if(ok) score++;
+    const cls=ok?"correct":(val===null?"unanswered":"wrong");
+    const status=ok?"✅ Correct":(val===null?"⚠️ Unanswered":"❌ Wrong");
+    const detail=ok
+      ? `<b>Correct answer:</b> ${escapeHtml(correct)}`
+      : val===null
+        ? `<b>Correct answer:</b> ${escapeHtml(correct)}`
+        : `<b>Your answer:</b> ${escapeHtml(val)}<br><b>Correct answer:</b> ${escapeHtml(correct)}`;
+    review+=`<div class="review ${cls}"><div class="review-q">${i+1}. ${escapeHtml(item.q)}</div><div>${status}</div><div class="small">${detail}</div></div>`;
+  });
+  const pct=Math.round(score/40*100);
+  document.getElementById("score").textContent=`${score}/40`;
+  document.getElementById("pct").textContent=pct+"%";
+  document.getElementById("answered").textContent=`${answered}/40`;
+  document.getElementById("review").innerHTML=review;
+  document.getElementById("msg").textContent=
+    pct===100 ? "🌟 Perfect! Amazing work!" :
+    pct>=80 ? "🎉 Excellent work! Keep learning!" :
+    pct>=60 ? "😊 Good job! Read the lesson again and try once more!" :
+    "🌱 Keep practising. You can improve every time you try!";
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+document.getElementById("retry").addEventListener("click",()=>{
+  document.querySelectorAll('input[type="radio"]').forEach(x=>x.checked=false);
+  document.getElementById("result").style.display="none";
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+updateProgress();
+</script>
+</body>
+</html>

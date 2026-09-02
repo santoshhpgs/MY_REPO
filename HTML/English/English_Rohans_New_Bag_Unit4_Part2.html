@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Standard 1 English - Rohan's New Bag (Workbook) - 40 Question Quiz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;background:linear-gradient(135deg,#e8f8fa,#fff8ec);color:#243238}
+.wrap{max-width:980px;margin:auto;padding:15px}
+header{background:#1f7a86;color:#fff;border-radius:24px;padding:23px;box-shadow:0 10px 25px #0002}
+.title{display:flex;align-items:center;gap:10px}
+.badge{width:46px;height:46px;border-radius:50%;background:#f5b942;color:#164b52;display:grid;place-items:center;font-weight:900;font-size:24px;flex:0 0 46px}
+h1{margin:0;font-size:clamp(22px,5vw,36px);line-height:1.15}
+header p{margin:7px 0;font-size:14px}
+.lesson{margin-top:15px;background:#fff;color:#194e56;border:3px solid #f0bd54;border-radius:18px;padding:14px;line-height:1.55;font-size:14px}
+.progress-wrap{position:sticky;top:0;z-index:10;background:#ffffffef;padding:11px 0}
+.progress-row{display:flex;justify-content:space-between;font-weight:900;font-size:14px}
+.progress-track{height:14px;background:#ddd;border-radius:20px;overflow:hidden;margin-top:7px}
+.progress-fill{height:100%;width:0;background:#43a65a;transition:.25s}
+.section{display:flex;align-items:center;gap:9px;margin:24px 0 10px;color:#1c6b76}
+.section span{font-size:26px}
+.section h2{margin:0;font-size:20px}
+.question{background:#fff;border:2px solid #dce5e7;border-radius:18px;margin:11px 0;padding:17px;box-shadow:0 5px 14px #0001}
+.qtext{font-size:16px;font-weight:900;line-height:1.5;margin-bottom:13px}
+.qno{display:inline-grid;place-items:center;background:#fff0c9;color:#1c6b76;border-radius:9px;padding:4px 8px;margin-right:7px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0}
+.opt label{display:block;border:2px solid #d9dfe1;border-radius:13px;padding:12px;cursor:pointer;font-size:14px;line-height:1.35}
+.opt label:hover{background:#effbfd;border-color:#2a929e}
+.opt input:checked+label{background:#e1f6f7;border-color:#1f7a86;font-weight:900}
+.opt input:focus-visible+label{outline:3px solid #bfe1ff}
+.actions{text-align:center;padding:25px 0}
+button{border:0;border-radius:15px;padding:14px 25px;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 6px 12px #0002}
+#submit{background:#43a65a;color:#fff}
+#retry{background:#1f7a86;color:#fff}
+#result{display:none;background:#fff;border:3px solid #cfe3e5;border-radius:22px;padding:21px;box-shadow:0 8px 22px #0002}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#eaf8f8;border-radius:15px;padding:14px;text-align:center}
+.stat strong{display:block;font-size:26px;color:#1c6b76}
+.message{margin:14px 0;background:#fff5c9;border:2px solid #e5c75c;border-radius:15px;padding:14px;font-weight:900}
+.review{margin:9px 0;border-radius:14px;padding:12px;border-left:6px solid #aaa;background:#f7f7f7}
+.review.correct{border-left-color:#42a95b;background:#effaf1}
+.review.wrong{border-left-color:#df5260;background:#fff0f2}
+.review.unanswered{border-left-color:#dda620;background:#fff8e6}
+.review-q{font-weight:900}
+.small{font-size:13px;line-height:1.5}
+footer{text-align:center;color:#6c777a;font-size:12px;padding:20px}
+@media(max-width:650px){.wrap{padding:10px}.options{grid-template-columns:1fr}.stats{grid-template-columns:1fr}header{padding:18px}.question{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="title"><div class="badge">4</div><h1>SCHOOL<br>ROHAN'S NEW BAG</h1></div>
+<p><b>Standard 1 English • Interactive 40-Question Workbook Quiz</b></p>
+<p>Warm-up • Get Started • Reading • Reading Comprehension • Life Skills &amp; Values • Vocabulary • Grammar • Study Skills • Speaking • Listening</p>
+<div class="lesson"><b>🎒 Lesson focus:</b> This quiz follows Rohan's New Bag workbook pages: colouring the bag and school building, the story of Rohan's first day with his new bag, classroom and school-place vocabulary, keeping the classroom tidy, the pronouns I/We/You, the words this/that/these/those, building compound words, and polite greetings.</div>
+</header>
+
+<div class="progress-wrap">
+<div class="progress-row"><span>📚 Your Progress</span><span id="pt">0 of 40 answered</span></div>
+<div class="progress-track"><div class="progress-fill" id="pf"></div></div>
+</div>
+
+<main id="quiz"></main>
+
+<div class="actions"><button id="submit" type="button">✅ Submit Answers</button></div>
+
+<section id="result">
+<h2>🎉 Final Result</h2>
+<div class="stats">
+<div class="stat"><strong id="score">0/40</strong>Score</div>
+<div class="stat"><strong id="pct">0%</strong>Percentage</div>
+<div class="stat"><strong id="answered">0/40</strong>Answered</div>
+</div>
+<div class="message" id="msg"></div>
+<h2 style="color:#1c6b76">📝 Complete Question-by-Question Review</h2>
+<div id="review"></div>
+<div class="actions"><button id="retry" type="button">🔄 Try Again</button></div>
+</section>
+
+<footer>Standard 1 English • Chapter 4: School – Rohan's New Bag (Workbook Edition)</footer>
+</div>
+
+<script>
+const questions=[
+{section:"Warm-up",icon:"🎒",q:"In the warm-up, what are you asked to draw and colour?",o:["A school bag","A birthday cake","A fish","A car"],a:0},
+
+{section:"Get Started",icon:"🏫",q:"In the colouring code, which number stands for the colour Yellow?",o:["2","4","6","8"],a:1},
+{q:"In the colouring code, which colour does the number 3 stand for?",o:["Green","Brown","Red","Blue"],a:2},
+{q:"Which picture do you colour using the number code in Get Started?",o:["A school building","A farm","A zoo","A park"],a:0},
+
+{section:"Reading",icon:"📖",q:"What colour is Rohan's new bag?",o:["Red and yellow","Blue and green","Black and white","Pink and purple"],a:1},
+{q:"Who gives Rohan his new bag to take to school?",o:["His teacher","His friend","Maa","Miss Singh"],a:2},
+{q:"What does Rohan take out of his bag to colour in the art period?",o:["Books","Crayons","A lunch box","A ball"],a:1},
+{q:"What does Rohan eat for lunch, according to the story?",o:["A sandwich","Rice","Soup","Noodles"],a:0},
+{q:"Which playground equipment is named in the story?",o:["Slide","Swing","Jungle gym","See-saw"],a:2},
+
+{section:"Reading Comprehension",icon:"📚",q:"Is Rohan's bag new or old?",o:["Old, blue and green","New, blue and green","New, red and white","Old, black and white"],a:1},
+{q:"What does Rohan do in the playground with his friends?",o:["Plays football and cricket","Reads a book","Sleeps","Draws a picture"],a:0},
+{q:"Who is Miss Singh?",o:["Rohan's neighbour","Rohan's teacher","Rohan's mother","Rohan's sister"],a:1},
+{q:"Where does Miss Singh find Rohan's bag?",o:["On the desk","Under the bench","On his back","In the classroom cupboard"],a:2},
+
+{section:"Life Skills & Values",icon:"💚",q:"What should the tidy crew check before everyone goes home?",o:["If the lights and fans are switched off","If it is raining outside","If the teacher is happy","If lunch is ready"],a:0},
+{q:"What should the tidy crew check about the desks and chairs?",o:["That they are painted","That they are in their correct places","That they are new","That they are heavy"],a:1},
+{q:"What should the tidy crew look for on the floor?",o:["Litter","Flowers","Books","Shoes"],a:0},
+{q:"Why is playing during break time and sports class good for us?",o:["It makes us sleepy","It helps us be strong and work in a team","It only makes us hungry","It wastes our time"],a:1},
+
+{section:"Vocabulary",icon:"🔤",q:"Which word names the place where we borrow and read books?",o:["library","canteen","playground","sick room"],a:0},
+{q:"Which word names the place where children play games outside?",o:["classroom","playground","principal's office","library"],a:1},
+{q:"Which word names the place where we go if we feel unwell at school?",o:["sick room","assembly hall","canteen","classroom"],a:0},
+{q:"Which word names the place where children learn lessons with their teacher?",o:["canteen","classroom","playground","library"],a:1},
+{q:"Which word names the place where we eat food at school?",o:["canteen","library","sick room","assembly hall"],a:0},
+{q:"Which word names the place where the whole school gathers together?",o:["principal's office","classroom","assembly hall","playground"],a:2},
+{q:"Which word names the room where the head of the school sits?",o:["principal's office","library","canteen","sick room"],a:0},
+
+{section:"Grammar: I, We, You",icon:"👦",q:"“I can see,” says Miss Singh. Who does I stand for?",o:["Rohan","Maa","Miss Singh","Rohan's friends"],a:2},
+{q:"“We will help,” say her friends. Who does We stand for?",o:["Rohan's friends","Miss Singh","Maa","Rohan alone"],a:0},
+{q:"“You can take it to school,” says Maa. Who does You stand for?",o:["Miss Singh","Rohan","Rohan's friends","The teacher"],a:1},
+{q:"Choose the correct word: ___ like ice creams.",o:["He","She","We","It"],a:2},
+{q:"Choose the correct word: Riya, Karan and I go to school. ___ take the school bus.",o:["He","We","She","It"],a:1},
+{q:"Choose the correct word: My name is Mina. ___ am a student.",o:["You","We","I","They"],a:2},
+
+{section:"Grammar: This, That, These, Those",icon:"👉",q:"Choose the correct word: ___ is my bag. (the bag is close to you)",o:["This","That","These","Those"],a:0},
+{q:"Choose the correct word: ___ is my desk. (the desk is far away)",o:["This","That","These","Those"],a:1},
+{q:"Choose the correct word: ___ are my friends. (friends standing close to you)",o:["This","That","These","Those"],a:2},
+{q:"Choose the correct word: ___ are my books. (books kept far away)",o:["This","That","These","Those"],a:3},
+{q:"We use “this” and “these” for people or things that are:",o:["Near or close to us","Far or distant from us","Hidden from us","Broken"],a:0},
+{q:"We use “that” and “those” for people or things that are:",o:["Near or close to us","Far or distant from us","Inside a bag","On the table only"],a:1},
+
+{section:"Study Skills",icon:"✏️",q:"Which two words make up the word “blackboard”?",o:["black + board","block + bird","black + bored","black + broad"],a:0},
+{q:"Which two words make up the word “football”?",o:["foot + tall","foot + ball","fool + ball","foot + fall"],a:1},
+
+{section:"Speaking",icon:"🗣️",q:"What does Priya say when she meets her friend Anika in the park?",o:["“Hi Anika!”","“Goodbye Anika!”","“Sorry Anika!”","“Go away, Anika!”"],a:0},
+
+{section:"Listening",icon:"👂",q:"Listen to the clue: “The place where our teacher teaches you.” Which word is it?",o:["School","Library","Canteen","Playground"],a:0}
+];
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+
+const quiz=document.getElementById("quiz");
+let currentSection="";
+questions.forEach((item,i)=>{
+  if(item.section && item.section!==currentSection){
+    currentSection=item.section;
+    const s=document.createElement("div");
+    s.className="section";
+    s.innerHTML=`<span>${item.icon}</span><h2>${escapeHtml(item.section)}</h2>`;
+    quiz.appendChild(s);
+  }
+  const card=document.createElement("article");
+  card.className="question";
+  const order=shuffle(item.o.map((_,j)=>j));
+  const optionsHtml=order.map((srcIdx,slot)=>`
+    <div class="opt">
+      <input type="radio" id="q${i+1}_${slot}" name="q${i+1}" value="${escapeHtml(item.o[srcIdx])}">
+      <label for="q${i+1}_${slot}"><b>${String.fromCharCode(65+slot)}.</b> ${escapeHtml(item.o[srcIdx])}</label>
+    </div>`).join("");
+  card.innerHTML=`<div class="qtext"><span class="qno">${i+1}</span>${escapeHtml(item.q)}</div><div class="options">${optionsHtml}</div>`;
+  quiz.appendChild(card);
+});
+
+function updateProgress(){
+  let n=0;
+  for(let i=1;i<=40;i++) if(document.querySelector(`input[name="q${i}"]:checked`)) n++;
+  document.getElementById("pt").textContent=`${n} of 40 answered`;
+  document.getElementById("pf").style.width=(n/40*100)+"%";
+}
+document.querySelectorAll('input[type="radio"]').forEach(x=>x.addEventListener("change",updateProgress));
+
+document.getElementById("submit").addEventListener("click",()=>{
+  let score=0,answered=0,review="";
+  questions.forEach((item,i)=>{
+    const selected=document.querySelector(`input[name="q${i+1}"]:checked`);
+    const val=selected?selected.value:null;
+    if(val!==null) answered++;
+    const correct=item.o[item.a];
+    const ok=val===correct;
+    if(ok) score++;
+    const cls=ok?"correct":(val===null?"unanswered":"wrong");
+    const status=ok?"✅ Correct":(val===null?"⚠️ Unanswered":"❌ Wrong");
+    const detail=ok
+      ? `<b>Correct answer:</b> ${escapeHtml(correct)}`
+      : val===null
+        ? `<b>Correct answer:</b> ${escapeHtml(correct)}`
+        : `<b>Your answer:</b> ${escapeHtml(val)}<br><b>Correct answer:</b> ${escapeHtml(correct)}`;
+    review+=`<div class="review ${cls}"><div class="review-q">${i+1}. ${escapeHtml(item.q)}</div><div>${status}</div><div class="small">${detail}</div></div>`;
+  });
+  const pct=Math.round(score/40*100);
+  document.getElementById("score").textContent=`${score}/40`;
+  document.getElementById("pct").textContent=pct+"%";
+  document.getElementById("answered").textContent=`${answered}/40`;
+  document.getElementById("review").innerHTML=review;
+  document.getElementById("msg").textContent=
+    pct===100 ? "🌟 Perfect! Amazing work!" :
+    pct>=80 ? "🎉 Excellent work! Keep learning!" :
+    pct>=60 ? "😊 Good job! Read the lesson again and try once more!" :
+    "🌱 Keep practising. You can improve every time you try!";
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+document.getElementById("retry").addEventListener("click",()=>{
+  document.querySelectorAll('input[type="radio"]').forEach(x=>x.checked=false);
+  document.getElementById("result").style.display="none";
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standard 1 Maths — 40 Question Challenge</title>
+<style>
+:root{
+  --green:#36b86c;--green2:#238c50;--mint:#effaf4;--blue:#dff1ff;
+  --ink:#26343b;--muted:#68777e;--line:#dce8e2;--red:#ef5b61;--gold:#f4b942;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#eefaf3,#f6fbff);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,#238b50,#5acb7e);color:#fff;padding:28px 16px 22px;box-shadow:0 5px 18px #0002}
+.header-inner{max-width:1050px;margin:auto}
+h1{margin:0;font-size:clamp(25px,4vw,37px);text-align:center}
+.subtitle{text-align:center;margin:8px 0 18px;font-size:15px}
+.progress-head{display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-bottom:7px}
+.progress{height:13px;background:#ffffff55;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:#fff;transition:.25s}
+.container{max-width:1050px;margin:auto;padding:15px 12px 50px}
+.question{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin:15px 0;box-shadow:0 5px 18px #265c3a10}
+.qtop{display:flex;gap:11px;align-items:flex-start}
+.qnum{width:38px;height:38px;min-width:38px;border-radius:12px;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:900}
+.section{display:none!important}
+.qtext{font-size:18px;font-weight:800;line-height:1.42}
+.visual{margin:14px 0;padding:13px;border:1px dashed #c8ddd2;border-radius:14px;background:#fbfffd;text-align:center;overflow:hidden}
+.num-seq{font-size:25px;font-weight:800;letter-spacing:5px}
+.numberline{position:relative;display:flex;justify-content:center;gap:0;flex-wrap:wrap;padding:8px 5px 3px}
+.numberline span{width:30px;text-align:center;font-size:14px;position:relative;padding-top:15px}
+.numberline span:before{content:"";position:absolute;top:2px;left:14px;width:2px;height:10px;background:#74a98c}
+.arrow{font-size:24px;color:var(--green2);font-weight:900}
+.objects{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px;font-size:30px;line-height:1.1}
+.object-box{display:inline-flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:6px;padding:10px;min-width:110px;max-width:270px;min-height:65px;border:2px solid #b9d2e0;border-radius:12px;background:#fff}
+.mini-label{font-weight:900;color:#51616a;margin:0 8px}
+.equation{font-size:27px;font-weight:900;letter-spacing:1px}
+.tenones{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.place{min-width:100px;border-radius:12px;overflow:hidden;border:1px solid #cddfd7}
+.place b{display:block;background:#dff1e6;padding:6px}
+.place span{display:block;font-size:27px;font-weight:900;padding:9px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.option{position:relative;display:flex;align-items:center;gap:10px;border:2px solid #dce7ec;border-radius:13px;padding:12px;min-height:52px;background:#fff;cursor:pointer;transition:.15s}
+.option:hover{border-color:#8ccba5}.option.selected{border-color:var(--green);background:#effaf3}
+.option input{position:absolute;opacity:0}.letter{width:30px;height:30px;border-radius:50%;background:#eef5f8;display:grid;place-items:center;font-weight:900;flex:none}.selected .letter{background:var(--green);color:#fff}
+.actions{text-align:center;margin:26px 0}
+.submit{width:min(430px,100%);border:0;border-radius:15px;padding:16px;background:linear-gradient(135deg,#2aa95f,#4bc979);color:#fff;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 7px 16px #2aa95f40}
+.result{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #0001}
+.score{text-align:center;font-size:42px;font-weight:900;color:var(--green2)}.percent{text-align:center;font-size:21px;font-weight:900}.message{text-align:center;font-size:17px;font-weight:800;margin:9px auto 20px}
+.stats{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}.stat{padding:8px 13px;border-radius:999px;background:#f6faf8;border:1px solid var(--line);font-weight:800}
+.review-title{text-align:center;color:var(--green2)}.review{border-top:1px solid var(--line);padding-top:10px}
+.review-item{padding:12px 14px;border-radius:12px;margin:8px 0;background:#f7faf9;border-left:5px solid #aaa;font-size:14px;line-height:1.45}.review-item.correct{border-left-color:var(--green);background:#effaf3}.review-item.wrong{border-left-color:var(--red);background:#fff1f1}.review-item.unanswered{border-left-color:var(--gold);background:#fff9e9}
+.retry{display:block;margin:20px auto 0;border:2px solid var(--green2);color:var(--green2);background:#fff;border-radius:13px;padding:12px 25px;font-weight:900;cursor:pointer}
+@media(max-width:680px){.options{grid-template-columns:1fr}.question{padding:14px}.qtext{font-size:16px}.num-seq{font-size:21px;letter-spacing:2px}.equation{font-size:23px}}
+</style>
+</head>
+<body>
+<header>
+<div class="header-inner">
+<h1>🌟 Standard 1 Maths Challenge 🌟</h1>
+<div class="subtitle">Numbers • Number Names • Addition • Subtraction • Number Line</div>
+<div class="progress-head"><span>Quiz Progress</span><span id="progressText">0 of 40 answered</span></div>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+</header>
+<div class="container">
+<form id="quiz"></form>
+<div class="actions"><button class="submit" id="submit" type="button">✅ Submit Answers</button></div>
+<section class="result" id="result"></section>
+</div>
+<script>
+const questions=[{"q": "Which numeral is the number name “Twenty-nine”?", "opts": ["19", "29", "39", "92"], "a": 1, "answer": "29"}, {"q": "Which number name matches 46?", "opts": ["Forty-six", "Sixty-four", "Forty-four", "Fourteen"], "a": 0, "answer": "46 = Forty-six"}, {"q": "How many tens and ones are in 53?", "opts": ["5 tens and 3 ones", "3 tens and 5 ones", "5 tens and 5 ones", "3 tens and 3 ones"], "a": 0, "answer": "53 = 5 tens + 3 ones"}, {"q": "Which number has 3 tens and 7 ones?", "opts": ["73", "37", "30", "7"], "a": 1, "answer": "3 tens + 7 ones = 37"}, {"q": "Which number comes just before 38?", "opts": ["37", "39", "28", "48"], "a": 0, "answer": "37"}, {"q": "Which number comes between 28 and 30?", "opts": ["27", "29", "31", "38"], "a": 1, "answer": "29"}, {"q": "Which number comes just after 47?", "opts": ["46", "48", "57", "37"], "a": 1, "answer": "48"}, {"q": "Fill the missing number: 51, 52, 53, ___, 55.", "opts": ["54", "56", "50", "45"], "a": 0, "answer": "54"}, {"q": "Fill the missing number: 62, 61, 60, ___, 58.", "opts": ["59", "57", "63", "68"], "a": 0, "answer": "59"}, {"q": "Which list is in ascending order (smallest to greatest)?", "opts": ["18, 25, 12", "12, 18, 25", "25, 18, 12", "18, 12, 25"], "a": 1, "answer": "12, 18, 25"}, {"q": "Which list is in descending order (greatest to smallest)?", "opts": ["17, 29, 34", "34, 29, 17", "29, 34, 17", "17, 34, 29"], "a": 1, "answer": "34, 29, 17"}, {"q": "Which number is greater: 47 or 35?", "opts": ["35", "47", "37", "45"], "a": 1, "answer": "47 is greater"}, {"q": "Choose the correct sign: 42 ___ 42.", "opts": ["<", ">", "=", "+"], "a": 2, "answer": "42 = 42"}, {"q": "Start at 5 and move 3 steps forward. What number do you reach?", "opts": ["7", "8", "9", "2"], "a": 1, "answer": "5 + 3 = 8"}, {"q": "Start at 16 and move 7 steps backward. What number do you reach?", "opts": ["8", "9", "10", "11"], "a": 1, "answer": "16 − 7 = 9"}, {"q": "Which word shows the position 5th?", "opts": ["Five", "Fifth", "Fifty", "Fourth"], "a": 1, "answer": "Fifth"}, {"q": "Which position comes after Sixth?", "opts": ["Fifth", "Seventh", "Eighth", "Third"], "a": 1, "answer": "Seventh"}, {"q": "10 ones are equal to:", "opts": ["10 tens", "1 ten", "1 one", "2 tens"], "a": 1, "answer": "10 ones = 1 ten"}, {"q": "Which numeral is “Seventy-one”?", "opts": ["17", "71", "70", "61"], "a": 1, "answer": "71"}, {"q": "There are 12 flowers. Which shows 12 as tens and ones?", "opts": ["1 ten and 2 ones", "2 tens and 1 one", "12 tens", "1 ten and 1 one"], "a": 0, "answer": "12 = 1 ten + 2 ones"}, {"q": "What is 4 + 3?", "opts": ["6", "7", "8", "9"], "a": 1, "answer": "7"}, {"q": "What is 6 + 2?", "opts": ["7", "8", "9", "10"], "a": 1, "answer": "8"}, {"q": "What is 9 + 1?", "opts": ["9", "10", "11", "8"], "a": 1, "answer": "10"}, {"q": "What is 3 + 2 + 4?", "opts": ["8", "9", "10", "7"], "a": 1, "answer": "9"}, {"q": "What is 5 + 0?", "opts": ["0", "5", "6", "10"], "a": 1, "answer": "5"}, {"q": "What is 12 + 4?", "opts": ["15", "16", "17", "18"], "a": 1, "answer": "16"}, {"q": "What is 23 + 2?", "opts": ["24", "25", "26", "21"], "a": 1, "answer": "25"}, {"q": "What is 24 + 13?", "opts": ["35", "36", "37", "38"], "a": 2, "answer": "37"}, {"q": "Sita has 20 doughnuts and Preet has 8 doughnuts. How many doughnuts do they have altogether?", "opts": ["26", "27", "28", "29"], "a": 2, "answer": "20 + 8 = 28"}, {"q": "Gita planted 11 rose plants and Rita planted 16 jasmine plants. How many plants were planted in all?", "opts": ["25", "26", "27", "24"], "a": 0, "answer": "11 + 16 = 27"}, {"q": "What is 15 − 2?", "opts": ["12", "13", "14", "17"], "a": 1, "answer": "13"}, {"q": "What is 9 − 5?", "opts": ["3", "4", "5", "6"], "a": 1, "answer": "4"}, {"q": "There are 12 objects. 4 are taken away. How many are left?", "opts": ["7", "8", "9", "10"], "a": 1, "answer": "12 − 4 = 8"}, {"q": "What is 19 − 7?", "opts": ["11", "12", "13", "14"], "a": 1, "answer": "12"}, {"q": "What is 24 − 13?", "opts": ["10", "11", "12", "13"], "a": 1, "answer": "11"}, {"q": "What is 46 − 32?", "opts": ["12", "13", "14", "15"], "a": 2, "answer": "14"}, {"q": "What is 48 − 5?", "opts": ["42", "43", "44", "45"], "a": 3, "answer": "43"}, {"q": "Meena had 48 stickers. She gave 5 stickers to her friend. How many stickers does she have now?", "opts": ["42", "43", "44", "45"], "a": 1, "answer": "48 − 5 = 43"}, {"q": "What is 15 − 1?", "opts": ["13", "14", "15", "16"], "a": 1, "answer": "14"}, {"q": "What is 27 − 27?", "opts": ["0", "1", "27", "54"], "a": 0, "answer": "27 − 27 = 0"}];
+const letters=["A","B","C","D"];
+
+function visual(i){
+const v={
+0:`<div class="num-seq">19 &nbsp; 29 &nbsp; 39 &nbsp; 92</div>`,
+2:`<div class="tenones"><div class="place"><b>Tens</b><span>5</span></div><div class="place"><b>Ones</b><span>3</span></div></div>`,
+3:`<div class="tenones"><div class="place"><b>Tens</b><span>3</span></div><div class="place"><b>Ones</b><span>7</span></div></div>`,
+4:`<div class="num-seq">36 &nbsp; <b>37</b> &nbsp; 38</div>`,
+5:`<div class="num-seq">28 &nbsp; ? &nbsp; 30</div>`,
+6:`<div class="num-seq">46 &nbsp; 47 &nbsp; ? &nbsp; 49</div>`,
+7:`<div class="num-seq">51 ➜ 52 ➜ 53 ➜ ❓ ➜ 55</div>`,
+8:`<div class="num-seq">62 ➜ 61 ➜ 60 ➜ ❓ ➜ 58</div>`,
+9:`<div class="num-seq">12 &nbsp; 18 &nbsp; 25</div>`,
+10:`<div class="num-seq">34 &nbsp; 29 &nbsp; 17</div>`,
+11:`<div class="equation">47 &nbsp; &gt; &nbsp; 35</div>`,
+12:`<div class="equation">42 &nbsp; ? &nbsp; 42</div>`,
+13:`<div class="numberline"><span>5</span><span>6</span><span>7</span><span><b>8</b></span><span>9</span></div><div class="arrow">5 + 3 = 8</div>`,
+14:`<div class="numberline"><span>7</span><span>8</span><span><b>9</b></span><span>10</span><span>11</span></div><div class="arrow">16 − 7 = 9</div>`,
+15:`<div class="objects">🥇 First &nbsp; 🥈 Second &nbsp; 🥉 <b>Fifth</b></div>`,
+16:`<div class="objects">Sixth ➜ <b>Seventh</b> ➜ Eighth</div>`,
+17:`<div class="tenones"><div class="place"><b>10 ones</b><span>➡️ 1 ten</span></div></div>`,
+18:`<div class="num-seq">17 &nbsp; 71 &nbsp; 70 &nbsp; 61</div>`,
+19:`<div class="object-box">🌸 🌸 🌸 🌸 🌸 🌸 🌸 🌸 🌸 🌸 🌸 🌸</div><div class="equation">12 = 1 ten + 2 ones</div>`,
+20:`<div class="equation">4 + 3 = ?</div>`,
+21:`<div class="equation">6 + 2 = ?</div>`,
+22:`<div class="equation">9 + 1 = ?</div>`,
+23:`<div class="equation">3 + 2 + 4 = ?</div>`,
+24:`<div class="equation">5 + 0 = ?</div>`,
+25:`<div class="numberline"><span>12</span><span>13</span><span>14</span><span>15</span><span><b>16</b></span></div><div class="arrow">12 + 4 = 16</div>`,
+26:`<div class="tenones"><div class="place"><b>23</b><span>+ 2</span></div><div class="arrow">= 25</div></div>`,
+27:`<div class="tenones"><div class="place"><b>24</b><span>+ 13</span></div><div class="arrow">= 37</div></div>`,
+28:`<div class="objects">🍩🍩🍩🍩🍩🍩🍩🍩</div><div class="equation">20 + 8 = ?</div>`,
+29:`<div class="objects">🌹 × 11 &nbsp;&nbsp; 🌼 × 16</div><div class="equation">11 + 16 = ?</div>`,
+30:`<div class="equation">15 − 2 = ?</div>`,
+31:`<div class="equation">9 − 5 = ?</div>`,
+32:`<div class="object-box">🔵 🔵 🔵 🔵 🔵 🔵 🔵 🔵 🔵 🔵 🔵 🔵</div><div class="equation">12 − 4 = ?</div>`,
+33:`<div class="numberline"><span>10</span><span>11</span><span><b>12</b></span><span>13</span><span>14</span></div><div class="arrow">19 − 7 = 12</div>`,
+34:`<div class="tenones"><div class="place"><b>24</b><span>− 13</span></div><div class="arrow">= 11</div></div>`,
+35:`<div class="tenones"><div class="place"><b>46</b><span>− 32</span></div><div class="arrow">= 14</div></div>`,
+36:`<div class="tenones"><div class="place"><b>48</b><span>− 5</span></div><div class="arrow">= 43</div></div>`,
+37:`<div class="objects">🏷️ 🏷️ 🏷️ 🏷️ 🏷️ 🏷️ 🏷️ 🏷️ 🏷️ 🏷️</div><div class="equation">48 − 5 = ?</div>`,
+38:`<div class="equation">15 − 1 = ?</div>`,
+39:`<div class="equation">27 − 27 = ?</div>`
+};
+return v[i]?`<div class="visual">${v[i]}</div>`:"";
+}
+
+function render(){
+document.getElementById("quiz").innerHTML=questions.map((q,i)=>`
+<article class="question">
+ <div class="qtop">
+  <div class="qnum">${i+1}</div>
+  <div><div class="qtext">${q.q}</div></div>
+ </div>
+ ${visual(i)}
+ <div class="options">
+ ${q.opts.map((o,j)=>`
+ <label class="option" data-q="${i}" data-o="${j}">
+   <input type="radio" name="q${i}" value="${j}">
+   <span class="letter">${letters[j]}</span><span>${o}</span>
+ </label>`).join("")}
+ </div>
+</article>`).join("");
+
+document.querySelectorAll(".option").forEach(el=>{
+el.addEventListener("click",()=>{
+const i=el.dataset.q;
+document.querySelectorAll('.option[data-q="'+i+'"]').forEach(x=>x.classList.remove("selected"));
+el.classList.add("selected");
+updateProgress();
+});
+});
+}
+
+function updateProgress(){
+let answered=0;
+questions.forEach((_,i)=>{if(document.querySelector('input[name="q'+i+'"]:checked'))answered++;});
+document.getElementById("progressText").textContent=answered+" of 40 answered";
+document.getElementById("progressBar").style.width=(answered/40*100)+"%";
+}
+
+document.getElementById("submit").addEventListener("click",()=>{
+let score=0,correct=0,wrong=0,unanswered=0,review="";
+questions.forEach((q,i)=>{
+const selected=document.querySelector('input[name="q'+i+'"]:checked');
+if(!selected){
+unanswered++;
+review+=`<div class="review-item unanswered"><b>Q${i+1}. ${q.q}</b><br>⚠️ Unanswered<br>✅ Correct answer: ${q.opts[q.a]}</div>`;
+}else if(Number(selected.value)===q.a){
+score++;correct++;
+review+=`<div class="review-item correct"><b>Q${i+1}. ${q.q}</b><br>✅ Correct — ${q.opts[q.a]}</div>`;
+}else{
+wrong++;
+review+=`<div class="review-item wrong"><b>Q${i+1}. ${q.q}</b><br>❌ Your answer: ${q.opts[Number(selected.value)]}<br>✅ Correct answer: ${q.opts[q.a]}</div>`;
+}
+});
+const pct=Math.round(score/40*100);
+let msg=pct>=90?"Amazing! You are a Maths Star! 🌟":pct>=75?"Excellent work! Keep it up! ⭐":pct>=50?"Good try! A little more practice will make you even stronger! 💪":"Keep practising — you can do it! 🌈";
+const result=document.getElementById("result");
+result.innerHTML=`
+<div class="score">🎉 ${score} / 40</div>
+<div class="percent">${pct}%</div>
+<div class="message">${msg}</div>
+<div class="stats">
+<span class="stat">✅ Correct: ${correct}</span>
+<span class="stat">❌ Wrong: ${wrong}</span>
+<span class="stat">⚠️ Unanswered: ${unanswered}</span>
+</div>
+<h2 class="review-title">📘 Complete Question-by-Question Review</h2>
+<div class="review">${review}</div>
+<button class="retry" type="button" onclick="location.reload()">🔄 Try Again</button>`;
+result.style.display="block";
+document.getElementById("submit").style.display="none";
+result.scrollIntoView({behavior:"smooth"});
+});
+
+render();
+updateProgress();
+</script>
+</body>
+</html>

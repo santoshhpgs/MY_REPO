@@ -1,0 +1,33 @@
+Create a complete, self-contained interactive HTML question paper for Standard 1 based strictly on the attached subject files.
+
+Study the screenshots carefully and create 40 age-appropriate multiple-choice questions covering the same topics, concepts, question types, patterns, and difficulty level shown in the screenshots.
+
+HTML requirements:
+
+* Create a clean, colourful, child-friendly quiz UI.
+* Use 4 options per question with exactly 1 correct answer.
+* The option should be randomly shuffled for each question.
+* Include a progress bar showing 0 of 40 answered.
+* Add a ✅ Submit Answers button.
+* After submission, show:
+    * 🎉 Final score
+    * Percentage
+    * Encouraging message
+    * Complete question-by-question review
+    * ✅ Correct answers
+    * ❌ Wrong answers showing child’s answer + correct answer
+    * Unanswered questions with the correct answer
+* Add a 🔄 Try Again button.
+* Make it fully responsive for desktop, tablet and mobile.
+* Use only HTML + CSS + JavaScript in one file.
+* No external libraries, APIs, images or internet dependency.
+* If the screenshots contain shapes, patterns, numbers, diagrams or other visuals, recreate them using HTML/CSS/SVG/emoji where appropriate.
+* Keep the questions suitable for a 6–7 year old Class 1 student.
+
+Important: The attached screenshots are the source of truth. Do not introduce topics or difficulty levels that are not supported by the screenshots.
+
+Finally, generate the complete working .html file, ready to open directly in a browser.
+
+The name of the file should be "subject name_content of the screenshot_Unit1 _Part1 .html".
+
+Any new set of questions asked that should be generated with new file name just need to updated the _part1.html suffix to _part2.html, _part3.html, etc., as needed.

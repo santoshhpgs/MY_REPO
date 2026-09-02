@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ScanFlow — welcome screen concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141033;
+    --ink-2:#241C5C;
+    --violet:#6D4AFF;
+    --violet-lt:#9B85FF;
+    --cyan:#12E0C4;
+    --coral:#FF7A45;
+    --paper:#FBFAFF;
+    --mist:#EDEAFB;
+    --slate:#6B6790;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'DM Sans',system-ui,sans-serif;
+    background:var(--mist);
+    color:var(--ink);
+    padding:48px 20px 72px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:1160px;margin:0 auto}
+  .page-head{margin-bottom:44px;max-width:640px}
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--violet);margin-bottom:10px;
+  }
+  .page-head h1{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+  .page-head p{margin-top:12px;color:var(--slate);font-size:16px;line-height:1.6}
+
+  .rack{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:36px}
+  .slot{display:flex;flex-direction:column;align-items:center}
+  .slot-label{
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;
+    color:var(--ink);margin-bottom:4px;align-self:flex-start;
+  }
+  .slot-note{font-size:13px;color:var(--slate);margin-bottom:18px;align-self:flex-start;line-height:1.5}
+
+  /* phone frame */
+  .phone{
+    width:300px;height:620px;border-radius:40px;background:#0B0820;
+    padding:9px;box-shadow:0 24px 60px -20px rgba(20,16,51,.45), 0 0 0 1px rgba(20,16,51,.08);
+    flex-shrink:0;
+  }
+  .screen{
+    width:100%;height:100%;border-radius:32px;overflow:hidden;position:relative;
+    display:flex;flex-direction:column;
+  }
+  .notch{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:104px;height:22px;background:#0B0820;border-radius:0 0 14px 14px;z-index:20;
+  }
+
+  /* ---------- A: gradient hero ---------- */
+  .a{background:linear-gradient(165deg,#6D4AFF 0%,#8B5CF6 42%,#FF7A45 130%);color:#fff}
+  .a .body{flex:1;display:flex;flex-direction:column;padding:64px 26px 0;position:relative;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(46px);opacity:.6}
+  .orb.one{width:220px;height:220px;background:#12E0C4;top:-40px;right:-70px}
+  .orb.two{width:180px;height:180px;background:#FF7A45;bottom:120px;left:-70px}
+
+  .doc{
+    position:relative;z-index:2;width:150px;height:190px;background:#fff;border-radius:14px;
+    margin:8px auto 0;padding:20px 16px;overflow:hidden;
+    box-shadow:0 18px 40px -12px rgba(11,8,32,.5);
+    transform:rotate(-4deg);
+  }
+  .doc .ln{height:7px;border-radius:4px;background:#E4E1F5;margin-bottom:9px}
+  .doc .ln.s{width:58%}
+  .doc .ln.m{width:82%}
+  .doc .ln.acc{background:#C9BEFF}
+  .beam{
+    position:absolute;left:0;right:0;height:34px;
+    background:linear-gradient(180deg,rgba(18,224,196,0) 0%,rgba(18,224,196,.55) 60%,rgba(18,224,196,1) 100%);
+    border-bottom:2px solid #12E0C4;
+    animation:sweep 2.8s cubic-bezier(.45,0,.25,1) infinite;
+  }
+  @keyframes sweep{0%{top:-34px}55%{top:100%}100%{top:100%}}
+
+  .a h2{
+    font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;line-height:1.08;
+    letter-spacing:-.025em;margin-top:34px;position:relative;z-index:2;
+  }
+  .a h2 em{font-style:normal;color:#12E0C4}
+  .a p{margin-top:12px;font-size:15px;line-height:1.55;color:rgba(255,255,255,.82);position:relative;z-index:2}
+  .a .foot{padding:0 26px 34px;position:relative;z-index:2}
+  .btn-w{
+    width:100%;height:54px;border:0;border-radius:16px;background:#fff;color:#241C5C;
+    font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .a .skip{text-align:center;margin-top:16px;font-size:14px;color:rgba(255,255,255,.7)}
+
+  /* ---------- B: dark studio ---------- */
+  .b{background:#0F0B26;color:#fff}
+  .b .body{flex:1;padding:70px 26px 0;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .grid-bg{
+    position:absolute;inset:0;
+    background-image:linear-gradient(rgba(109,74,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(109,74,255,.14) 1px,transparent 1px);
+    background-size:34px 34px;
+    mask-image:radial-gradient(circle at 50% 30%,#000 30%,transparent 74%);
+    -webkit-mask-image:radial-gradient(circle at 50% 30%,#000 30%,transparent 74%);
+  }
+  .halo{
+    position:absolute;top:34px;left:50%;transform:translateX(-50%);
+    width:250px;height:250px;border-radius:50%;
+    background:radial-gradient(circle,rgba(18,224,196,.28) 0%,transparent 68%);
+  }
+  .lens{
+    position:relative;z-index:2;width:118px;height:118px;margin:6px auto 0;border-radius:34px;
+    background:linear-gradient(150deg,#6D4AFF,#12E0C4);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 46px rgba(18,224,196,.42);
+  }
+  .lens svg{width:54px;height:54px}
+  .brand{
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;letter-spacing:.32em;
+    text-transform:uppercase;color:#12E0C4;text-align:center;margin-top:26px;position:relative;z-index:2;
+  }
+  .b h2{
+    font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.025em;
+    line-height:1.12;text-align:center;margin-top:12px;position:relative;z-index:2;
+  }
+  .b p{
+    text-align:center;margin-top:12px;font-size:14.5px;line-height:1.6;
+    color:rgba(255,255,255,.6);position:relative;z-index:2;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:22px;position:relative;z-index:2}
+  .chip{
+    font-size:12.5px;font-weight:500;padding:7px 13px;border-radius:100px;
+    border:1px solid rgba(155,133,255,.4);color:#C9BEFF;background:rgba(109,74,255,.14);
+  }
+  .b .foot{padding:0 26px 34px;position:relative;z-index:2}
+  .btn-glow{
+    width:100%;height:54px;border:0;border-radius:16px;cursor:pointer;
+    background:linear-gradient(96deg,#6D4AFF,#12E0C4);color:#0F0B26;
+    font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;
+    box-shadow:0 10px 30px -8px rgba(18,224,196,.6);
+  }
+  .b .skip{text-align:center;margin-top:15px;font-size:14px;color:rgba(255,255,255,.45)}
+
+  /* ---------- C: colour blocks ---------- */
+  .c{background:var(--paper);color:var(--ink)}
+  .c .body{flex:1;padding:62px 22px 0;display:flex;flex-direction:column}
+  .wordmark{display:flex;align-items:center;gap:9px}
+  .mark{
+    width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#6D4AFF,#FF7A45);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mark svg{width:20px;height:20px}
+  .wordmark span{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.02em}
+  .c h2{
+    font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;line-height:1.12;
+    letter-spacing:-.03em;margin-top:30px;
+  }
+  .c h2 mark{background:linear-gradient(180deg,transparent 62%,#12E0C4 62%);color:inherit;padding:0 2px}
+  .c p.sub{margin-top:11px;font-size:15px;line-height:1.55;color:var(--slate)}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:26px}
+  .tile{border-radius:18px;padding:16px 14px 18px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between}
+  .tile svg{width:24px;height:24px}
+  .tile b{font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+  .tile i{display:block;font-style:normal;font-size:12px;margin-top:3px;opacity:.72}
+  .t1{background:#6D4AFF;color:#fff}
+  .t2{background:#12E0C4;color:#083F37}
+  .t3{background:#FF7A45;color:#4A1B0C}
+  .t4{background:#241C5C;color:#fff}
+  .c .foot{padding:0 22px 34px}
+  .btn-ink{
+    width:100%;height:54px;border:0;border-radius:16px;background:var(--ink);color:#fff;
+    font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+  }
+  .c .skip{text-align:center;margin-top:15px;font-size:14px;color:var(--slate)}
+
+  @media (prefers-reduced-motion:reduce){.beam{animation:none;top:60%}}
+  @media (max-width:700px){
+    body{padding:32px 14px 56px}
+    .page-head h1{font-size:27px}
+    .phone{width:290px;height:600px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-head">
+    <p class="eyebrow">ScanFlow · onboarding</p>
+    <h1>Three welcome screens, three moods</h1>
+    <p>Same app, same first job — get the user to their first scan. Each direction spends its colour differently.</p>
+  </header>
+
+  <div class="rack">
+
+    <!-- A -->
+    <section class="slot">
+      <p class="slot-label">A · Gradient hero</p>
+      <p class="slot-note">Warm, friendly, consumer. The scan beam animates so the value is obvious before a word is read.</p>
+      <div class="phone"><div class="screen a"><div class="notch"></div>
+        <div class="body">
+          <div class="orb one"></div><div class="orb two"></div>
+          <div class="doc">
+            <div class="ln m"></div><div class="ln s acc"></div><div class="ln m"></div>
+            <div class="ln s"></div><div class="ln m acc"></div><div class="ln s"></div>
+            <div class="ln m"></div><div class="ln s acc"></div>
+            <div class="beam"></div>
+          </div>
+          <h2>Paper in.<br><em>PDF out.</em></h2>
+          <p>Scan anything with your camera, then convert between PDF, Word and photos in a tap.</p>
+        </div>
+        <div class="foot">
+          <button class="btn-w">Start scanning
+            <svg viewBox="0 0 24 24" fill="none" stroke="#241C5C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <p class="skip">I'll look around first</p>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- B -->
+    <section class="slot">
+      <p class="slot-label">B · Dark studio</p>
+      <p class="slot-note">Premium and precise. Reads "serious tool", and the chips name your formats up front.</p>
+      <div class="phone"><div class="screen b"><div class="notch"></div>
+        <div class="body">
+          <div class="grid-bg"></div><div class="halo"></div>
+          <div class="lens">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0F0B26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg>
+          </div>
+          <p class="brand">ScanFlow</p>
+          <h2>Your scanner,<br>in your pocket</h2>
+          <p>Razor-sharp scans, real text recognition, and every conversion you need.</p>
+          <div class="chips"><span class="chip">Photo → PDF</span><span class="chip">Word → PDF</span><span class="chip">PDF → Word</span><span class="chip">OCR</span></div>
+        </div>
+        <div class="foot">
+          <button class="btn-glow">Get started</button>
+          <p class="skip">Restore purchase</p>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- C -->
+    <section class="slot">
+      <p class="slot-label">C · Colour blocks</p>
+      <p class="slot-note">Bright and legible. Every tile is a real entry point, so the screen doubles as a launcher.</p>
+      <div class="phone"><div class="screen c"><div class="notch"></div>
+        <div class="body">
+          <div class="wordmark">
+            <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg></div>
+            <span>ScanFlow</span>
+          </div>
+          <h2>Welcome. What are we <mark>scanning</mark> today?</h2>
+          <p class="sub">Pick one to begin — everything else stays one tap away.</p>
+          <div class="tiles">
+            <div class="tile t1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              <div><b>Scan a doc</b><i>Camera, auto-crop</i></div>
+            </div>
+            <div class="tile t2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#083F37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m3 16 5-4 4 3 3-2 6 5"/></svg>
+              <div><b>Photos → PDF</b><i>Batch from gallery</i></div>
+            </div>
+            <div class="tile t3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#4A1B0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8 8 0 0 0 6.3 5.7L3 9"/><path d="M3 4v5h5"/><path d="M4 13a8 8 0 0 0 13.7 5.3L21 15"/><path d="M21 20v-5h-5"/></svg>
+              <div><b>Convert file</b><i>Word ↔ PDF</i></div>
+            </div>
+            <div class="tile t4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10M7 16h6"/></svg>
+              <div><b>Extract text</b><i>OCR, 40+ languages</i></div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <button class="btn-ink">Skip — take me in</button>
+          <p class="skip">You can change this anytime</p>
+        </div>
+      </div></div>
+    </section>
+
+  </div>
+</div>
+</body>
+</html>

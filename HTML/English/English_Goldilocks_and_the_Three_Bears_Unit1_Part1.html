@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standard 1 English &ndash; Goldilocks and the Three Bears</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --paper:#fff8ec;
+  --card:#fffdf8;
+  --ink:#3a2e22;
+  --ink-soft:#6d5c48;
+  --line:#e8dcc4;
+  --forest:#2f6b4f;
+  --forest-dark:#245640;
+  --honey:#f2b138;
+  --honey-soft:#fdf0d2;
+  --berry:#c6465a;
+  --berry-soft:#fdeef0;
+  --leaf-soft:#eaf5ee;
+  --radius:16px;
+  --shadow:0 4px 14px rgba(90,70,40,.10);
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Verdana,"Trebuchet MS",Tahoma,sans-serif;
+  font-size:17px;
+  line-height:1.55;
+}
+.wrap{max-width:900px;margin:0 auto;padding:16px 18px 60px}
+
+/* ---------- header ---------- */
+.masthead{
+  background:var(--forest);
+  color:#fff8ec;
+  border-radius:var(--radius);
+  padding:26px 24px;
+  margin-bottom:16px;
+}
+.eyebrow{
+  font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:bold;color:#bfe3cd;margin:0 0 6px
+}
+.masthead h1{font-size:clamp(24px,4.5vw,34px);line-height:1.2;margin:0 0 10px}
+.masthead .meta{margin:0;font-size:14.5px;color:#d8ecdf}
+.bowls{font-size:26px;letter-spacing:6px;margin-top:14px}
+
+/* ---------- student details ---------- */
+.details{
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;
+  background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:16px
+}
+.details label{display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px}
+.details input{
+  width:100%;font:inherit;font-size:16px;padding:8px 10px;
+  border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)
+}
+.details input:focus-visible{outline:3px solid var(--honey);outline-offset:1px;border-color:var(--honey)}
+
+/* ---------- story ---------- */
+.story{
+  background:var(--card);border:2px solid var(--line);border-left:8px solid var(--honey);
+  border-radius:var(--radius);padding:18px 20px;margin-bottom:16px
+}
+.story h2{margin:0 0 10px;font-size:19px}
+.story .prose{font-family:Georgia,"Times New Roman",serif;font-size:18px;line-height:1.7}
+.story .prose p{margin:0 0 12px}
+.story .prose p:last-child{margin-bottom:0}
+.story[data-hidden="true"] .prose{display:none}
+.linkbtn{
+  background:none;border:0;padding:4px 0;font:inherit;font-size:14px;font-weight:bold;
+  color:var(--forest);text-decoration:underline;cursor:pointer
+}
+
+/* ---------- sticky progress ---------- */
+.tracker{
+  position:sticky;top:0;z-index:20;margin:0 -18px 18px;padding:10px 18px 12px;
+  background:rgba(255,248,236,.96);border-bottom:2px solid var(--line);
+  backdrop-filter:blur(6px)
+}
+.tracker-row{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  font-size:14px;font-weight:bold}
+.track{height:14px;background:#f0e6d2;border-radius:20px;overflow:hidden;margin-top:7px}
+.track i{display:block;height:100%;width:0;border-radius:20px;
+  background:linear-gradient(90deg,var(--honey),#e08c2c);transition:width .2s ease}
+.tracker .toggle{font-size:13px;font-weight:bold;color:var(--ink-soft);
+  display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap}
+.tracker .toggle input{width:17px;height:17px;accent-color:var(--forest);cursor:pointer}
+
+/* ---------- sections ---------- */
+.section-head{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  margin:34px 0 4px;padding-bottom:8px;border-bottom:3px solid var(--honey)
+}
+.section-head h2{margin:0;font-size:21px;color:var(--forest-dark)}
+.section-head .range{font-size:13px;font-weight:bold;color:var(--ink-soft);
+  letter-spacing:.06em;text-transform:uppercase}
+.section-head .hint{width:100%;margin:0;font-size:14px;color:var(--ink-soft)}
+
+/* ---------- questions ---------- */
+.q{
+  background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)
+}
+.q:has(input:checked){border-color:#c9b98f}
+.q-title{font-weight:bold;font-size:17px;line-height:1.5;margin:0 0 12px}
+.q-title .n{
+  display:inline-block;min-width:30px;height:30px;line-height:30px;text-align:center;
+  background:var(--forest);color:#fff8ec;border-radius:50%;font-size:14px;margin-right:9px;
+  padding:0 6px
+}
+.q-visual{
+  border:2px dashed #d3c3a0;border-radius:12px;background:var(--honey-soft);
+  padding:12px;margin:0 0 14px;text-align:center;font-size:30px;letter-spacing:4px
+}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt input{position:absolute;opacity:0;width:0;height:0}
+.opt label{
+  display:flex;align-items:center;gap:10px;min-height:52px;
+  padding:10px 13px;background:#fff;border:2px solid var(--line);border-radius:12px;
+  cursor:pointer;font-size:16px;line-height:1.35;transition:background .15s,border-color .15s
+}
+.opt .key{
+  flex:0 0 auto;width:27px;height:27px;line-height:27px;text-align:center;
+  border-radius:50%;background:#f2e9d6;color:var(--ink-soft);font-size:13px;font-weight:bold
+}
+.opt label:hover{background:var(--leaf-soft);border-color:var(--forest)}
+.opt input:focus-visible+label{outline:3px solid var(--honey);outline-offset:2px}
+.opt input:checked+label{background:var(--leaf-soft);border-color:var(--forest);font-weight:bold}
+.opt input:checked+label .key{background:var(--forest);color:#fff}
+/* marked state */
+.q.marked .opt label{cursor:default}
+.q.marked .opt input:checked+label.is-right,
+.q.marked .opt label.is-right{background:var(--leaf-soft);border-color:var(--forest)}
+.q.marked .opt input:checked+label.is-wrong{background:var(--berry-soft);border-color:var(--berry)}
+.q.marked .opt input:checked+label.is-wrong .key{background:var(--berry)}
+.q.marked .opt label.is-right::after{content:"\2714";margin-left:auto;color:var(--forest);font-weight:bold}
+.q.marked .opt input:checked+label.is-wrong::after{content:"\2716";margin-left:auto;color:var(--berry);font-weight:bold}
+.feedback{
+  margin:12px 0 0;padding:11px 13px;border-radius:11px;font-size:15px;
+  background:var(--honey-soft);border-left:5px solid var(--honey)
+}
+.feedback b{font-weight:bold}
+
+/* ---------- actions ---------- */
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:30px 0 6px}
+button.btn{
+  font:inherit;font-size:17px;font-weight:bold;border:2px solid transparent;
+  border-radius:13px;padding:13px 26px;cursor:pointer
+}
+.btn-go{background:var(--forest);color:#fff8ec}
+.btn-go:hover{background:var(--forest-dark)}
+.btn-quiet{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn-quiet:hover{border-color:var(--ink-soft)}
+button.btn:focus-visible{outline:3px solid var(--honey);outline-offset:2px}
+.note{text-align:center;font-size:14px;color:var(--ink-soft);margin:6px 0 0}
+
+/* ---------- result ---------- */
+#result[hidden]{display:none}
+#result{
+  background:var(--card);border:2px solid var(--line);border-top:8px solid var(--forest);
+  border-radius:var(--radius);padding:22px;margin-top:26px;box-shadow:var(--shadow)
+}
+#result h2{margin:0 0 4px;font-size:23px;color:var(--forest-dark)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.stat{background:var(--honey-soft);border-radius:13px;padding:14px;text-align:center}
+.stat b{display:block;font-size:27px;color:var(--forest-dark);line-height:1.2}
+.stat span{font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.message{background:var(--leaf-soft);border:2px solid #bfdfcc;border-radius:13px;
+  padding:14px 16px;font-size:17px;font-weight:bold;margin:0 0 20px}
+.breakdown{width:100%;border-collapse:collapse;margin:0 0 8px;font-size:15px}
+.breakdown th,.breakdown td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+.breakdown th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.breakdown td:last-child,.breakdown th:last-child{text-align:right;white-space:nowrap}
+.review h3{font-size:18px;margin:22px 0 8px;color:var(--forest-dark)}
+.r-item{border-radius:11px;padding:11px 13px;margin:8px 0;border-left:6px solid var(--line);background:#faf6ed}
+.r-item.right{border-left-color:var(--forest);background:var(--leaf-soft)}
+.r-item.wrong{border-left-color:var(--berry);background:var(--berry-soft)}
+.r-item.blank{border-left-color:var(--honey);background:var(--honey-soft)}
+.r-q{font-weight:bold;margin:0 0 4px;font-size:15.5px}
+.r-line{margin:2px 0;font-size:14.5px;color:var(--ink-soft)}
+.r-item a{color:var(--forest-dark);font-weight:bold;font-size:14px}
+
+/* ---------- answer key ---------- */
+.key-box{margin-top:26px;background:var(--card);border:2px dashed var(--line);
+  border-radius:var(--radius);padding:6px 18px}
+.key-box summary{cursor:pointer;font-weight:bold;padding:12px 0;font-size:16px;color:var(--forest-dark)}
+.key-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 16px;
+  padding:6px 0 16px;font-size:14.5px}
+.key-grid span b{color:var(--forest-dark)}
+
+footer{text-align:center;color:var(--ink-soft);font-size:13px;padding:26px 0 0}
+
+@media(max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:12px 14px 40px}
+  .tracker{margin:0 -14px 16px;padding:10px 14px}
+  .opts{grid-template-columns:1fr}
+  .details{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .masthead{padding:20px 18px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- print: a clean question paper ---------- */
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:11.5pt;line-height:1.4}
+  .wrap{max-width:none;padding:0}
+  .tracker,.actions,.linkbtn,#result,.no-print{display:none!important}
+  .masthead{background:#fff;color:#000;border:2px solid #000;border-radius:0;padding:12px}
+  .eyebrow,.masthead .meta{color:#000}
+  .bowls{display:none}
+  .story{border:1px solid #000;border-left:4px solid #000;border-radius:0;page-break-inside:avoid}
+  .story .prose{display:block!important;font-size:11pt}
+  .details{border:1px solid #000;border-radius:0}
+  .details input{border:0;border-bottom:1px solid #000;border-radius:0}
+  .section-head{border-bottom:2px solid #000;page-break-after:avoid}
+  .q{border:1px solid #999;border-radius:0;box-shadow:none;padding:8px 10px;margin:8px 0;
+     page-break-inside:avoid}
+  .q-title .n{background:#000;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .opts{grid-template-columns:1fr 1fr;gap:4px}
+  .opt label{min-height:0;padding:4px 6px;border:1px solid #bbb;border-radius:0}
+  .opt .key{background:#eee;width:20px;height:20px;line-height:20px}
+  .q-visual{border:1px dashed #999;border-radius:0;background:#fff;padding:4px;font-size:16pt}
+  .feedback{display:none}
+  .key-box:not([open]){display:none}
+  .key-box[open]{page-break-before:always;border:1px solid #000;border-radius:0}
+  .key-box summary{display:none}
+  footer{border-top:1px solid #000;margin-top:10px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Standard 1 &middot; English &middot; Question paper</p>
+    <h1>Goldilocks and the Three Bears</h1>
+    <p class="meta">40 questions &middot; Reading &middot; Vocabulary &middot; Grammar &middot;
+       Listening &amp; Speaking &middot; Writing &middot; Study Skills</p>
+    <p class="meta">Read the story, then choose one answer for each question.</p>
+    <p class="bowls" aria-hidden="true">&#129379; &#129379; &#129379;</p>
+  </header>
+
+  <div class="details">
+    <div><label for="fName">Name</label><input id="fName" type="text" autocomplete="off"></div>
+    <div><label for="fClass">Class</label><input id="fClass" type="text" autocomplete="off"></div>
+    <div><label for="fDate">Date</label><input id="fDate" type="text" autocomplete="off"></div>
+  </div>
+
+  <section class="story" id="story" data-hidden="false" aria-labelledby="storyHeading">
+    <h2 id="storyHeading">&#128214; The story</h2>
+    <div class="prose">
+<p>Once upon a time, three bears lived in a little house in the woods. There was
+Daddy Bear, Mummy Bear and Baby Bear.</p>
+<p>One morning, Mummy Bear made porridge for breakfast. The porridge was too hot to eat, so the
+three bears went for a walk while it cooled.</p>
+<p>A little girl called Goldilocks was walking in the woods. She saw the little house. The door
+was open, so she went inside.</p>
+<p>On the table were three bowls of porridge. Goldilocks tasted Daddy Bear&rsquo;s porridge from the
+big bowl. It was too hot. She tasted Mummy Bear&rsquo;s porridge from the middle bowl. It was too
+cold. Then she tasted Baby Bear&rsquo;s porridge from the small bowl. It was just right, so she ate
+it all up.</p>
+<p>Next she saw three chairs. Daddy Bear&rsquo;s chair was too hard. Mummy Bear&rsquo;s chair was too soft.
+Baby Bear&rsquo;s chair was just right &mdash; but when she sat down, it broke!</p>
+<p>Goldilocks felt sleepy. She went upstairs to the bedroom and saw three beds. Daddy Bear&rsquo;s bed
+was too hard. Mummy Bear&rsquo;s bed was too soft. Baby Bear&rsquo;s bed was just right, and Goldilocks
+fell fast asleep.</p>
+<p>Soon the three bears came home. &ldquo;Someone has eaten my porridge!&rdquo; cried Baby Bear.
+&ldquo;Someone has broken my chair! And someone is sleeping in my bed!&rdquo;</p>
+<p>Goldilocks woke up and saw the three bears. She was scared. She jumped out of bed, ran down
+the stairs and out of the door, and she ran all the way home.</p>
+    </div>
+    <button type="button" class="linkbtn no-print" id="storyToggle" aria-expanded="true"
+            aria-controls="story">Hide the story</button>
+  </section>
+
+  <div class="tracker no-print">
+    <div class="tracker-row">
+      <span id="progressText" aria-live="polite" aria-atomic="true">0 of 40 answered</span>
+      <label class="toggle"><input type="checkbox" id="checkAsIGo"> Check answers as I go</label>
+    </div>
+    <div class="track"><i id="progressBar"></i></div>
+  </div>
+
+  <main id="quiz">
+
+    <div class="section-head">
+      <h2><span aria-hidden="true">📖</span> Reading Comprehension</h2>
+      <span class="range">Questions 1&ndash;18</span>
+      <p class="hint">Read the story above, then answer.</p>
+    </div>
+
+    <div class="q" id="q1" role="group" aria-labelledby="q1-title" data-q="1" data-answer="c">
+      <p class="q-title" id="q1-title"><span class="n">1</span>Who went for a walk while the porridge was cooling?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q1-a" name="q1" value="a"><label for="q1-a"><span class="key" aria-hidden="true">A</span><span class="txt">Goldilocks</span></label></div>
+        <div class="opt"><input type="radio" id="q1-b" name="q1" value="b"><label for="q1-b"><span class="key" aria-hidden="true">B</span><span class="txt">A woodcutter</span></label></div>
+        <div class="opt"><input type="radio" id="q1-c" name="q1" value="c"><label for="q1-c"><span class="key" aria-hidden="true">C</span><span class="txt">The three bears</span></label></div>
+        <div class="opt"><input type="radio" id="q1-d" name="q1" value="d"><label for="q1-d"><span class="key" aria-hidden="true">D</span><span class="txt">A teacher</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q2" role="group" aria-labelledby="q2-title" data-q="2" data-answer="b">
+      <p class="q-title" id="q2-title"><span class="n">2</span>What did Goldilocks see in the woods?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q2-a" name="q2" value="a"><label for="q2-a"><span class="key" aria-hidden="true">A</span><span class="txt">A school</span></label></div>
+        <div class="opt"><input type="radio" id="q2-b" name="q2" value="b"><label for="q2-b"><span class="key" aria-hidden="true">B</span><span class="txt">A little house</span></label></div>
+        <div class="opt"><input type="radio" id="q2-c" name="q2" value="c"><label for="q2-c"><span class="key" aria-hidden="true">C</span><span class="txt">A big castle</span></label></div>
+        <div class="opt"><input type="radio" id="q2-d" name="q2" value="d"><label for="q2-d"><span class="key" aria-hidden="true">D</span><span class="txt">A shop</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q3" role="group" aria-labelledby="q3-title" data-q="3" data-answer="d">
+      <p class="q-title" id="q3-title"><span class="n">3</span>What did Goldilocks taste first?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q3-a" name="q3" value="a"><label for="q3-a"><span class="key" aria-hidden="true">A</span><span class="txt">Cake</span></label></div>
+        <div class="opt"><input type="radio" id="q3-b" name="q3" value="b"><label for="q3-b"><span class="key" aria-hidden="true">B</span><span class="txt">Soup</span></label></div>
+        <div class="opt"><input type="radio" id="q3-c" name="q3" value="c"><label for="q3-c"><span class="key" aria-hidden="true">C</span><span class="txt">Milk</span></label></div>
+        <div class="opt"><input type="radio" id="q3-d" name="q3" value="d"><label for="q3-d"><span class="key" aria-hidden="true">D</span><span class="txt">Porridge</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q4" role="group" aria-labelledby="q4-title" data-q="4" data-answer="b">
+      <p class="q-title" id="q4-title"><span class="n">4</span>How many bowls of porridge were on the table?</p>
+      <div class="q-visual" aria-hidden="true">🥣 🥣 🥣</div>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q4-a" name="q4" value="a"><label for="q4-a"><span class="key" aria-hidden="true">A</span><span class="txt">Two</span></label></div>
+        <div class="opt"><input type="radio" id="q4-b" name="q4" value="b"><label for="q4-b"><span class="key" aria-hidden="true">B</span><span class="txt">Three</span></label></div>
+        <div class="opt"><input type="radio" id="q4-c" name="q4" value="c"><label for="q4-c"><span class="key" aria-hidden="true">C</span><span class="txt">Four</span></label></div>
+        <div class="opt"><input type="radio" id="q4-d" name="q4" value="d"><label for="q4-d"><span class="key" aria-hidden="true">D</span><span class="txt">Five</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q5" role="group" aria-labelledby="q5-title" data-q="5" data-answer="a">
+      <p class="q-title" id="q5-title"><span class="n">5</span>Whose porridge was too hot?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q5-a" name="q5" value="a"><label for="q5-a"><span class="key" aria-hidden="true">A</span><span class="txt">Daddy Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q5-b" name="q5" value="b"><label for="q5-b"><span class="key" aria-hidden="true">B</span><span class="txt">Mummy Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q5-c" name="q5" value="c"><label for="q5-c"><span class="key" aria-hidden="true">C</span><span class="txt">Baby Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q5-d" name="q5" value="d"><label for="q5-d"><span class="key" aria-hidden="true">D</span><span class="txt">Nobody's</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q6" role="group" aria-labelledby="q6-title" data-q="6" data-answer="c">
+      <p class="q-title" id="q6-title"><span class="n">6</span>Whose porridge was too cold?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q6-a" name="q6" value="a"><label for="q6-a"><span class="key" aria-hidden="true">A</span><span class="txt">Daddy Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q6-b" name="q6" value="b"><label for="q6-b"><span class="key" aria-hidden="true">B</span><span class="txt">Baby Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q6-c" name="q6" value="c"><label for="q6-c"><span class="key" aria-hidden="true">C</span><span class="txt">Mummy Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q6-d" name="q6" value="d"><label for="q6-d"><span class="key" aria-hidden="true">D</span><span class="txt">All three</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q7" role="group" aria-labelledby="q7-title" data-q="7" data-answer="d">
+      <p class="q-title" id="q7-title"><span class="n">7</span>Whose porridge was just right?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q7-a" name="q7" value="a"><label for="q7-a"><span class="key" aria-hidden="true">A</span><span class="txt">Daddy Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q7-b" name="q7" value="b"><label for="q7-b"><span class="key" aria-hidden="true">B</span><span class="txt">Mummy Bear's</span></label></div>
+        <div class="opt"><input type="radio" id="q7-c" name="q7" value="c"><label for="q7-c"><span class="key" aria-hidden="true">C</span><span class="txt">Nobody's</span></label></div>
+        <div class="opt"><input type="radio" id="q7-d" name="q7" value="d"><label for="q7-d"><span class="key" aria-hidden="true">D</span><span class="txt">Baby Bear's</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q8" role="group" aria-labelledby="q8-title" data-q="8" data-answer="c">
+      <p class="q-title" id="q8-title"><span class="n">8</span>What happened to Baby Bear's chair?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q8-a" name="q8" value="a"><label for="q8-a"><span class="key" aria-hidden="true">A</span><span class="txt">It was moved</span></label></div>
+        <div class="opt"><input type="radio" id="q8-b" name="q8" value="b"><label for="q8-b"><span class="key" aria-hidden="true">B</span><span class="txt">It was painted</span></label></div>
+        <div class="opt"><input type="radio" id="q8-c" name="q8" value="c"><label for="q8-c"><span class="key" aria-hidden="true">C</span><span class="txt">It broke</span></label></div>
+        <div class="opt"><input type="radio" id="q8-d" name="q8" value="d"><label for="q8-d"><span class="key" aria-hidden="true">D</span><span class="txt">It disappeared</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q9" role="group" aria-labelledby="q9-title" data-q="9" data-answer="a">
+      <p class="q-title" id="q9-title"><span class="n">9</span>After the chairs, where did Goldilocks go?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q9-a" name="q9" value="a"><label for="q9-a"><span class="key" aria-hidden="true">A</span><span class="txt">To the bedroom</span></label></div>
+        <div class="opt"><input type="radio" id="q9-b" name="q9" value="b"><label for="q9-b"><span class="key" aria-hidden="true">B</span><span class="txt">To the kitchen</span></label></div>
+        <div class="opt"><input type="radio" id="q9-c" name="q9" value="c"><label for="q9-c"><span class="key" aria-hidden="true">C</span><span class="txt">To the garden</span></label></div>
+        <div class="opt"><input type="radio" id="q9-d" name="q9" value="d"><label for="q9-d"><span class="key" aria-hidden="true">D</span><span class="txt">To school</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q10" role="group" aria-labelledby="q10-title" data-q="10" data-answer="d">
+      <p class="q-title" id="q10-title"><span class="n">10</span>How many beds did Goldilocks see?</p>
+      <div class="q-visual" aria-hidden="true">🛏️ 🛏️ 🛏️</div>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q10-a" name="q10" value="a"><label for="q10-a"><span class="key" aria-hidden="true">A</span><span class="txt">One</span></label></div>
+        <div class="opt"><input type="radio" id="q10-b" name="q10" value="b"><label for="q10-b"><span class="key" aria-hidden="true">B</span><span class="txt">Two</span></label></div>
+        <div class="opt"><input type="radio" id="q10-c" name="q10" value="c"><label for="q10-c"><span class="key" aria-hidden="true">C</span><span class="txt">Four</span></label></div>
+        <div class="opt"><input type="radio" id="q10-d" name="q10" value="d"><label for="q10-d"><span class="key" aria-hidden="true">D</span><span class="txt">Three</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q11" role="group" aria-labelledby="q11-title" data-q="11" data-answer="b">
+      <p class="q-title" id="q11-title"><span class="n">11</span>Which bed was just right for Goldilocks?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q11-a" name="q11" value="a"><label for="q11-a"><span class="key" aria-hidden="true">A</span><span class="txt">Daddy Bear's bed</span></label></div>
+        <div class="opt"><input type="radio" id="q11-b" name="q11" value="b"><label for="q11-b"><span class="key" aria-hidden="true">B</span><span class="txt">Baby Bear's bed</span></label></div>
+        <div class="opt"><input type="radio" id="q11-c" name="q11" value="c"><label for="q11-c"><span class="key" aria-hidden="true">C</span><span class="txt">Mummy Bear's bed</span></label></div>
+        <div class="opt"><input type="radio" id="q11-d" name="q11" value="d"><label for="q11-d"><span class="key" aria-hidden="true">D</span><span class="txt">No bed</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q12" role="group" aria-labelledby="q12-title" data-q="12" data-answer="c">
+      <p class="q-title" id="q12-title"><span class="n">12</span>What did Goldilocks do in Baby Bear's bed?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q12-a" name="q12" value="a"><label for="q12-a"><span class="key" aria-hidden="true">A</span><span class="txt">She jumped</span></label></div>
+        <div class="opt"><input type="radio" id="q12-b" name="q12" value="b"><label for="q12-b"><span class="key" aria-hidden="true">B</span><span class="txt">She ate</span></label></div>
+        <div class="opt"><input type="radio" id="q12-c" name="q12" value="c"><label for="q12-c"><span class="key" aria-hidden="true">C</span><span class="txt">She fell asleep</span></label></div>
+        <div class="opt"><input type="radio" id="q12-d" name="q12" value="d"><label for="q12-d"><span class="key" aria-hidden="true">D</span><span class="txt">She read a book</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q13" role="group" aria-labelledby="q13-title" data-q="13" data-answer="d">
+      <p class="q-title" id="q13-title"><span class="n">13</span>Who found Goldilocks sleeping in the bed?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q13-a" name="q13" value="a"><label for="q13-a"><span class="key" aria-hidden="true">A</span><span class="txt">Her teacher</span></label></div>
+        <div class="opt"><input type="radio" id="q13-b" name="q13" value="b"><label for="q13-b"><span class="key" aria-hidden="true">B</span><span class="txt">A woodcutter</span></label></div>
+        <div class="opt"><input type="radio" id="q13-c" name="q13" value="c"><label for="q13-c"><span class="key" aria-hidden="true">C</span><span class="txt">Her friend</span></label></div>
+        <div class="opt"><input type="radio" id="q13-d" name="q13" value="d"><label for="q13-d"><span class="key" aria-hidden="true">D</span><span class="txt">The three bears</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q14" role="group" aria-labelledby="q14-title" data-q="14" data-answer="a">
+      <p class="q-title" id="q14-title"><span class="n">14</span>How did Goldilocks feel when she saw the bears?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q14-a" name="q14" value="a"><label for="q14-a"><span class="key" aria-hidden="true">A</span><span class="txt">Scared</span></label></div>
+        <div class="opt"><input type="radio" id="q14-b" name="q14" value="b"><label for="q14-b"><span class="key" aria-hidden="true">B</span><span class="txt">Happy</span></label></div>
+        <div class="opt"><input type="radio" id="q14-c" name="q14" value="c"><label for="q14-c"><span class="key" aria-hidden="true">C</span><span class="txt">Sleepy</span></label></div>
+        <div class="opt"><input type="radio" id="q14-d" name="q14" value="d"><label for="q14-d"><span class="key" aria-hidden="true">D</span><span class="txt">Hungry</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q15" role="group" aria-labelledby="q15-title" data-q="15" data-answer="b">
+      <p class="q-title" id="q15-title"><span class="n">15</span>What did Goldilocks do at the end of the story?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q15-a" name="q15" value="a"><label for="q15-a"><span class="key" aria-hidden="true">A</span><span class="txt">She stayed for lunch</span></label></div>
+        <div class="opt"><input type="radio" id="q15-b" name="q15" value="b"><label for="q15-b"><span class="key" aria-hidden="true">B</span><span class="txt">She ran away</span></label></div>
+        <div class="opt"><input type="radio" id="q15-c" name="q15" value="c"><label for="q15-c"><span class="key" aria-hidden="true">C</span><span class="txt">She went back to sleep</span></label></div>
+        <div class="opt"><input type="radio" id="q15-d" name="q15" value="d"><label for="q15-d"><span class="key" aria-hidden="true">D</span><span class="txt">She played with the bears</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q16" role="group" aria-labelledby="q16-title" data-q="16" data-answer="c">
+      <p class="q-title" id="q16-title"><span class="n">16</span>Which of these happened FIRST in the story?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q16-a" name="q16" value="a"><label for="q16-a"><span class="key" aria-hidden="true">A</span><span class="txt">The bears came home</span></label></div>
+        <div class="opt"><input type="radio" id="q16-b" name="q16" value="b"><label for="q16-b"><span class="key" aria-hidden="true">B</span><span class="txt">Goldilocks ran away</span></label></div>
+        <div class="opt"><input type="radio" id="q16-c" name="q16" value="c"><label for="q16-c"><span class="key" aria-hidden="true">C</span><span class="txt">Goldilocks went into the house</span></label></div>
+        <div class="opt"><input type="radio" id="q16-d" name="q16" value="d"><label for="q16-d"><span class="key" aria-hidden="true">D</span><span class="txt">Goldilocks saw the bears</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q17" role="group" aria-labelledby="q17-title" data-q="17" data-answer="a">
+      <p class="q-title" id="q17-title"><span class="n">17</span>Why did Goldilocks go to the bedroom?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q17-a" name="q17" value="a"><label for="q17-a"><span class="key" aria-hidden="true">A</span><span class="txt">She felt sleepy</span></label></div>
+        <div class="opt"><input type="radio" id="q17-b" name="q17" value="b"><label for="q17-b"><span class="key" aria-hidden="true">B</span><span class="txt">She was hungry</span></label></div>
+        <div class="opt"><input type="radio" id="q17-c" name="q17" value="c"><label for="q17-c"><span class="key" aria-hidden="true">C</span><span class="txt">She wanted a toy</span></label></div>
+        <div class="opt"><input type="radio" id="q17-d" name="q17" value="d"><label for="q17-d"><span class="key" aria-hidden="true">D</span><span class="txt">She wanted to cook</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q18" role="group" aria-labelledby="q18-title" data-q="18" data-answer="d">
+      <p class="q-title" id="q18-title"><span class="n">18</span>Which sentence is TRUE?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q18-a" name="q18" value="a"><label for="q18-a"><span class="key" aria-hidden="true">A</span><span class="txt">Goldilocks lived with the bears.</span></label></div>
+        <div class="opt"><input type="radio" id="q18-b" name="q18" value="b"><label for="q18-b"><span class="key" aria-hidden="true">B</span><span class="txt">There were two bears.</span></label></div>
+        <div class="opt"><input type="radio" id="q18-c" name="q18" value="c"><label for="q18-c"><span class="key" aria-hidden="true">C</span><span class="txt">Goldilocks stayed forever.</span></label></div>
+        <div class="opt"><input type="radio" id="q18-d" name="q18" value="d"><label for="q18-d"><span class="key" aria-hidden="true">D</span><span class="txt">The bears lived in a house.</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+
+    <div class="section-head">
+      <h2><span aria-hidden="true">🔤</span> Vocabulary</h2>
+      <span class="range">Questions 19&ndash;25</span>
+      <p class="hint">Choose the best word.</p>
+    </div>
+
+    <div class="q" id="q19" role="group" aria-labelledby="q19-title" data-q="19" data-answer="c">
+      <p class="q-title" id="q19-title"><span class="n">19</span>Choose the word that means the opposite of <b>happy</b>.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q19-a" name="q19" value="a"><label for="q19-a"><span class="key" aria-hidden="true">A</span><span class="txt">Glad</span></label></div>
+        <div class="opt"><input type="radio" id="q19-b" name="q19" value="b"><label for="q19-b"><span class="key" aria-hidden="true">B</span><span class="txt">Kind</span></label></div>
+        <div class="opt"><input type="radio" id="q19-c" name="q19" value="c"><label for="q19-c"><span class="key" aria-hidden="true">C</span><span class="txt">Sad</span></label></div>
+        <div class="opt"><input type="radio" id="q19-d" name="q19" value="d"><label for="q19-d"><span class="key" aria-hidden="true">D</span><span class="txt">Nice</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q20" role="group" aria-labelledby="q20-title" data-q="20" data-answer="a">
+      <p class="q-title" id="q20-title"><span class="n">20</span>The girls are laughing. They are ______.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q20-a" name="q20" value="a"><label for="q20-a"><span class="key" aria-hidden="true">A</span><span class="txt">happy</span></label></div>
+        <div class="opt"><input type="radio" id="q20-b" name="q20" value="b"><label for="q20-b"><span class="key" aria-hidden="true">B</span><span class="txt">sad</span></label></div>
+        <div class="opt"><input type="radio" id="q20-c" name="q20" value="c"><label for="q20-c"><span class="key" aria-hidden="true">C</span><span class="txt">angry</span></label></div>
+        <div class="opt"><input type="radio" id="q20-d" name="q20" value="d"><label for="q20-d"><span class="key" aria-hidden="true">D</span><span class="txt">sleepy</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q21" role="group" aria-labelledby="q21-title" data-q="21" data-answer="d">
+      <p class="q-title" id="q21-title"><span class="n">21</span>John wants food. He is ______.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q21-a" name="q21" value="a"><label for="q21-a"><span class="key" aria-hidden="true">A</span><span class="txt">thirsty</span></label></div>
+        <div class="opt"><input type="radio" id="q21-b" name="q21" value="b"><label for="q21-b"><span class="key" aria-hidden="true">B</span><span class="txt">cold</span></label></div>
+        <div class="opt"><input type="radio" id="q21-c" name="q21" value="c"><label for="q21-c"><span class="key" aria-hidden="true">C</span><span class="txt">tall</span></label></div>
+        <div class="opt"><input type="radio" id="q21-d" name="q21" value="d"><label for="q21-d"><span class="key" aria-hidden="true">D</span><span class="txt">hungry</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q22" role="group" aria-labelledby="q22-title" data-q="22" data-answer="b">
+      <p class="q-title" id="q22-title"><span class="n">22</span>Meena is drinking water. She is ______.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q22-a" name="q22" value="a"><label for="q22-a"><span class="key" aria-hidden="true">A</span><span class="txt">hungry</span></label></div>
+        <div class="opt"><input type="radio" id="q22-b" name="q22" value="b"><label for="q22-b"><span class="key" aria-hidden="true">B</span><span class="txt">thirsty</span></label></div>
+        <div class="opt"><input type="radio" id="q22-c" name="q22" value="c"><label for="q22-c"><span class="key" aria-hidden="true">C</span><span class="txt">sleepy</span></label></div>
+        <div class="opt"><input type="radio" id="q22-d" name="q22" value="d"><label for="q22-d"><span class="key" aria-hidden="true">D</span><span class="txt">cold</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q23" role="group" aria-labelledby="q23-title" data-q="23" data-answer="c">
+      <p class="q-title" id="q23-title"><span class="n">23</span>The baby is sleeping. The baby is ______.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q23-a" name="q23" value="a"><label for="q23-a"><span class="key" aria-hidden="true">A</span><span class="txt">angry</span></label></div>
+        <div class="opt"><input type="radio" id="q23-b" name="q23" value="b"><label for="q23-b"><span class="key" aria-hidden="true">B</span><span class="txt">hungry</span></label></div>
+        <div class="opt"><input type="radio" id="q23-c" name="q23" value="c"><label for="q23-c"><span class="key" aria-hidden="true">C</span><span class="txt">sleepy</span></label></div>
+        <div class="opt"><input type="radio" id="q23-d" name="q23" value="d"><label for="q23-d"><span class="key" aria-hidden="true">D</span><span class="txt">thirsty</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q24" role="group" aria-labelledby="q24-title" data-q="24" data-answer="a">
+      <p class="q-title" id="q24-title"><span class="n">24</span>Choose the word that means the opposite of <b>big</b>.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q24-a" name="q24" value="a"><label for="q24-a"><span class="key" aria-hidden="true">A</span><span class="txt">small</span></label></div>
+        <div class="opt"><input type="radio" id="q24-b" name="q24" value="b"><label for="q24-b"><span class="key" aria-hidden="true">B</span><span class="txt">long</span></label></div>
+        <div class="opt"><input type="radio" id="q24-c" name="q24" value="c"><label for="q24-c"><span class="key" aria-hidden="true">C</span><span class="txt">tall</span></label></div>
+        <div class="opt"><input type="radio" id="q24-d" name="q24" value="d"><label for="q24-d"><span class="key" aria-hidden="true">D</span><span class="txt">wide</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q25" role="group" aria-labelledby="q25-title" data-q="25" data-answer="b">
+      <p class="q-title" id="q25-title"><span class="n">25</span>Goldilocks says the porridge is <b>just right</b>. What does this mean?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q25-a" name="q25" value="a"><label for="q25-a"><span class="key" aria-hidden="true">A</span><span class="txt">It is very hot</span></label></div>
+        <div class="opt"><input type="radio" id="q25-b" name="q25" value="b"><label for="q25-b"><span class="key" aria-hidden="true">B</span><span class="txt">It is perfect for her</span></label></div>
+        <div class="opt"><input type="radio" id="q25-c" name="q25" value="c"><label for="q25-c"><span class="key" aria-hidden="true">C</span><span class="txt">It is very cold</span></label></div>
+        <div class="opt"><input type="radio" id="q25-d" name="q25" value="d"><label for="q25-d"><span class="key" aria-hidden="true">D</span><span class="txt">It is not food</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+
+    <div class="section-head">
+      <h2><span aria-hidden="true">🧩</span> Grammar</h2>
+      <span class="range">Questions 26&ndash;33</span>
+      <p class="hint">Choose the correct sentence or word.</p>
+    </div>
+
+    <div class="q" id="q26" role="group" aria-labelledby="q26-title" data-q="26" data-answer="d">
+      <p class="q-title" id="q26-title"><span class="n">26</span>Choose the correct sentence.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q26-a" name="q26" value="a"><label for="q26-a"><span class="key" aria-hidden="true">A</span><span class="txt">This are a chair.</span></label></div>
+        <div class="opt"><input type="radio" id="q26-b" name="q26" value="b"><label for="q26-b"><span class="key" aria-hidden="true">B</span><span class="txt">These is a chair.</span></label></div>
+        <div class="opt"><input type="radio" id="q26-c" name="q26" value="c"><label for="q26-c"><span class="key" aria-hidden="true">C</span><span class="txt">This am a chair.</span></label></div>
+        <div class="opt"><input type="radio" id="q26-d" name="q26" value="d"><label for="q26-d"><span class="key" aria-hidden="true">D</span><span class="txt">This is a chair.</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q27" role="group" aria-labelledby="q27-title" data-q="27" data-answer="c">
+      <p class="q-title" id="q27-title"><span class="n">27</span>Choose the correct sentence for more than one bed.</p>
+      <div class="q-visual" aria-hidden="true">🛏️ 🛏️</div>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q27-a" name="q27" value="a"><label for="q27-a"><span class="key" aria-hidden="true">A</span><span class="txt">This is beds.</span></label></div>
+        <div class="opt"><input type="radio" id="q27-b" name="q27" value="b"><label for="q27-b"><span class="key" aria-hidden="true">B</span><span class="txt">This are beds.</span></label></div>
+        <div class="opt"><input type="radio" id="q27-c" name="q27" value="c"><label for="q27-c"><span class="key" aria-hidden="true">C</span><span class="txt">These are beds.</span></label></div>
+        <div class="opt"><input type="radio" id="q27-d" name="q27" value="d"><label for="q27-d"><span class="key" aria-hidden="true">D</span><span class="txt">These is a bed.</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q28" role="group" aria-labelledby="q28-title" data-q="28" data-answer="a">
+      <p class="q-title" id="q28-title"><span class="n">28</span>There ______ three bears.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q28-a" name="q28" value="a"><label for="q28-a"><span class="key" aria-hidden="true">A</span><span class="txt">are</span></label></div>
+        <div class="opt"><input type="radio" id="q28-b" name="q28" value="b"><label for="q28-b"><span class="key" aria-hidden="true">B</span><span class="txt">is</span></label></div>
+        <div class="opt"><input type="radio" id="q28-c" name="q28" value="c"><label for="q28-c"><span class="key" aria-hidden="true">C</span><span class="txt">am</span></label></div>
+        <div class="opt"><input type="radio" id="q28-d" name="q28" value="d"><label for="q28-d"><span class="key" aria-hidden="true">D</span><span class="txt">be</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q29" role="group" aria-labelledby="q29-title" data-q="29" data-answer="b">
+      <p class="q-title" id="q29-title"><span class="n">29</span>There ______ one bed.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q29-a" name="q29" value="a"><label for="q29-a"><span class="key" aria-hidden="true">A</span><span class="txt">are</span></label></div>
+        <div class="opt"><input type="radio" id="q29-b" name="q29" value="b"><label for="q29-b"><span class="key" aria-hidden="true">B</span><span class="txt">is</span></label></div>
+        <div class="opt"><input type="radio" id="q29-c" name="q29" value="c"><label for="q29-c"><span class="key" aria-hidden="true">C</span><span class="txt">am</span></label></div>
+        <div class="opt"><input type="radio" id="q29-d" name="q29" value="d"><label for="q29-d"><span class="key" aria-hidden="true">D</span><span class="txt">were</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q30" role="group" aria-labelledby="q30-title" data-q="30" data-answer="d">
+      <p class="q-title" id="q30-title"><span class="n">30</span>Which word is a naming word (noun)?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q30-a" name="q30" value="a"><label for="q30-a"><span class="key" aria-hidden="true">A</span><span class="txt">run</span></label></div>
+        <div class="opt"><input type="radio" id="q30-b" name="q30" value="b"><label for="q30-b"><span class="key" aria-hidden="true">B</span><span class="txt">sleep</span></label></div>
+        <div class="opt"><input type="radio" id="q30-c" name="q30" value="c"><label for="q30-c"><span class="key" aria-hidden="true">C</span><span class="txt">happy</span></label></div>
+        <div class="opt"><input type="radio" id="q30-d" name="q30" value="d"><label for="q30-d"><span class="key" aria-hidden="true">D</span><span class="txt">bear</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q31" role="group" aria-labelledby="q31-title" data-q="31" data-answer="c">
+      <p class="q-title" id="q31-title"><span class="n">31</span>Which word is an action word (verb)?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q31-a" name="q31" value="a"><label for="q31-a"><span class="key" aria-hidden="true">A</span><span class="txt">chair</span></label></div>
+        <div class="opt"><input type="radio" id="q31-b" name="q31" value="b"><label for="q31-b"><span class="key" aria-hidden="true">B</span><span class="txt">bear</span></label></div>
+        <div class="opt"><input type="radio" id="q31-c" name="q31" value="c"><label for="q31-c"><span class="key" aria-hidden="true">C</span><span class="txt">run</span></label></div>
+        <div class="opt"><input type="radio" id="q31-d" name="q31" value="d"><label for="q31-d"><span class="key" aria-hidden="true">D</span><span class="txt">bed</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q32" role="group" aria-labelledby="q32-title" data-q="32" data-answer="b">
+      <p class="q-title" id="q32-title"><span class="n">32</span>______ is my brother.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q32-a" name="q32" value="a"><label for="q32-a"><span class="key" aria-hidden="true">A</span><span class="txt">They</span></label></div>
+        <div class="opt"><input type="radio" id="q32-b" name="q32" value="b"><label for="q32-b"><span class="key" aria-hidden="true">B</span><span class="txt">He</span></label></div>
+        <div class="opt"><input type="radio" id="q32-c" name="q32" value="c"><label for="q32-c"><span class="key" aria-hidden="true">C</span><span class="txt">We</span></label></div>
+        <div class="opt"><input type="radio" id="q32-d" name="q32" value="d"><label for="q32-d"><span class="key" aria-hidden="true">D</span><span class="txt">It</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q33" role="group" aria-labelledby="q33-title" data-q="33" data-answer="a">
+      <p class="q-title" id="q33-title"><span class="n">33</span>______ are my friends.</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q33-a" name="q33" value="a"><label for="q33-a"><span class="key" aria-hidden="true">A</span><span class="txt">They</span></label></div>
+        <div class="opt"><input type="radio" id="q33-b" name="q33" value="b"><label for="q33-b"><span class="key" aria-hidden="true">B</span><span class="txt">He</span></label></div>
+        <div class="opt"><input type="radio" id="q33-c" name="q33" value="c"><label for="q33-c"><span class="key" aria-hidden="true">C</span><span class="txt">She</span></label></div>
+        <div class="opt"><input type="radio" id="q33-d" name="q33" value="d"><label for="q33-d"><span class="key" aria-hidden="true">D</span><span class="txt">It</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+
+    <div class="section-head">
+      <h2><span aria-hidden="true">👂</span> Listening &amp; Speaking</h2>
+      <span class="range">Questions 34&ndash;35</span>
+      <p class="hint">Your teacher will read these aloud.</p>
+    </div>
+
+    <div class="q" id="q34" role="group" aria-labelledby="q34-title" data-q="34" data-answer="d">
+      <p class="q-title" id="q34-title"><span class="n">34</span>Your teacher says, “Touch your nose.” What should you do?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q34-a" name="q34" value="a"><label for="q34-a"><span class="key" aria-hidden="true">A</span><span class="txt">Touch your ear</span></label></div>
+        <div class="opt"><input type="radio" id="q34-b" name="q34" value="b"><label for="q34-b"><span class="key" aria-hidden="true">B</span><span class="txt">Touch your knee</span></label></div>
+        <div class="opt"><input type="radio" id="q34-c" name="q34" value="c"><label for="q34-c"><span class="key" aria-hidden="true">C</span><span class="txt">Touch your foot</span></label></div>
+        <div class="opt"><input type="radio" id="q34-d" name="q34" value="d"><label for="q34-d"><span class="key" aria-hidden="true">D</span><span class="txt">Touch your nose 👃</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q35" role="group" aria-labelledby="q35-title" data-q="35" data-answer="c">
+      <p class="q-title" id="q35-title"><span class="n">35</span>Which is a polite way to ask for something?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q35-a" name="q35" value="a"><label for="q35-a"><span class="key" aria-hidden="true">A</span><span class="txt">Give me that!</span></label></div>
+        <div class="opt"><input type="radio" id="q35-b" name="q35" value="b"><label for="q35-b"><span class="key" aria-hidden="true">B</span><span class="txt">I want it now!</span></label></div>
+        <div class="opt"><input type="radio" id="q35-c" name="q35" value="c"><label for="q35-c"><span class="key" aria-hidden="true">C</span><span class="txt">Please may I have it?</span></label></div>
+        <div class="opt"><input type="radio" id="q35-d" name="q35" value="d"><label for="q35-d"><span class="key" aria-hidden="true">D</span><span class="txt">Give it!</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+
+    <div class="section-head">
+      <h2><span aria-hidden="true">✍️</span> Writing</h2>
+      <span class="range">Questions 36&ndash;37</span>
+      <p class="hint">Look closely at capital letters and full stops.</p>
+    </div>
+
+    <div class="q" id="q36" role="group" aria-labelledby="q36-title" data-q="36" data-answer="a">
+      <p class="q-title" id="q36-title"><span class="n">36</span>Which sentence is written correctly?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q36-a" name="q36" value="a"><label for="q36-a"><span class="key" aria-hidden="true">A</span><span class="txt">Goldilocks went home.</span></label></div>
+        <div class="opt"><input type="radio" id="q36-b" name="q36" value="b"><label for="q36-b"><span class="key" aria-hidden="true">B</span><span class="txt">goldilocks went home.</span></label></div>
+        <div class="opt"><input type="radio" id="q36-c" name="q36" value="c"><label for="q36-c"><span class="key" aria-hidden="true">C</span><span class="txt">Goldilocks went home</span></label></div>
+        <div class="opt"><input type="radio" id="q36-d" name="q36" value="d"><label for="q36-d"><span class="key" aria-hidden="true">D</span><span class="txt">goldilocks went home</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q37" role="group" aria-labelledby="q37-title" data-q="37" data-answer="b">
+      <p class="q-title" id="q37-title"><span class="n">37</span>Which sentence tells what Goldilocks did after she saw the bears?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q37-a" name="q37" value="a"><label for="q37-a"><span class="key" aria-hidden="true">A</span><span class="txt">She cooked porridge.</span></label></div>
+        <div class="opt"><input type="radio" id="q37-b" name="q37" value="b"><label for="q37-b"><span class="key" aria-hidden="true">B</span><span class="txt">She ran away.</span></label></div>
+        <div class="opt"><input type="radio" id="q37-c" name="q37" value="c"><label for="q37-c"><span class="key" aria-hidden="true">C</span><span class="txt">She went shopping.</span></label></div>
+        <div class="opt"><input type="radio" id="q37-d" name="q37" value="d"><label for="q37-d"><span class="key" aria-hidden="true">D</span><span class="txt">She called her teacher.</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+
+    <div class="section-head">
+      <h2><span aria-hidden="true">🔎</span> Study Skills</h2>
+      <span class="range">Questions 38&ndash;40</span>
+      <p class="hint">Think about letters, order and patterns.</p>
+    </div>
+
+    <div class="q" id="q38" role="group" aria-labelledby="q38-title" data-q="38" data-answer="b">
+      <p class="q-title" id="q38-title"><span class="n">38</span>The word <b>bear</b> begins with which letter?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q38-a" name="q38" value="a"><label for="q38-a"><span class="key" aria-hidden="true">A</span><span class="txt">The letter A</span></label></div>
+        <div class="opt"><input type="radio" id="q38-b" name="q38" value="b"><label for="q38-b"><span class="key" aria-hidden="true">B</span><span class="txt">The letter B</span></label></div>
+        <div class="opt"><input type="radio" id="q38-c" name="q38" value="c"><label for="q38-c"><span class="key" aria-hidden="true">C</span><span class="txt">The letter D</span></label></div>
+        <div class="opt"><input type="radio" id="q38-d" name="q38" value="d"><label for="q38-d"><span class="key" aria-hidden="true">D</span><span class="txt">The letter R</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q39" role="group" aria-labelledby="q39-title" data-q="39" data-answer="d">
+      <p class="q-title" id="q39-title"><span class="n">39</span>Which group of words is in alphabetical order?</p>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q39-a" name="q39" value="a"><label for="q39-a"><span class="key" aria-hidden="true">A</span><span class="txt">cat, apple, bear</span></label></div>
+        <div class="opt"><input type="radio" id="q39-b" name="q39" value="b"><label for="q39-b"><span class="key" aria-hidden="true">B</span><span class="txt">bear, cat, apple</span></label></div>
+        <div class="opt"><input type="radio" id="q39-c" name="q39" value="c"><label for="q39-c"><span class="key" aria-hidden="true">C</span><span class="txt">bear, apple, cat</span></label></div>
+        <div class="opt"><input type="radio" id="q39-d" name="q39" value="d"><label for="q39-d"><span class="key" aria-hidden="true">D</span><span class="txt">apple, bear, cat</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+    <div class="q" id="q40" role="group" aria-labelledby="q40-title" data-q="40" data-answer="a">
+      <p class="q-title" id="q40-title"><span class="n">40</span>Look at the pattern. What comes next?</p>
+      <div class="q-visual" aria-hidden="true">🔴 🔵 🔴 🔵 🔴 ❓</div>
+      <div class="opts">
+        <div class="opt"><input type="radio" id="q40-a" name="q40" value="a"><label for="q40-a"><span class="key" aria-hidden="true">A</span><span class="txt">Blue 🔵</span></label></div>
+        <div class="opt"><input type="radio" id="q40-b" name="q40" value="b"><label for="q40-b"><span class="key" aria-hidden="true">B</span><span class="txt">Red 🔴</span></label></div>
+        <div class="opt"><input type="radio" id="q40-c" name="q40" value="c"><label for="q40-c"><span class="key" aria-hidden="true">C</span><span class="txt">Green 🟢</span></label></div>
+        <div class="opt"><input type="radio" id="q40-d" name="q40" value="d"><label for="q40-d"><span class="key" aria-hidden="true">D</span><span class="txt">Yellow 🟡</span></label></div>
+      </div>
+      <p class="feedback" hidden></p>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" class="btn btn-go" id="submitBtn">Mark my answers</button>
+      <button type="button" class="btn btn-quiet" id="resetBtn">Start again</button>
+      <button type="button" class="btn btn-quiet" id="printBtn">Print the paper</button>
+    </div>
+    <p class="note no-print" id="submitNote"></p>
+  </main>
+
+  <section id="result" hidden aria-live="polite">
+    <h2>Your result</h2>
+    <div class="stats">
+      <div class="stat"><b id="score">0/40</b><span>Score</span></div>
+      <div class="stat"><b id="percent">0%</b><span>Percentage</span></div>
+      <div class="stat"><b id="answered">0/40</b><span>Answered</span></div>
+    </div>
+    <p class="message" id="message"></p>
+
+    <table class="breakdown">
+      <thead><tr><th>Section</th><th>Score</th></tr></thead>
+      <tbody id="breakdownBody"></tbody>
+    </table>
+
+    <div class="review">
+      <h2 style="font-size:19px;margin-top:22px">Questions to look at again</h2>
+      <div id="review"></div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-go" onclick="document.getElementById('resetBtn').click()">Try again</button>
+    </div>
+  </section>
+
+  <details class="key-box">
+    <summary>Answer key (for the teacher)</summary>
+    <div class="key-grid">
+      <span><b>1.</b> C &mdash; The three bears</span>
+      <span><b>2.</b> B &mdash; A little house</span>
+      <span><b>3.</b> D &mdash; Porridge</span>
+      <span><b>4.</b> B &mdash; Three</span>
+      <span><b>5.</b> A &mdash; Daddy Bear's</span>
+      <span><b>6.</b> C &mdash; Mummy Bear's</span>
+      <span><b>7.</b> D &mdash; Baby Bear's</span>
+      <span><b>8.</b> C &mdash; It broke</span>
+      <span><b>9.</b> A &mdash; To the bedroom</span>
+      <span><b>10.</b> D &mdash; Three</span>
+      <span><b>11.</b> B &mdash; Baby Bear's bed</span>
+      <span><b>12.</b> C &mdash; She fell asleep</span>
+      <span><b>13.</b> D &mdash; The three bears</span>
+      <span><b>14.</b> A &mdash; Scared</span>
+      <span><b>15.</b> B &mdash; She ran away</span>
+      <span><b>16.</b> C &mdash; Goldilocks went into the house</span>
+      <span><b>17.</b> A &mdash; She felt sleepy</span>
+      <span><b>18.</b> D &mdash; The bears lived in a house.</span>
+      <span><b>19.</b> C &mdash; Sad</span>
+      <span><b>20.</b> A &mdash; happy</span>
+      <span><b>21.</b> D &mdash; hungry</span>
+      <span><b>22.</b> B &mdash; thirsty</span>
+      <span><b>23.</b> C &mdash; sleepy</span>
+      <span><b>24.</b> A &mdash; small</span>
+      <span><b>25.</b> B &mdash; It is perfect for her</span>
+      <span><b>26.</b> D &mdash; This is a chair.</span>
+      <span><b>27.</b> C &mdash; These are beds.</span>
+      <span><b>28.</b> A &mdash; are</span>
+      <span><b>29.</b> B &mdash; is</span>
+      <span><b>30.</b> D &mdash; bear</span>
+      <span><b>31.</b> C &mdash; run</span>
+      <span><b>32.</b> B &mdash; He</span>
+      <span><b>33.</b> A &mdash; They</span>
+      <span><b>34.</b> D &mdash; Touch your nose 👃</span>
+      <span><b>35.</b> C &mdash; Please may I have it?</span>
+      <span><b>36.</b> A &mdash; Goldilocks went home.</span>
+      <span><b>37.</b> B &mdash; She ran away.</span>
+      <span><b>38.</b> B &mdash; The letter B</span>
+      <span><b>39.</b> D &mdash; apple, bear, cat</span>
+      <span><b>40.</b> A &mdash; Blue 🔵</span>
+    </div>
+  </details>
+
+  <footer>Standard 1 &middot; English &middot; Goldilocks and the Three Bears</footer>
+</div>
+
+<script>
+var EXPLANATIONS = {
+  "1": "The porridge was too hot, so the three bears went for a walk in the woods.",
+  "2": "Goldilocks saw the little house where the three bears lived.",
+  "3": "The first thing on the table was porridge, so she tasted that.",
+  "4": "One bowl for each bear: Daddy, Mummy and Baby. That makes three.",
+  "5": "The big bowl belonged to Daddy Bear, and that porridge was too hot.",
+  "6": "The middle bowl belonged to Mummy Bear, and that porridge was too cold.",
+  "7": "The small bowl belonged to Baby Bear. Goldilocks ate it all up.",
+  "8": "Goldilocks sat on the small chair and it broke into pieces.",
+  "9": "She felt sleepy, so she went upstairs to the bedroom.",
+  "10": "There was one bed for each bear, so she saw three beds.",
+  "11": "The small bed was Baby Bear's, and it was just right.",
+  "12": "She was tired, so she fell fast asleep.",
+  "13": "The three bears came home and found her asleep in Baby Bear's bed.",
+  "14": "She was frightened, so she jumped up and ran.",
+  "15": "She ran out of the house and all the way home.",
+  "16": "First she went inside. The bears came home later, while she was asleep.",
+  "17": "After eating and breaking the chair, she felt sleepy.",
+  "18": "The three bears lived together in a little house in the woods.",
+  "19": "Happy and sad are opposites.",
+  "20": "People laugh when they feel happy.",
+  "21": "When you want food, you are hungry. When you want a drink, you are thirsty.",
+  "22": "You drink water when you are thirsty.",
+  "23": "Someone who is sleeping feels sleepy.",
+  "24": "Big and small are opposites.",
+  "25": "“Just right” means not too much and not too little — it is perfect.",
+  "26": "One chair takes <b>this is</b>.",
+  "27": "More than one takes <b>these are</b>.",
+  "28": "Three bears is more than one, so we use <b>are</b>.",
+  "29": "One bed is only one thing, so we use <b>is</b>.",
+  "30": "A noun names a person, animal, place or thing. <b>Bear</b> names an animal.",
+  "31": "A verb tells us what someone does. You can <b>run</b>.",
+  "32": "We use <b>he</b> for one boy or man.",
+  "33": "We use <b>they</b> for more than one person.",
+  "34": "Listen carefully and do exactly what you hear.",
+  "35": "Saying <b>please</b> makes a request polite.",
+  "36": "A sentence starts with a capital letter and ends with a full stop. Names start with a capital letter too.",
+  "37": "She was scared, so she ran out of the house.",
+  "38": "Say the word slowly: <b>b</b>-ear. It starts with the letter B.",
+  "39": "In the alphabet, a comes before b, and b comes before c.",
+  "40": "The pattern is red, blue, red, blue … so blue comes next."
+};
+
+var SECTION_LIST = [
+  {title:"Reading Comprehension", start:1, end:18},
+  {title:"Vocabulary", start:19, end:25},
+  {title:"Grammar", start:26, end:33},
+  {title:"Listening & Speaking", start:34, end:35},
+  {title:"Writing", start:36, end:37},
+  {title:"Study Skills", start:38, end:40}
+];
+
+
+(function(){
+  "use strict";
+
+  var quiz = document.getElementById("quiz");
+  var boxes = Array.prototype.slice.call(quiz.querySelectorAll(".q"));
+  var total = boxes.length;
+
+  // Shuffle which option letter (A/B/C/D) holds each answer text, so the
+  // correct answer is not always in the same position on every load.
+  (function shuffleOptions(){
+    boxes.forEach(function(box){
+      var opts = Array.prototype.slice.call(box.querySelectorAll(".opt"));
+      var texts = opts.map(function(o){ return o.querySelector(".txt").textContent; });
+      var order = [0, 1, 2, 3];
+      for (var i = order.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+      }
+      var rightIdx = "abcd".indexOf(box.dataset.answer);
+      box.dataset.answer = "abcd"[order.indexOf(rightIdx)];
+      opts.forEach(function(optDiv, idx){
+        optDiv.querySelector(".txt").textContent = texts[order[idx]];
+      });
+    });
+  })();
+
+  var progressText = document.getElementById("progressText");
+  var progressBar  = document.getElementById("progressBar");
+  var checkAsIGo   = document.getElementById("checkAsIGo");
+  var result       = document.getElementById("result");
+  var note         = document.getElementById("submitNote");
+
+  function chosen(box){ return box.querySelector("input:checked"); }
+  function labelOf(box, letter){
+    var input = box.querySelector('input[value="' + letter + '"]');
+    return input ? input.nextElementSibling : null;
+  }
+  function textOf(box, letter){
+    var lab = labelOf(box, letter);
+    return lab ? lab.querySelector(".txt").textContent : "";
+  }
+
+  function updateProgress(){
+    var done = boxes.filter(chosen).length;
+    progressText.textContent = done + " of " + total + " answered";
+    progressBar.style.width = (done / total * 100) + "%";
+    return done;
+  }
+
+  function clearMark(box){
+    box.classList.remove("marked");
+    box.querySelectorAll("label").forEach(function(l){
+      l.classList.remove("is-right", "is-wrong");
+    });
+    var fb = box.querySelector(".feedback");
+    fb.hidden = true;
+    fb.innerHTML = "";
+  }
+
+  function mark(box){
+    var picked = chosen(box);
+    var right = box.dataset.answer;
+    box.classList.add("marked");
+    var rightLabel = labelOf(box, right);
+    if (rightLabel) rightLabel.classList.add("is-right");
+    if (picked && picked.value !== right) {
+      picked.nextElementSibling.classList.add("is-wrong");
+    }
+    var fb = box.querySelector(".feedback");
+    var lead = !picked ? "You did not answer this one. "
+             : picked.value === right ? "Well done! "
+             : "Not this time. ";
+    fb.innerHTML = "<b>" + lead + "</b>" + EXPLANATIONS[box.dataset.q];
+    fb.hidden = false;
+  }
+
+  quiz.addEventListener("change", function(e){
+    if (e.target.type !== "radio") return;
+    var box = e.target.closest(".q");
+    updateProgress();
+    clearMark(box);
+    if (checkAsIGo.checked) { mark(box); }
+  });
+
+  checkAsIGo.addEventListener("change", function(){
+    boxes.forEach(function(box){
+      if (checkAsIGo.checked && chosen(box)) { mark(box); } else { clearMark(box); }
+    });
+  });
+
+  document.getElementById("storyToggle").addEventListener("click", function(){
+    var story = document.getElementById("story");
+    var hidden = story.dataset.hidden === "true";
+    story.dataset.hidden = hidden ? "false" : "true";
+    this.textContent = hidden ? "Hide the story" : "Show the story";
+    this.setAttribute("aria-expanded", hidden ? "true" : "false");
+  });
+
+  document.getElementById("submitBtn").addEventListener("click", function(){
+    var done = updateProgress();
+    if (done < total) {
+      var first = boxes.filter(function(b){ return !chosen(b); })[0];
+      if (!window.confirm((total - done) + " question(s) are still empty. Mark the paper anyway?")) {
+        first.scrollIntoView({behavior:"smooth", block:"center"});
+        var firstInput = first.querySelector("input");
+        if (firstInput) firstInput.focus({preventScroll:true});
+        return;
+      }
+    }
+
+    var score = 0, answered = 0;
+    var perSection = {};
+    var review = document.getElementById("review");
+    review.innerHTML = "";
+
+    SECTION_LIST.forEach(function(s){ perSection[s.title] = {got:0, out:0}; });
+
+    var groups = {};
+    boxes.forEach(function(box){
+      var n = box.dataset.q;
+      var picked = chosen(box);
+      var right = box.dataset.answer;
+      var ok = picked && picked.value === right;
+      if (picked) answered++;
+      if (ok) score++;
+      mark(box);
+
+      var num = Number(n);
+      var sec = SECTION_LIST.filter(function(s){ return num >= s.start && num <= s.end; })[0];
+      perSection[sec.title].out++;
+      if (ok) perSection[sec.title].got++;
+
+      if (!ok) {
+        if (!groups[sec.title]) {
+          var h = document.createElement("h3");
+          h.textContent = sec.title;
+          review.appendChild(h);
+          groups[sec.title] = true;
+        }
+        var item = document.createElement("div");
+        item.className = "r-item " + (picked ? "wrong" : "blank");
+        var q = document.createElement("p");
+        q.className = "r-q";
+        q.textContent = n + ". " + box.querySelector(".q-title").textContent.replace(/^\s*\d+\s*/, "");
+        item.appendChild(q);
+        if (picked) {
+          var yours = document.createElement("p");
+          yours.className = "r-line";
+          yours.textContent = "You chose: " + picked.value.toUpperCase() + ". " + textOf(box, picked.value);
+          item.appendChild(yours);
+        } else {
+          var blank = document.createElement("p");
+          blank.className = "r-line";
+          blank.textContent = "You left this one empty.";
+          item.appendChild(blank);
+        }
+        var corr = document.createElement("p");
+        corr.className = "r-line";
+        corr.textContent = "Correct answer: " + right.toUpperCase() + ". " + textOf(box, right);
+        item.appendChild(corr);
+        var why = document.createElement("p");
+        why.className = "r-line";
+        why.innerHTML = EXPLANATIONS[n];
+        item.appendChild(why);
+        var link = document.createElement("a");
+        link.href = "#q" + n;
+        link.textContent = "Go to question " + n;
+        link.addEventListener("click", function(ev){
+          ev.preventDefault();
+          box.scrollIntoView({behavior:"smooth", block:"center"});
+        });
+        item.appendChild(link);
+        review.appendChild(item);
+      }
+    });
+
+    var pct = Math.round(score / total * 100);
+    document.getElementById("score").textContent = score + "/" + total;
+    document.getElementById("percent").textContent = pct + "%";
+    document.getElementById("answered").textContent = answered + "/" + total;
+    document.getElementById("message").textContent =
+      pct === 100 ? "Every single one correct. Outstanding reading!" :
+      pct >= 80   ? "Great work. Read the notes below and you will be even stronger." :
+      pct >= 60   ? "A good try. Look at the questions below and read the story once more." :
+                    "Keep going. Read the story again with your teacher, then try the paper a second time.";
+
+    var tbody = document.getElementById("breakdownBody");
+    tbody.innerHTML = "";
+    SECTION_LIST.forEach(function(s){
+      var d = perSection[s.title];
+      var tr = document.createElement("tr");
+      var td1 = document.createElement("td"); td1.textContent = s.title;
+      var td2 = document.createElement("td"); td2.textContent = d.got + " / " + d.out;
+      tr.appendChild(td1); tr.appendChild(td2);
+      tbody.appendChild(tr);
+    });
+
+    if (score === total) {
+      review.innerHTML = "<p class='r-line'>Nothing to review \u2014 every answer was correct.</p>";
+    }
+
+    result.hidden = false;
+    result.scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    boxes.forEach(function(box){
+      box.querySelectorAll("input").forEach(function(i){ i.checked = false; });
+      clearMark(box);
+    });
+    result.hidden = true;
+    updateProgress();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+
+  note.textContent = "Nothing is sent anywhere \u2014 this page works offline.";
+  updateProgress();
+})();
+
+</script>
+</body>
+</html>

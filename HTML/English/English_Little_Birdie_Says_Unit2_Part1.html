@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standard 1 English – Little Birdie Says – 40 Question Quiz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;background:linear-gradient(135deg,#eef8ff,#fff7e9);color:#29313a}
+.container{max-width:980px;margin:auto;padding:16px}
+header{background:#5d56ad;color:#fff;border-radius:24px;padding:24px;box-shadow:0 10px 25px #0002}
+.badge{display:inline-flex;width:42px;height:42px;border-radius:50%;background:#ffd43d;color:#514300;align-items:center;justify-content:center;font-size:23px;font-weight:900;margin-right:8px}
+h1{display:flex;align-items:center;gap:4px;font-size:clamp(22px,4vw,34px);margin:0 0 5px}
+header p{margin:5px 0;font-size:14px}
+.poem-card{margin-top:16px;background:#fff;color:#493d20;border:3px solid #e9c85c;border-radius:20px;padding:15px;line-height:1.45}
+.poem-card b{color:#d24f6e}
+.progress-wrap{position:sticky;top:0;z-index:20;background:#fffffff2;padding:10px 0 12px;margin:12px 0}
+.progress-line{display:flex;justify-content:space-between;font-weight:900;font-size:14px}
+.progress{height:13px;background:#e4e4ec;border-radius:20px;overflow:hidden;margin-top:7px}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#43b96a,#92cf4e);transition:.25s}
+.section{margin:24px 0 10px;display:flex;align-items:center;gap:9px;color:#d74873}
+.section h2{margin:0;font-size:20px}
+.section-icon{font-size:24px}
+.question{background:#fff;border:2px solid #e5e2ef;border-radius:18px;margin:11px 0;padding:17px;box-shadow:0 5px 14px #0000000d}
+.qno{display:inline-flex;background:#f1eefc;color:#5d56ad;border-radius:9px;padding:4px 8px;font-weight:900;margin-right:6px}
+.qtext{font-weight:900;font-size:16px;line-height:1.45;margin-bottom:12px}
+.visual{background:#f8fbff;border:2px dashed #9bb7d7;border-radius:14px;padding:12px;text-align:center;font-size:29px;margin:8px 0 12px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0}
+.opt label{display:block;border:2px solid #dddbe8;border-radius:13px;padding:12px 13px;cursor:pointer;font-size:14px;line-height:1.35;background:#fff;transition:.18s}
+.opt label:hover{border-color:#6b61b9;background:#f7f5ff}
+.opt input:checked+label{border-color:#5d56ad;background:#eeeafd;font-weight:900}
+.opt input:focus+label{outline:3px solid #bfe1ff}
+.action{text-align:center;padding:24px 0}
+button{border:0;border-radius:15px;padding:14px 24px;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 6px 12px #0002}
+#submit{background:#43a85b;color:white}
+#retry{background:#5d56ad;color:white}
+#result{display:none;background:#fff;border:3px solid #ddd8fb;border-radius:22px;padding:20px;box-shadow:0 8px 22px #0002}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#f4f1ff;border-radius:15px;padding:14px;text-align:center}
+.stat strong{display:block;font-size:25px;color:#554da5}
+.encouragement{margin:14px 0;background:#fff5cf;border:2px solid #e8ca60;border-radius:15px;padding:14px;font-weight:900}
+.review{margin-top:16px}
+.review-item{margin:9px 0;border-radius:14px;padding:12px 13px;border-left:6px solid #aaa;background:#f7f7f7}
+.review-item.correct{border-left-color:#45a85b;background:#effaf1}
+.review-item.wrong{border-left-color:#e04f61;background:#fff0f2}
+.review-item.unanswered{border-left-color:#dda620;background:#fff8e5}
+.review-q{font-weight:900;margin-bottom:5px}
+.small{font-size:13px;line-height:1.45}
+footer{text-align:center;color:#777;font-size:12px;padding:20px 0}
+@media(max-width:650px){.container{padding:10px}.options{grid-template-columns:1fr}.stats{grid-template-columns:1fr}header{padding:18px}.question{padding:14px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1><span class="badge">2</span>What Does Little Birdie Say?</h1>
+<p><b>Standard 1 English • Interactive 40-Question Question Paper</b></p>
+<p>Reading • Understanding the Poem • Vocabulary • Grammar • Life Skills & Values • Writing</p>
+<div class="poem-card">
+<b>📖 Poem reminder</b><br>
+A little birdie is singing to her babies. The mother bird comes back to the nest,
+and the baby birds chirp happily. The poem uses simple sounds, actions and questions
+about what the little birdie says.
+</div>
+</header>
+
+<div class="progress-wrap">
+<div class="progress-line"><span>📚 Your Progress</span><span id="progressText">0 of 40 answered</span></div>
+<div class="progress"><span id="bar"></span></div>
+</div>
+
+<div id="quiz"></div>
+
+<div class="action"><button id="submit">✅ Submit Answers</button></div>
+
+<section id="result">
+<h2>🎉 Final Result</h2>
+<div class="stats">
+<div class="stat"><strong id="score">0/40</strong>Score</div>
+<div class="stat"><strong id="percent">0%</strong>Percentage</div>
+<div class="stat"><strong id="answered">0/40</strong>Answered</div>
+</div>
+<div class="encouragement" id="message"></div>
+<h2 style="color:#5d56ad">📝 Complete Question Review</h2>
+<div id="review" class="review"></div>
+<div class="action"><button id="retry">🔄 Try Again</button></div>
+</section>
+
+<footer>Standard 1 English • Chapter 2: What Does Little Birdie Say?</footer>
+</div>
+
+<script>
+const questions = [
+{section:"Warm-up & Poem",icon:"🐦",q:"What is the little birdie doing in the poem?",v:"🐦🎶",o:["Singing","Swimming","Sleeping","Cooking"],a:0},
+{section:"Get Started",icon:"🏠",q:"Which animal lives in a nest?",v:"🐦 🪺",o:["Bird","Cow","Dog","Fish"],a:0},
+{q:"Which animal lives in water?",v:"🐟 🌊",o:["Fish","Horse","Cat","Bird"],a:0},
+{q:"Which animal can be kept in a kennel?",v:"🐶 🏠",o:["Dog","Fish","Bird","Cow"],a:0},
+{q:"Which animal lives in a stable?",v:"🐴 🏠",o:["Horse","Dog","Fish","Bird"],a:0},
+{q:"Which animal lives in a shed?",v:"🐄 🏠",o:["Cow","Bird","Fish","Cat"],a:0},
+{q:"Which animal lives in a coop?",v:"🐔 🏠",o:["Hen","Fish","Horse","Cow"],a:0},
+{section:"Reading",icon:"📖",q:"Who is singing in the poem?",o:["The little birdie","The cow","The horse","The cat"],a:0},
+{q:"Where are the baby birds?",v:"🪺🐣🐣🐣",o:["In a nest","In a pond","In a stable","In a kennel"],a:0},
+{q:"What do the baby birds do when their mother comes back?",o:["They chirp happily","They go to school","They swim away","They hide in a box"],a:0},
+{q:"What does the mother bird bring to her babies?",o:["Food","A ball","A book","A chair"],a:0},
+{q:"How do the baby birds feel when their mother comes back?",o:["Happy","Angry","Sleepy","Sad"],a:0},
+{q:"The little birdie says a sound that a bird makes. Which sound is it?",o:["Chirp","Moo","Neigh","Roar"],a:0},
+{q:"Which word best describes the little birdie?",o:["Little","Huge","Heavy","Slow"],a:0},
+{q:"What is the poem mainly about?",o:["A mother bird and her babies","A horse in a stable","A girl at school","A dog in a kennel"],a:0},
+{q:"Which happens first?",o:["The mother bird goes to get food","The babies are happy to see her","The babies go to school","The birds visit a shop"],a:0},
+{q:"Which happens after the mother bird returns?",o:["The baby birds chirp happily","The nest disappears","The babies go swimming","The mother goes to school"],a:0},
+{q:"Which word rhymes with 'say'?",o:["Play","Bird","Nest","Tree"],a:0},
+{q:"Which word rhymes with 'tree'?",o:["See","Nest","Bird","Home"],a:0},
+{section:"Understanding the Poem",icon:"🧠",q:"Complete the sentence: The little birdie is ______ in the tree.",o:["singing","eating","sleeping","running"],a:0},
+{q:"Complete the sentence: Mother bird goes out to find ______.",o:["food","a toy","a book","a bed"],a:0},
+{q:"Why do the baby birds chirp?",o:["They are happy to see their mother","They are going to school","They are angry with the tree","They want a chair"],a:0},
+{q:"Where does the little birdie live?",v:"🌳🪺🐦",o:["In a nest","In a house","In a pond","In a kennel"],a:0},
+{q:"What can a bird do?",o:["Fly","Drive a car","Cook rice","Build a table"],a:0},
+{section:"Vocabulary",icon:"🔤",q:"Choose the correct word: A ______ has four legs and may bark.",o:["dog","bird","fish","hen"],a:0},
+{q:"Choose the correct word: A ______ can swim in water.",o:["fish","horse","cow","dog"],a:0},
+{q:"Choose the correct word: A ______ can neigh.",o:["horse","bird","fish","cat"],a:0},
+{q:"Choose the correct word: A ______ can moo.",o:["cow","dog","bird","fish"],a:0},
+{q:"Choose the correct word: A ______ can chirp.",o:["bird","cow","horse","fish"],a:0},
+{q:"Which word means the opposite of 'happy'?",o:["Sad","Glad","Kind","Nice"],a:0},
+{section:"Grammar",icon:"🧩",q:"Which is a person?",v:"👧 🏫 🐦 📚",o:["girl","school","bird","book"],a:0},
+{q:"Which is a place?",o:["school","girl","cat","pencil"],a:0},
+{q:"Which is an animal?",o:["horse","garden","teacher","chair"],a:0},
+{q:"Which is a thing?",o:["book","boy","park","dog"],a:0},
+{q:"Choose the correct word: ______ is happy.",o:["She","They","We","It"],a:0},
+{q:"Choose the correct word: ______ are happy.",o:["They","He","She","It"],a:0},
+{section:"Life Skills & Values",icon:"💚",q:"You see a bird's nest in a tree. What should you do?",o:["Leave it safely alone","Throw stones at it","Take the nest home","Shout at the birds"],a:0},
+{q:"You see a bird that has fallen from its nest. What is the safest choice?",o:["Tell a trusted adult","Pull its wings","Chase it","Throw something at it"],a:0},
+{section:"Writing",icon:"✍️",q:"Mia helps her grandmother. What is the best way to begin the story?",v:"👧➡️👵",o:["Mia went to help her grandmother.","Mia is a bird.","The tree is blue.","The dog can fly."],a:0},
+{q:"Which sentence best tells what Mia does to help her grandmother?",o:["She helps her grandmother with the housework.","She flies into the sky.","She swims in the pond.","She sleeps in a nest."],a:0}
+];
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+const quiz=document.getElementById("quiz");
+let currentSection="";
+questions.forEach((item,i)=>{
+  if(item.section && item.section!==currentSection){
+    currentSection=item.section;
+    const s=document.createElement("div");
+    s.className="section";
+    s.innerHTML=`<span class="section-icon">${item.icon}</span><h2>${item.section}</h2>`;
+    quiz.appendChild(s);
+  }
+  const card=document.createElement("div");
+  card.className="question";
+  card.dataset.q=i+1;
+  let visual=item.v?`<div class="visual">${item.v}</div>`:"";
+  const order=shuffle(item.o.map((_,j)=>j));
+  let options=order.map((srcIdx,j)=>`
+    <div class="opt">
+      <input type="radio" id="q${i+1}_${j}" name="q${i+1}" value="${escapeHtml(item.o[srcIdx])}">
+      <label for="q${i+1}_${j}">${String.fromCharCode(65+j)}. ${escapeHtml(item.o[srcIdx])}</label>
+    </div>`).join("");
+  card.innerHTML=`<div class="qtext"><span class="qno">${i+1}</span>${escapeHtml(item.q)}</div>${visual}<div class="options">${options}</div>`;
+  quiz.appendChild(card);
+});
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function updateProgress(){
+  let n=0;
+  for(let i=1;i<=40;i++) if(document.querySelector(`input[name="q${i}"]:checked`)) n++;
+  document.getElementById("progressText").textContent=`${n} of 40 answered`;
+  document.getElementById("bar").style.width=(n/40*100)+"%";
+}
+document.querySelectorAll("input[type=radio]").forEach(x=>x.addEventListener("change",updateProgress));
+
+document.getElementById("submit").addEventListener("click",()=>{
+  let score=0,answered=0,review="";
+  questions.forEach((item,i)=>{
+    const selected=document.querySelector(`input[name="q${i+1}"]:checked`);
+    const val=selected?selected.value:null;
+    if(val!==null) answered++;
+    const correct=item.o[item.a];
+    const ok=val===correct;
+    if(ok) score++;
+    const cls=ok?"correct":(val===null?"unanswered":"wrong");
+    const status=ok?"✅ Correct":(val===null?"⚠️ Unanswered":"❌ Wrong");
+    const detail=ok
+      ? `<b>Correct answer:</b> ${escapeHtml(correct)}`
+      : val===null
+        ? `<b>Correct answer:</b> ${escapeHtml(correct)}`
+        : `<b>Your answer:</b> ${escapeHtml(val)}<br><b>Correct answer:</b> ${escapeHtml(correct)}`;
+    review+=`<div class="review-item ${cls}">
+      <div class="review-q">${i+1}. ${escapeHtml(item.q)}</div>
+      <div>${status}</div><div class="small">${detail}</div>
+    </div>`;
+  });
+  const pct=Math.round(score/40*100);
+  document.getElementById("score").textContent=`${score}/40`;
+  document.getElementById("percent").textContent=`${pct}%`;
+  document.getElementById("answered").textContent=`${answered}/40`;
+  document.getElementById("review").innerHTML=review;
+  document.getElementById("message").textContent =
+    pct===100 ? "🌟 Perfect! Amazing work — you are a Little Birdie superstar!" :
+    pct>=80 ? "🎉 Excellent work! Keep reading, thinking and practising!" :
+    pct>=60 ? "😊 Good job! Review the answers and try again to make an even better score." :
+    "🌱 Keep practising! Read the poem again and have another go. You can do it!";
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+document.getElementById("retry").addEventListener("click",()=>{
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.getElementById("result").style.display="none";
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,1388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Standard 1 English - Rohan's New Bag</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Trebuchet MS", Arial, sans-serif;
+        background: linear-gradient(135deg, #e8f8fa, #fff8ec);
+        color: #26343a;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: auto;
+        padding: 15px;
+      }
+      .hero {
+        background: #278996;
+        color: white;
+        border-radius: 24px;
+        padding: 23px;
+        box-shadow: 0 10px 25px #0002;
+      }
+      .title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .badge {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #ffd43b;
+        color: #164b52;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        font-size: 24px;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(24px, 5vw, 38px);
+      }
+      .hero p {
+        margin: 7px 0;
+        font-size: 14px;
+      }
+      .lesson {
+        margin-top: 15px;
+        background: white;
+        color: #194e56;
+        border: 3px solid #f0bd54;
+        border-radius: 18px;
+        padding: 14px;
+        line-height: 1.5;
+      }
+      .progress {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #ffffffee;
+        padding: 11px 0;
+      }
+      .prow {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 900;
+        font-size: 14px;
+      }
+      .track {
+        height: 14px;
+        background: #ddd;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-top: 7px;
+      }
+      .fill {
+        height: 100%;
+        width: 0;
+        background: #42a95b;
+        transition: 0.25s;
+      }
+      .section {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 24px 0 10px;
+        color: #237e88;
+      }
+      .section span {
+        font-size: 26px;
+      }
+      .section h2 {
+        margin: 0;
+        font-size: 21px;
+      }
+      .q {
+        background: white;
+        border: 2px solid #dce5e7;
+        border-radius: 18px;
+        margin: 11px 0;
+        padding: 17px;
+        box-shadow: 0 5px 14px #0001;
+      }
+      .qt {
+        font-size: 16px;
+        font-weight: 900;
+        line-height: 1.5;
+        margin-bottom: 13px;
+      }
+      .num {
+        display: inline-grid;
+        place-items: center;
+        background: #fff0c9;
+        color: #22727d;
+        border-radius: 9px;
+        padding: 4px 8px;
+        margin-right: 7px;
+      }
+      .opts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+      .opt {
+        position: relative;
+      }
+      .opt input {
+        position: absolute;
+        opacity: 0;
+      }
+      .opt label {
+        display: block;
+        border: 2px solid #d9dfe1;
+        border-radius: 13px;
+        padding: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1.35;
+      }
+      .opt label:hover {
+        background: #effbfd;
+        border-color: #2a929e;
+      }
+      .opt input:checked + label {
+        background: #e1f6f7;
+        border-color: #23838e;
+        font-weight: 900;
+      }
+      .actions {
+        text-align: center;
+        padding: 25px 0;
+      }
+      button {
+        border: 0;
+        border-radius: 15px;
+        padding: 14px 25px;
+        font-size: 17px;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 6px 12px #0002;
+      }
+      #submit {
+        background: #43a65a;
+        color: white;
+      }
+      #retry {
+        background: #277e89;
+        color: white;
+      }
+      #result {
+        display: none;
+        background: white;
+        border: 3px solid #cfe3e5;
+        border-radius: 22px;
+        padding: 21px;
+        box-shadow: 0 8px 22px #0002;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .stat {
+        background: #eaf8f8;
+        border-radius: 15px;
+        padding: 14px;
+        text-align: center;
+      }
+      .stat strong {
+        display: block;
+        font-size: 26px;
+        color: #237e88;
+      }
+      .message {
+        margin: 14px 0;
+        background: #fff5c9;
+        border: 2px solid #e5c75c;
+        border-radius: 15px;
+        padding: 14px;
+        font-weight: 900;
+      }
+      .review {
+        margin: 9px 0;
+        border-radius: 14px;
+        padding: 12px;
+        border-left: 6px solid #aaa;
+        background: #f7f7f7;
+      }
+      .correct {
+        border-left-color: #42a95b;
+        background: #effaf1;
+      }
+      .wrong {
+        border-left-color: #df5260;
+        background: #fff0f2;
+      }
+      .unanswered {
+        border-left-color: #dda620;
+        background: #fff8e6;
+      }
+      .rq {
+        font-weight: 900;
+      }
+      .small {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      footer {
+        text-align: center;
+        color: #6c777a;
+        font-size: 12px;
+        padding: 20px;
+      }
+      @media (max-width: 650px) {
+        .wrap {
+          padding: 10px;
+        }
+        .opts {
+          grid-template-columns: 1fr;
+        }
+        .stats {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          padding: 18px;
+        }
+        .q {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <div class="title">
+          <div class="badge">4</div>
+          <h1>SCHOOL<br />ROHAN'S NEW BAG</h1>
+        </div>
+        <p><b>Standard 1 English • Interactive 40-Question Question Paper</b></p>
+        <p>
+          Reading • Comprehension • Life Skills &amp; Values • Vocabulary • Grammar • Study Skills • Speaking •
+          Listening • Writing
+        </p>
+        <div class="lesson">
+          <b>🎒 Lesson focus:</b> Rohan's new school bag, school life, friends, classroom places and objects, polite
+          greetings, caring for school things, simple grammar, spelling and short sentences.
+        </div>
+      </header>
+      <div class="progress">
+        <div class="prow"><span>📚 Your Progress</span><span id="pt">0 of 40 answered</span></div>
+        <div class="track"><div class="fill" id="pf"></div></div>
+      </div>
+      <main>
+        <div class="section">
+          <span>🎒</span>
+          <h2>Warm-up</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">1</span>What would you like to colour in the warm-up?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q1_0" name="q1" value="A school bag" /><label for="q1_0"
+                ><b>A.</b> A school bag</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q1_1" name="q1" value="A banana" /><label for="q1_1"><b>B.</b> A banana</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q1_2" name="q1" value="A flower" /><label for="q1_2"><b>C.</b> A flower</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q1_3" name="q1" value="A kite" /><label for="q1_3"><b>D.</b> A kite</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>🏫</span>
+          <h2>Get Started</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">2</span>Which number is shown for the school building?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q2_0" name="q2" value="1" /><label for="q2_0"><b>A.</b> 1</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2_1" name="q2" value="4" /><label for="q2_1"><b>B.</b> 4</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2_2" name="q2" value="6" /><label for="q2_2"><b>C.</b> 6</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2_3" name="q2" value="8" /><label for="q2_3"><b>D.</b> 8</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">3</span>What is the name of the boy in the lesson?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q3_0" name="q3" value="Rohan" /><label for="q3_0"><b>A.</b> Rohan</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q3_1" name="q3" value="Ravi" /><label for="q3_1"><b>B.</b> Ravi</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q3_2" name="q3" value="Mohan" /><label for="q3_2"><b>C.</b> Mohan</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q3_3" name="q3" value="Rahul" /><label for="q3_3"><b>D.</b> Rahul</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">4</span>Where does Rohan go with his new bag?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q4_0" name="q4" value="School" /><label for="q4_0"><b>A.</b> School</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q4_1" name="q4" value="Zoo" /><label for="q4_1"><b>B.</b> Zoo</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q4_2" name="q4" value="Park" /><label for="q4_2"><b>C.</b> Park</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q4_3" name="q4" value="Market" /><label for="q4_3"><b>D.</b> Market</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>📖</span>
+          <h2>Reading</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">5</span>What is new for Rohan?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q5_0" name="q5" value="His school bag" /><label for="q5_0"
+                ><b>A.</b> His school bag</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q5_1" name="q5" value="His bicycle" /><label for="q5_1"
+                ><b>B.</b> His bicycle</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q5_2" name="q5" value="His shoes" /><label for="q5_2"><b>C.</b> His shoes</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q5_3" name="q5" value="His lunch box" /><label for="q5_3"
+                ><b>D.</b> His lunch box</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">6</span>Why is Rohan happy?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q6_0" name="q6" value="He has a new school bag" /><label for="q6_0"
+                ><b>A.</b> He has a new school bag</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q6_1" name="q6" value="He is going home" /><label for="q6_1"
+                ><b>B.</b> He is going home</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q6_2" name="q6" value="He found a toy" /><label for="q6_2"
+                ><b>C.</b> He found a toy</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q6_3" name="q6" value="He saw a movie" /><label for="q6_3"
+                ><b>D.</b> He saw a movie</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">7</span>Who are Rohan&#039;s friends?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q7_0" name="q7" value="His school friends" /><label for="q7_0"
+                ><b>A.</b> His school friends</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q7_1" name="q7" value="His neighbours only" /><label for="q7_1"
+                ><b>B.</b> His neighbours only</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q7_2" name="q7" value="His cousins only" /><label for="q7_2"
+                ><b>C.</b> His cousins only</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q7_3" name="q7" value="His teachers" /><label for="q7_3"
+                ><b>D.</b> His teachers</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">8</span>Who teaches Rohan at school?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q8_0" name="q8" value="His teacher" /><label for="q8_0"
+                ><b>A.</b> His teacher</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q8_1" name="q8" value="His brother" /><label for="q8_1"
+                ><b>B.</b> His brother</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q8_2" name="q8" value="His mother" /><label for="q8_2"
+                ><b>C.</b> His mother</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q8_3" name="q8" value="His friend" /><label for="q8_3"
+                ><b>D.</b> His friend</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">9</span>What does Rohan show at school?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q9_0" name="q9" value="His new bag" /><label for="q9_0"
+                ><b>A.</b> His new bag</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q9_1" name="q9" value="His new bicycle" /><label for="q9_1"
+                ><b>B.</b> His new bicycle</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q9_2" name="q9" value="His new shoes" /><label for="q9_2"
+                ><b>C.</b> His new shoes</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q9_3" name="q9" value="His new toy" /><label for="q9_3"
+                ><b>D.</b> His new toy</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">10</span>What can a school bag carry?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q10_0" name="q10" value="Books and pencils" /><label for="q10_0"
+                ><b>A.</b> Books and pencils</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q10_1" name="q10" value="A bed" /><label for="q10_1"><b>B.</b> A bed</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q10_2" name="q10" value="A tree" /><label for="q10_2"><b>C.</b> A tree</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q10_3" name="q10" value="A bicycle" /><label for="q10_3"
+                ><b>D.</b> A bicycle</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">11</span>Where does Rohan meet his friends?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q11_0" name="q11" value="At school" /><label for="q11_0"
+                ><b>A.</b> At school</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q11_1" name="q11" value="At the airport" /><label for="q11_1"
+                ><b>B.</b> At the airport</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q11_2" name="q11" value="At the beach" /><label for="q11_2"
+                ><b>C.</b> At the beach</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q11_3" name="q11" value="At a farm" /><label for="q11_3"
+                ><b>D.</b> At a farm</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">12</span>How does Rohan feel about his new bag?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q12_0" name="q12" value="Happy" /><label for="q12_0"><b>A.</b> Happy</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q12_1" name="q12" value="Sad" /><label for="q12_1"><b>B.</b> Sad</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q12_2" name="q12" value="Angry" /><label for="q12_2"><b>C.</b> Angry</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q12_3" name="q12" value="Sleepy" /><label for="q12_3"><b>D.</b> Sleepy</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>📚</span>
+          <h2>Reading Comprehension</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">13</span>What is the story mainly about?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q13_0" name="q13" value="Rohan and his new school bag" /><label for="q13_0"
+                ><b>A.</b> Rohan and his new school bag</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q13_1" name="q13" value="A trip to the zoo" /><label for="q13_1"
+                ><b>B.</b> A trip to the zoo</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q13_2" name="q13" value="A birthday party" /><label for="q13_2"
+                ><b>C.</b> A birthday party</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q13_3" name="q13" value="A football match" /><label for="q13_3"
+                ><b>D.</b> A football match</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">14</span>Why does Rohan like his new bag?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q14_0" name="q14" value="It is his new school bag" /><label for="q14_0"
+                ><b>A.</b> It is his new school bag</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q14_1" name="q14" value="It is a bicycle" /><label for="q14_1"
+                ><b>B.</b> It is a bicycle</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q14_2" name="q14" value="It is a toy" /><label for="q14_2"
+                ><b>C.</b> It is a toy</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q14_3" name="q14" value="It is a lunch plate" /><label for="q14_3"
+                ><b>D.</b> It is a lunch plate</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">15</span>What can Rohan do when a friend needs a pencil?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q15_0" name="q15" value="Share a pencil" /><label for="q15_0"
+                ><b>A.</b> Share a pencil</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q15_1" name="q15" value="Hide all pencils" /><label for="q15_1"
+                ><b>B.</b> Hide all pencils</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q15_2" name="q15" value="Shout at the friend" /><label for="q15_2"
+                ><b>C.</b> Shout at the friend</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q15_3" name="q15" value="Break the pencil" /><label for="q15_3"
+                ><b>D.</b> Break the pencil</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">16</span>What is a good place to keep a school bag?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q16_0" name="q16" value="In the classroom or at home" /><label for="q16_0"
+                ><b>A.</b> In the classroom or at home</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q16_1" name="q16" value="On the road" /><label for="q16_1"
+                ><b>B.</b> On the road</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q16_2" name="q16" value="In a pond" /><label for="q16_2"
+                ><b>C.</b> In a pond</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q16_3" name="q16" value="On a tree" /><label for="q16_3"
+                ><b>D.</b> On a tree</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">17</span>What should children do to keep their classroom clean?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q17_0" name="q17" value="Put waste in the bin" /><label for="q17_0"
+                ><b>A.</b> Put waste in the bin</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q17_1" name="q17" value="Throw waste on the floor" /><label for="q17_1"
+                ><b>B.</b> Throw waste on the floor</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q17_2" name="q17" value="Draw on the wall" /><label for="q17_2"
+                ><b>C.</b> Draw on the wall</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q17_3" name="q17" value="Leave books everywhere" /><label for="q17_3"
+                ><b>D.</b> Leave books everywhere</label
+              >
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>💚</span>
+          <h2>Life Skills &amp; Values</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">18</span>How should you treat your school bag?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q18_0" name="q18" value="Keep it clean and safe" /><label for="q18_0"
+                ><b>A.</b> Keep it clean and safe</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q18_1" name="q18" value="Throw it on the floor" /><label for="q18_1"
+                ><b>B.</b> Throw it on the floor</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q18_2" name="q18" value="Tear it" /><label for="q18_2"><b>C.</b> Tear it</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q18_3" name="q18" value="Step on it" /><label for="q18_3"
+                ><b>D.</b> Step on it</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">19</span>A friend forgets a pencil. What should you do?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q19_0" name="q19" value="Share one if you can" /><label for="q19_0"
+                ><b>A.</b> Share one if you can</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q19_1" name="q19" value="Laugh at the friend" /><label for="q19_1"
+                ><b>B.</b> Laugh at the friend</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q19_2" name="q19" value="Hide your pencils" /><label for="q19_2"
+                ><b>C.</b> Hide your pencils</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q19_3" name="q19" value="Push the friend" /><label for="q19_3"
+                ><b>D.</b> Push the friend</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">20</span>How can you take care of your school?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q20_0" name="q20" value="Keep it clean" /><label for="q20_0"
+                ><b>A.</b> Keep it clean</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q20_1" name="q20" value="Write on the walls" /><label for="q20_1"
+                ><b>B.</b> Write on the walls</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q20_2" name="q20" value="Break desks" /><label for="q20_2"
+                ><b>C.</b> Break desks</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q20_3" name="q20" value="Drop litter" /><label for="q20_3"
+                ><b>D.</b> Drop litter</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">21</span>If your books are heavy, what is a good habit?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q21_0" name="q21" value="Pack only what you need" /><label for="q21_0"
+                ><b>A.</b> Pack only what you need</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q21_1" name="q21" value="Carry every book" /><label for="q21_1"
+                ><b>B.</b> Carry every book</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q21_2" name="q21" value="Throw the books away" /><label for="q21_2"
+                ><b>C.</b> Throw the books away</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q21_3" name="q21" value="Leave them in the road" /><label for="q21_3"
+                ><b>D.</b> Leave them in the road</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">22</span>What should you do when you meet your teacher?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q22_0" name="q22" value="Greet the teacher politely" /><label for="q22_0"
+                ><b>A.</b> Greet the teacher politely</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q22_1" name="q22" value="Run away" /><label for="q22_1"><b>B.</b> Run away</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q22_2" name="q22" value="Shout loudly" /><label for="q22_2"
+                ><b>C.</b> Shout loudly</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q22_3" name="q22" value="Ignore the teacher" /><label for="q22_3"
+                ><b>D.</b> Ignore the teacher</label
+              >
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>🏫</span>
+          <h2>Vocabulary</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">23</span>Which word names this place?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q23_0" name="q23" value="school" /><label for="q23_0"><b>A.</b> school</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q23_1" name="q23" value="market" /><label for="q23_1"><b>B.</b> market</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q23_2" name="q23" value="hospital" /><label for="q23_2"><b>C.</b> hospital</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q23_3" name="q23" value="park" /><label for="q23_3"><b>D.</b> park</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">24</span>Which word names a place where we read or borrow books?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q24_0" name="q24" value="library" /><label for="q24_0"><b>A.</b> library</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q24_1" name="q24" value="playground" /><label for="q24_1"
+                ><b>B.</b> playground</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q24_2" name="q24" value="classroom" /><label for="q24_2"
+                ><b>C.</b> classroom</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q24_3" name="q24" value="garden" /><label for="q24_3"><b>D.</b> garden</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">25</span>Which word names a place where children play?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q25_0" name="q25" value="playground" /><label for="q25_0"
+                ><b>A.</b> playground</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q25_1" name="q25" value="library" /><label for="q25_1"><b>B.</b> library</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q25_2" name="q25" value="office" /><label for="q25_2"><b>C.</b> office</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q25_3" name="q25" value="kitchen" /><label for="q25_3"><b>D.</b> kitchen</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">26</span>Which word names the person who teaches children?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q26_0" name="q26" value="teacher" /><label for="q26_0"><b>A.</b> teacher</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q26_1" name="q26" value="doctor" /><label for="q26_1"><b>B.</b> doctor</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q26_2" name="q26" value="driver" /><label for="q26_2"><b>C.</b> driver</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q26_3" name="q26" value="farmer" /><label for="q26_3"><b>D.</b> farmer</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">27</span>Which word names the thing Rohan carries?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q27_0" name="q27" value="bag" /><label for="q27_0"><b>A.</b> bag</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q27_1" name="q27" value="chair" /><label for="q27_1"><b>B.</b> chair</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q27_2" name="q27" value="table" /><label for="q27_2"><b>C.</b> table</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q27_3" name="q27" value="door" /><label for="q27_3"><b>D.</b> door</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">28</span>Which word names the board in a classroom?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q28_0" name="q28" value="blackboard" /><label for="q28_0"
+                ><b>A.</b> blackboard</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q28_1" name="q28" value="bed" /><label for="q28_1"><b>B.</b> bed</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q28_2" name="q28" value="basket" /><label for="q28_2"><b>C.</b> basket</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q28_3" name="q28" value="bottle" /><label for="q28_3"><b>D.</b> bottle</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>👦</span>
+          <h2>Grammar</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">29</span>Choose the correct word: ___ is Rohan.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q29_0" name="q29" value="He" /><label for="q29_0"><b>A.</b> He</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q29_1" name="q29" value="She" /><label for="q29_1"><b>B.</b> She</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q29_2" name="q29" value="They" /><label for="q29_2"><b>C.</b> They</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q29_3" name="q29" value="We" /><label for="q29_3"><b>D.</b> We</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">30</span>Choose the correct word: ___ is Riya.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q30_0" name="q30" value="She" /><label for="q30_0"><b>A.</b> She</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q30_1" name="q30" value="He" /><label for="q30_1"><b>B.</b> He</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q30_2" name="q30" value="They" /><label for="q30_2"><b>C.</b> They</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q30_3" name="q30" value="We" /><label for="q30_3"><b>D.</b> We</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">31</span>Choose the correct sentence.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q31_0" name="q31" value="The books are on the table." /><label for="q31_0"
+                ><b>A.</b> The books are on the table.</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q31_1" name="q31" value="The books is on the table." /><label for="q31_1"
+                ><b>B.</b> The books is on the table.</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q31_2" name="q31" value="The books am on the table." /><label for="q31_2"
+                ><b>C.</b> The books am on the table.</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q31_3" name="q31" value="The books be on the table." /><label for="q31_3"
+                ><b>D.</b> The books be on the table.</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">32</span>Choose the correct sentence.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q32_0" name="q32" value="This is a bag." /><label for="q32_0"
+                ><b>A.</b> This is a bag.</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q32_1" name="q32" value="This are a bag." /><label for="q32_1"
+                ><b>B.</b> This are a bag.</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q32_2" name="q32" value="This am a bag." /><label for="q32_2"
+                ><b>C.</b> This am a bag.</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q32_3" name="q32" value="This be a bag." /><label for="q32_3"
+                ><b>D.</b> This be a bag.</label
+              >
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">33</span>Choose the correct sentence: Rohan ___ a new bag.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q33_0" name="q33" value="has" /><label for="q33_0"><b>A.</b> has</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q33_1" name="q33" value="have" /><label for="q33_1"><b>B.</b> have</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q33_2" name="q33" value="are" /><label for="q33_2"><b>C.</b> are</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q33_3" name="q33" value="am" /><label for="q33_3"><b>D.</b> am</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">34</span>Choose the correct sentence: The children ___ at school.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q34_0" name="q34" value="are" /><label for="q34_0"><b>A.</b> are</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q34_1" name="q34" value="is" /><label for="q34_1"><b>B.</b> is</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q34_2" name="q34" value="am" /><label for="q34_2"><b>C.</b> am</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q34_3" name="q34" value="has" /><label for="q34_3"><b>D.</b> has</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">35</span>Which word is a thing?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q35_0" name="q35" value="bag" /><label for="q35_0"><b>A.</b> bag</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q35_1" name="q35" value="Rohan" /><label for="q35_1"><b>B.</b> Rohan</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q35_2" name="q35" value="teacher" /><label for="q35_2"><b>C.</b> teacher</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q35_3" name="q35" value="play" /><label for="q35_3"><b>D.</b> play</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>🔤</span>
+          <h2>Study Skills</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">36</span>Which word is spelled correctly?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q36_0" name="q36" value="school" /><label for="q36_0"><b>A.</b> school</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q36_1" name="q36" value="skool" /><label for="q36_1"><b>B.</b> skool</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q36_2" name="q36" value="scool" /><label for="q36_2"><b>C.</b> scool</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q36_3" name="q36" value="shcool" /><label for="q36_3"><b>D.</b> shcool</label>
+            </div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="qt"><span class="num">37</span>Which word is spelled correctly?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q37_0" name="q37" value="teacher" /><label for="q37_0"><b>A.</b> teacher</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q37_1" name="q37" value="techer" /><label for="q37_1"><b>B.</b> techer</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q37_2" name="q37" value="teecher" /><label for="q37_2"><b>C.</b> teecher</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q37_3" name="q37" value="teachar" /><label for="q37_3"><b>D.</b> teachar</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>🗣️</span>
+          <h2>Speaking</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">38</span>What can you say when you meet a friend in the morning?</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q38_0" name="q38" value="Good morning!" /><label for="q38_0"
+                ><b>A.</b> Good morning!</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q38_1" name="q38" value="Good night!" /><label for="q38_1"
+                ><b>B.</b> Good night!</label
+              >
+            </div>
+            <div class="opt">
+              <input type="radio" id="q38_2" name="q38" value="Go away!" /><label for="q38_2"><b>C.</b> Go away!</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q38_3" name="q38" value="Be quiet!" /><label for="q38_3"
+                ><b>D.</b> Be quiet!</label
+              >
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>👂</span>
+          <h2>Listening</h2>
+        </div>
+        <article class="q">
+          <div class="qt">
+            <span class="num">39</span>If the teacher says, “The place where we study,” which answer is correct?
+          </div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q39_0" name="q39" value="School" /><label for="q39_0"><b>A.</b> School</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q39_1" name="q39" value="Market" /><label for="q39_1"><b>B.</b> Market</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q39_2" name="q39" value="Park" /><label for="q39_2"><b>C.</b> Park</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q39_3" name="q39" value="Hospital" /><label for="q39_3"><b>D.</b> Hospital</label>
+            </div>
+          </div>
+        </article>
+        <div class="section">
+          <span>✍️</span>
+          <h2>Writing</h2>
+        </div>
+        <article class="q">
+          <div class="qt"><span class="num">40</span>Complete the sentence: This is my _____.</div>
+          <div class="opts">
+            <div class="opt">
+              <input type="radio" id="q40_0" name="q40" value="bag" /><label for="q40_0"><b>A.</b> bag</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q40_1" name="q40" value="school" /><label for="q40_1"><b>B.</b> school</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q40_2" name="q40" value="teacher" /><label for="q40_2"><b>C.</b> teacher</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q40_3" name="q40" value="playground" /><label for="q40_3"
+                ><b>D.</b> playground</label
+              >
+            </div>
+          </div>
+        </article>
+      </main>
+      <div class="actions"><button id="submit">✅ Submit Answers</button></div>
+      <section id="result">
+        <h2>🎉 Final Result</h2>
+        <div class="stats">
+          <div class="stat"><strong id="score">0/40</strong>Score</div>
+          <div class="stat"><strong id="pct">0%</strong>Percentage</div>
+          <div class="stat"><strong id="answered">0/40</strong>Answered</div>
+        </div>
+        <div class="message" id="msg"></div>
+        <h2 style="color: #237e88">📝 Complete Question-by-Question Review</h2>
+        <div id="review"></div>
+        <div class="actions"><button id="retry">🔄 Try Again</button></div>
+      </section>
+      <footer>Standard 1 English • Chapter 4: School – Rohan's New Bag</footer>
+    </div>
+    <script>
+      const key = [
+          0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0,
+        ],
+        D = [
+          ["What would you like to colour in the warm-up?", "A school bag", "A banana", "A flower", "A kite"],
+          ["Which number is shown for the school building?", "1", "4", "6", "8"],
+          ["What is the name of the boy in the lesson?", "Rohan", "Ravi", "Mohan", "Rahul"],
+          ["Where does Rohan go with his new bag?", "School", "Zoo", "Park", "Market"],
+          ["What is new for Rohan?", "His school bag", "His bicycle", "His shoes", "His lunch box"],
+          ["Why is Rohan happy?", "He has a new school bag", "He is going home", "He found a toy", "He saw a movie"],
+          ["Who are Rohan's friends?", "His school friends", "His neighbours only", "His cousins only", "His teachers"],
+          ["Who teaches Rohan at school?", "His teacher", "His brother", "His mother", "His friend"],
+          ["What does Rohan show at school?", "His new bag", "His new bicycle", "His new shoes", "His new toy"],
+          ["What can a school bag carry?", "Books and pencils", "A bed", "A tree", "A bicycle"],
+          ["Where does Rohan meet his friends?", "At school", "At the airport", "At the beach", "At a farm"],
+          ["How does Rohan feel about his new bag?", "Happy", "Sad", "Angry", "Sleepy"],
+          [
+            "What is the story mainly about?",
+            "Rohan and his new school bag",
+            "A trip to the zoo",
+            "A birthday party",
+            "A football match",
+          ],
+          [
+            "Why does Rohan like his new bag?",
+            "It is his new school bag",
+            "It is a bicycle",
+            "It is a toy",
+            "It is a lunch plate",
+          ],
+          [
+            "What can Rohan do when a friend needs a pencil?",
+            "Share a pencil",
+            "Hide all pencils",
+            "Shout at the friend",
+            "Break the pencil",
+          ],
+          [
+            "What is a good place to keep a school bag?",
+            "In the classroom or at home",
+            "On the road",
+            "In a pond",
+            "On a tree",
+          ],
+          [
+            "What should children do to keep their classroom clean?",
+            "Put waste in the bin",
+            "Throw waste on the floor",
+            "Draw on the wall",
+            "Leave books everywhere",
+          ],
+          [
+            "How should you treat your school bag?",
+            "Keep it clean and safe",
+            "Throw it on the floor",
+            "Tear it",
+            "Step on it",
+          ],
+          [
+            "A friend forgets a pencil. What should you do?",
+            "Share one if you can",
+            "Laugh at the friend",
+            "Hide your pencils",
+            "Push the friend",
+          ],
+          [
+            "How can you take care of your school?",
+            "Keep it clean",
+            "Write on the walls",
+            "Break desks",
+            "Drop litter",
+          ],
+          [
+            "If your books are heavy, what is a good habit?",
+            "Pack only what you need",
+            "Carry every book",
+            "Throw the books away",
+            "Leave them in the road",
+          ],
+          [
+            "What should you do when you meet your teacher?",
+            "Greet the teacher politely",
+            "Run away",
+            "Shout loudly",
+            "Ignore the teacher",
+          ],
+          ["Which word names this place?", "school", "market", "hospital", "park"],
+          ["Which word names a place where we read or borrow books?", "library", "playground", "classroom", "garden"],
+          ["Which word names a place where children play?", "playground", "library", "office", "kitchen"],
+          ["Which word names the person who teaches children?", "teacher", "doctor", "driver", "farmer"],
+          ["Which word names the thing Rohan carries?", "bag", "chair", "table", "door"],
+          ["Which word names the board in a classroom?", "blackboard", "bed", "basket", "bottle"],
+          ["Choose the correct word: ___ is Rohan.", "He", "She", "They", "We"],
+          ["Choose the correct word: ___ is Riya.", "She", "He", "They", "We"],
+          [
+            "Choose the correct sentence.",
+            "The books are on the table.",
+            "The books is on the table.",
+            "The books am on the table.",
+            "The books be on the table.",
+          ],
+          ["Choose the correct sentence.", "This is a bag.", "This are a bag.", "This am a bag.", "This be a bag."],
+          ["Choose the correct sentence: Rohan ___ a new bag.", "has", "have", "are", "am"],
+          ["Choose the correct sentence: The children ___ at school.", "are", "is", "am", "has"],
+          ["Which word is a thing?", "bag", "Rohan", "teacher", "play"],
+          ["Which word is spelled correctly?", "school", "skool", "scool", "shcool"],
+          ["Which word is spelled correctly?", "teacher", "techer", "teecher", "teachar"],
+          [
+            "What can you say when you meet a friend in the morning?",
+            "Good morning!",
+            "Good night!",
+            "Go away!",
+            "Be quiet!",
+          ],
+          [
+            "If the teacher says, “The place where we study,” which answer is correct?",
+            "School",
+            "Market",
+            "Park",
+            "Hospital",
+          ],
+          ["Complete the sentence: This is my _____.", "bag", "school", "teacher", "playground"],
+        ];
+      function safe(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[c],
+        );
+      }
+      function progress() {
+        let n = 0;
+        for (let i = 1; i <= 40; i++) if (document.querySelector(`input[name="q${i}"]:checked`)) n++;
+        document.getElementById("pt").textContent = `${n} of 40 answered`;
+        document.getElementById("pf").style.width = (n / 40) * 100 + "%";
+      }
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+      function shuffleOptions() {
+        document.querySelectorAll("article.q").forEach((article, qi) => {
+          const texts = shuffle(D[qi].slice(1, 5));
+          article.querySelectorAll(".opt").forEach((optDiv, idx) => {
+            const input = optDiv.querySelector("input"),
+              label = optDiv.querySelector("label"),
+              letter = label.querySelector("b");
+            input.value = texts[idx];
+            while (label.lastChild) label.removeChild(label.lastChild);
+            label.appendChild(letter);
+            label.appendChild(document.createTextNode(" " + texts[idx]));
+          });
+        });
+      }
+      shuffleOptions();
+      document.querySelectorAll("input").forEach((x) => x.addEventListener("change", progress));
+      document.getElementById("submit").onclick = () => {
+        let score = 0,
+          answered = 0,
+          out = "";
+        for (let i = 0; i < 40; i++) {
+          const r = document.querySelector(`input[name="q${i + 1}"]:checked`),
+            a = r ? r.value : null,
+            c = D[i][key[i] + 1],
+            ok = a === c;
+          if (a !== null) answered++;
+          if (ok) score++;
+          const cls = ok ? "correct" : a === null ? "unanswered" : "wrong",
+            status = ok ? "✅ Correct" : a === null ? "⚠️ Unanswered" : "❌ Wrong";
+          const detail = ok
+            ? `<b>Correct answer:</b> ${safe(c)}`
+            : a === null
+              ? `<b>Correct answer:</b> ${safe(c)}`
+              : `<b>Your answer:</b> ${safe(a)}<br><b>Correct answer:</b> ${safe(c)}`;
+          out += `<div class="review ${cls}"><div class="rq">${i + 1}. ${safe(D[i][0])}</div><div>${status}</div><div class="small">${detail}</div></div>`;
+        }
+        const p = Math.round((score / 40) * 100);
+        document.getElementById("score").textContent = `${score}/40`;
+        document.getElementById("pct").textContent = p + "%";
+        document.getElementById("answered").textContent = `${answered}/40`;
+        document.getElementById("review").innerHTML = out;
+        document.getElementById("msg").textContent =
+          p === 100
+            ? "🌟 Perfect! Amazing work!"
+            : p >= 80
+              ? "🎉 Excellent work! Keep learning!"
+              : p >= 60
+                ? "😊 Good job! Read the lesson again and try once more!"
+                : "🌱 Keep practising. You can improve every time you try!";
+        document.getElementById("result").style.display = "block";
+        document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+      };
+      document.getElementById("retry").onclick = () => {
+        document.querySelectorAll("input").forEach((x) => (x.checked = false));
+        document.getElementById("result").style.display = "none";
+        progress();
+        scrollTo({ top: 0, behavior: "smooth" });
+      };
+      progress();
+    </script>
+  </body>
+</html>
