@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 1 - Picture & Number Analogy Quiz</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    background: linear-gradient(135deg, #eef8ff, #fff8e8);
+    color: #263238;
+  }
+  .container {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 24px 16px 50px;
+  }
+  .header {
+    background: white;
+    border-radius: 22px;
+    padding: 26px;
+    text-align: center;
+    box-shadow: 0 6px 22px rgba(0,0,0,.08);
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    margin: 0 0 8px;
+    color: #1769aa;
+    font-size: clamp(26px, 5vw, 38px);
+  }
+  .header p { margin: 5px 0; font-size: 17px; }
+  .progress-wrap {
+    margin-top: 18px;
+    background: #e7edf2;
+    height: 12px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  #progress {
+    width: 0%;
+    height: 100%;
+    background: #42a5f5;
+    transition: width .25s;
+  }
+  .question {
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+    margin: 18px 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,.07);
+  }
+  .q-title {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  .analogy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #f8fbfd;
+    border: 2px solid #dcecf7;
+    border-radius: 16px;
+    padding: 18px 10px;
+    margin-bottom: 18px;
+  }
+  .big {
+    font-size: 48px;
+    min-width: 65px;
+    text-align: center;
+  }
+  .label {
+    font-size: 15px;
+    color: #607d8b;
+    font-weight: bold;
+  }
+  .symbol {
+    font-size: 30px;
+    font-weight: bold;
+    color: #607d8b;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .option {
+    position: relative;
+  }
+  .option input {
+    position: absolute;
+    opacity: 0;
+  }
+  .option label {
+    display: block;
+    padding: 14px 12px;
+    border: 2px solid #d7e1e7;
+    border-radius: 13px;
+    cursor: pointer;
+    background: white;
+    text-align: center;
+    font-size: 16px;
+    transition: .2s;
+    min-height: 54px;
+  }
+  .option label:hover {
+    border-color: #42a5f5;
+    background: #f1f8ff;
+    transform: translateY(-1px);
+  }
+  .option input:checked + label {
+    border-color: #1769aa;
+    background: #e3f2fd;
+    box-shadow: 0 0 0 2px #90caf9;
+  }
+  .submit-area {
+    text-align: center;
+    margin: 28px 0;
+  }
+  button {
+    border: 0;
+    background: #1769aa;
+    color: white;
+    padding: 15px 34px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(23,105,170,.25);
+  }
+  button:hover { background: #0d5b96; }
+  #result {
+    display: none;
+    background: white;
+    border-radius: 22px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 6px 22px rgba(0,0,0,.1);
+    margin-top: 20px;
+  }
+  #score {
+    font-size: 42px;
+    color: #1769aa;
+    font-weight: bold;
+  }
+  #message { font-size: 20px; margin: 10px 0 20px; }
+  .review {
+    text-align: left;
+    margin-top: 20px;
+  }
+  .review-item {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin: 8px 0;
+    font-size: 15px;
+  }
+  .correct { background: #e8f5e9; border-left: 5px solid #43a047; }
+  .wrong { background: #ffebee; border-left: 5px solid #e53935; }
+  .section-title {
+    margin-top: 32px;
+    color: #1769aa;
+    font-size: 24px;
+  }
+  .footer-note {
+    text-align:center;
+    color:#78909c;
+    margin-top:25px;
+    font-size:14px;
+  }
+  @media (max-width: 650px) {
+    .options { grid-template-columns: 1fr; }
+    .big { font-size: 40px; }
+    .symbol { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🌟 Class 1 Analogy Quiz 🌟</h1>
+    <p><strong>Picture, Shape & Number Analogies</strong></p>
+    <p>Choose the correct answer for each question.</p>
+    <div class="progress-wrap"><div id="progress"></div></div>
+    <p id="progressText" style="font-size:14px;color:#607d8b;margin-top:7px;">0 of 30 answered</p>
+  </div>
+
+  <form id="quiz"></form>
+
+  <div class="submit-area">
+    <button type="button" onclick="submitQuiz()">✅ Submit Answers</button>
+  </div>
+
+  <div id="result">
+    <div>🎉 Your Result 🎉</div>
+    <div id="score"></div>
+    <div id="message"></div>
+    <button type="button" onclick="location.reload()">🔄 Try Again</button>
+    <div class="review" id="review"></div>
+  </div>
+
+  <div class="footer-note">Keep trying — learning is fun! ⭐</div>
+</div>
+
+<script>
+const questions = [
+  {a:"🍪", b:"⚪", c:"🍕", options:["⚪ Circle","🔺 Triangle","🟦 Square"], answer:1},
+  {a:"⚽", b:"⚪", c:"📦", options:["🔺 Triangle","🟦 Square","🟢 Circle"], answer:1},
+  {a:"🥚", b:"🥚 Oval", c:"⚽", options:["⚪ Circle","🔺 Triangle","🟨 Rectangle"], answer:0},
+  {a:"🚦", b:"🟩 Green", c:"🍎", options:["🔴 Red","🔵 Blue","🟡 Yellow"], answer:0},
+  {a:"☀️", b:"🟡 Yellow", c:"🌿", options:["🔴 Red","🟢 Green","🔵 Blue"], answer:1},
+  {a:"🐶", b:"🐾 Paw", c:"🐦", options:["🪽 Wing","🐟 Fin","🐘 Trunk"], answer:0},
+  {a:"🐘", b:"👃 Trunk", c:"🦒", options:["🦵 Legs","🦒 Long neck","🐘 Trunk"], answer:1},
+  {a:"🐟", b:"🌊 Water", c:"🐦", options:["🌳 Tree","☁️ Sky","🏠 House"], answer:1},
+  {a:"🌞", b:"Day", c:"🌙", options:["Morning","Night","Afternoon"], answer:1},
+  {a:"🧊", b:"Cold", c:"🔥", options:["Hot","Wet","Soft"], answer:0},
+
+  {a:"1", b:"2", c:"3", options:["4","5","6"], answer:0},
+  {a:"2", b:"4", c:"3", options:["5","6","7"], answer:1},
+  {a:"5", b:"10", c:"4", options:["6","8","9"], answer:1},
+  {a:"10", b:"9", c:"8", options:["6","7","5"], answer:1},
+  {a:"2", b:"6", c:"3", options:["8","9","10"], answer:1},
+
+  {a:"🔴", b:"⚪ Circle", c:"🔺", options:["🔺 Triangle","🟦 Square","⭐ Star"], answer:0},
+  {a:"🟦", b:"4 sides", c:"🔺", options:["2 sides","3 sides","5 sides"], answer:1},
+  {a:"⭐", b:"5 points", c:"❤️", options:["1 point","2 points","5 points"], answer:0},
+  {a:"⚪", b:"Circle", c:"🟦", options:["Triangle","Square","Oval"], answer:1},
+  {a:"🔺", b:"Triangle", c:"🟨", options:["Circle","Square","Oval"], answer:1},
+
+  {a:"🥛", b:"Drink", c:"🍎", options:["Eat","Sleep","Run"], answer:0},
+  {a:"✏️", b:"Write", c:"🖍️", options:["Draw","Eat","Jump"], answer:0},
+  {a:"👟", b:"Foot", c:"🧤", options:["Head","Hand","Eye"], answer:1},
+  {a:"👂", b:"Hear", c:"👁️", options:["Smell","See","Taste"], answer:1},
+  {a:"👃", b:"Smell", c:"👅", options:["Taste","Hear","See"], answer:0},
+  {a:"🌱", b:"Plant", c:"🐶", options:["Animal","Fruit","Flower"], answer:0},
+  {a:"🐄", b:"Calf", c:"🐶", options:["Kitten","Puppy","Cub"], answer:1},
+  {a:"🐱", b:"Kitten", c:"🐶", options:["Puppy","Calf","Chick"], answer:0},
+  {a:"🖐️", b:"5", c:"👣", options:["5","10","2"], answer:1},
+  {a:"📅", b:"Week", c:"🕐", options:["Hour","Year","Month"], answer:0}
+];
+
+const titles = [
+  "Picture Analogy", "Picture Analogy", "Picture Analogy", "Color Analogy", "Color Analogy",
+  "Animal Analogy", "Animal Analogy", "Animal Analogy", "Time Analogy", "Opposite Analogy",
+  "Number Analogy", "Number Analogy", "Number Analogy", "Number Analogy", "Number Analogy",
+  "Shape Analogy", "Shape Analogy", "Shape Analogy", "Shape Analogy", "Shape Analogy",
+  "Word Analogy", "Word Analogy", "Body Analogy", "Sense Analogy", "Sense Analogy",
+  "Category Analogy", "Animal Analogy", "Animal Analogy", "Number Analogy", "Time Analogy"
+];
+
+const quiz = document.getElementById("quiz");
+
+function renderQuiz() {
+  let html = "";
+  let lastSection = "";
+  questions.forEach((q, i) => {
+    if ([0,10,15,20].includes(i)) {
+      const sectionNames = ["🖼️ Picture & Word Analogies","🔢 Number Analogies","🔷 Shape Analogies","🧩 Everyday Analogies"];
+      html += `<h2 class="section-title">${sectionNames[[0,10,15,20].indexOf(i)]}</h2>`;
+    }
+    html += `
+      <div class="question">
+        <div class="q-title">${i+1}. ${titles[i]}</div>
+        <div class="analogy">
+          <div><div class="big">${q.a}</div><div class="label">A</div></div>
+          <div class="symbol">:</div>
+          <div><div class="big">${q.b}</div><div class="label">B</div></div>
+          <div class="symbol">::</div>
+          <div><div class="big">${q.c}</div><div class="label">C</div></div>
+          <div class="symbol">:</div>
+          <div><div class="big">❓</div><div class="label">?</div></div>
+        </div>
+        <div class="options">
+          ${q.options.map((opt,j)=>`
+            <div class="option">
+              <input type="radio" id="q${i}_${j}" name="q${i}" value="${j}" onchange="updateProgress()">
+              <label for="q${i}_${j}">${String.fromCharCode(65+j)}) ${opt}</label>
+            </div>
+          `).join("")}
+        </div>
+      </div>`;
+  });
+  quiz.innerHTML = html;
+}
+
+function updateProgress() {
+  let answered = 0;
+  questions.forEach((q,i) => {
+    if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+  });
+  document.getElementById("progress").style.width = (answered/questions.length*100)+"%";
+  document.getElementById("progressText").textContent = `${answered} of ${questions.length} answered`;
+}
+
+function submitQuiz() {
+  let score = 0;
+  let unanswered = 0;
+  let reviewHTML = "";
+
+  questions.forEach((q,i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const item = document.querySelectorAll(".question")[i];
+    const selectedValue = selected ? Number(selected.value) : null;
+
+    if (selectedValue === null) {
+      unanswered++;
+      reviewHTML += `<div class="review-item wrong"><strong>Q${i+1}:</strong> Not answered. Correct answer: <strong>${q.options[q.answer]}</strong></div>`;
+      return;
+    }
+
+    if (selectedValue === q.answer) {
+      score++;
+      reviewHTML += `<div class="review-item correct"><strong>Q${i+1}:</strong> ✅ Correct</div>`;
+    } else {
+      reviewHTML += `<div class="review-item wrong"><strong>Q${i+1}:</strong> ❌ Your answer: ${q.options[selectedValue]} &nbsp; | &nbsp; Correct: <strong>${q.options[q.answer]}</strong></div>`;
+    }
+  });
+
+  const percent = Math.round(score/questions.length*100);
+  document.getElementById("score").textContent = `${score} / ${questions.length} (${percent}%)`;
+
+  let message;
+  if (percent >= 90) message = "🌟 Excellent! You are an analogy superstar!";
+  else if (percent >= 75) message = "👏 Very good! Keep practicing!";
+  else if (percent >= 50) message = "😊 Good effort! A little more practice will help.";
+  else message = "💪 Keep practicing! You can do it!";
+
+  if (unanswered > 0) message += ` You left ${unanswered} question${unanswered>1?"s":""} unanswered.`;
+
+  document.getElementById("message").textContent = message;
+  document.getElementById("review").innerHTML = reviewHTML;
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
