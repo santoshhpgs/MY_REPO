@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Addition &amp; Subtraction up to 100 - Fun Quiz!</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --purple:#8a63f2;
+    --blue:#4da6ff;
+    --green:#4CAF50;
+    --orange:#ff9f43;
+    --red:#ff5252;
+    --yellow:#ffd93d;
+    --bg1:#e0f7fa;
+    --bg2:#fff0f6;
+    --card:#ffffff;
+    --text:#333355;
+    --shadow:0 6px 18px rgba(0,0,0,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2) 60%, #fff9e6);
+    background-attachment:fixed;
+    color:var(--text);
+    min-height:100vh;
+    padding:12px;
+  }
+  .wrap{
+    max-width:800px;
+    margin:0 auto;
+  }
+  header{
+    text-align:center;
+    padding:18px 10px;
+    background:linear-gradient(120deg,var(--pink),var(--purple));
+    border-radius:24px;
+    color:#fff;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+  header h1{
+    margin:0 0 6px 0;
+    font-size:clamp(1.3rem,4vw,2rem);
+  }
+  header p{
+    margin:0;
+    font-size:clamp(0.85rem,2.5vw,1rem);
+    opacity:0.95;
+  }
+  .progress-wrap{
+    background:var(--card);
+    border-radius:20px;
+    padding:12px 16px;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+    position:sticky;
+    top:8px;
+    z-index:50;
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-weight:bold;
+    margin-bottom:6px;
+    font-size:0.95rem;
+    color:var(--purple);
+  }
+  .progress-bar-bg{
+    background:#eee;
+    border-radius:12px;
+    height:16px;
+    overflow:hidden;
+  }
+  .progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--green),var(--yellow),var(--orange));
+    border-radius:12px;
+    transition:width 0.35s ease;
+  }
+  .question-card{
+    background:var(--card);
+    border-radius:22px;
+    padding:18px 18px 20px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+    border:3px solid transparent;
+    animation:pop 0.25s ease;
+  }
+  @keyframes pop{
+    from{transform:scale(0.97);opacity:0.6;}
+    to{transform:scale(1);opacity:1;}
+  }
+  .q-num{
+    display:inline-block;
+    background:var(--blue);
+    color:#fff;
+    font-weight:bold;
+    padding:4px 12px;
+    border-radius:14px;
+    font-size:0.85rem;
+    margin-bottom:10px;
+  }
+  .q-text{
+    font-size:clamp(1rem,3vw,1.15rem);
+    font-weight:bold;
+    margin-bottom:14px;
+    line-height:1.5;
+    color:#333355;
+  }
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:520px){
+    .options{grid-template-columns:1fr;}
+  }
+  .option-btn{
+    background:#f5f6ff;
+    border:2.5px solid #d6d9ff;
+    border-radius:16px;
+    padding:12px 10px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--text);
+    transition:all 0.15s ease;
+    text-align:center;
+    font-family:inherit;
+  }
+  .option-btn:hover{
+    background:#e8eaff;
+    transform:translateY(-2px);
+  }
+  .option-btn.selected{
+    background:linear-gradient(120deg,var(--purple),var(--blue));
+    color:#fff;
+    border-color:var(--purple);
+    transform:scale(1.03);
+  }
+  .btn-row{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin:22px 0 40px;
+    flex-wrap:wrap;
+  }
+  .big-btn{
+    font-family:inherit;
+    font-size:1.1rem;
+    font-weight:bold;
+    padding:14px 28px;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    color:#fff;
+    box-shadow:var(--shadow);
+    transition:transform 0.15s ease;
+  }
+  .big-btn:hover{transform:translateY(-3px) scale(1.03);}
+  .submit-btn{background:linear-gradient(120deg,var(--green),#2e9e46);}
+  .retry-btn{background:linear-gradient(120deg,var(--orange),var(--red));}
+  #resultsSection{display:none;}
+  .score-card{
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    border-radius:26px;
+    padding:26px 18px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    margin-bottom:22px;
+    color:#4a2f00;
+  }
+  .score-card h2{
+    margin:0 0 10px 0;
+    font-size:clamp(1.4rem,5vw,2.1rem);
+  }
+  .score-big{
+    font-size:clamp(2.2rem,8vw,3.4rem);
+    font-weight:900;
+    margin:6px 0;
+  }
+  .score-pct{
+    font-size:clamp(1.1rem,4vw,1.5rem);
+    font-weight:bold;
+    margin-bottom:10px;
+  }
+  .encourage{
+    font-size:clamp(1rem,3.2vw,1.25rem);
+    font-weight:bold;
+    background:rgba(255,255,255,0.55);
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:16px;
+    margin-top:6px;
+  }
+  .review-title{
+    text-align:center;
+    font-size:1.3rem;
+    font-weight:bold;
+    color:var(--purple);
+    margin:20px 0 14px;
+  }
+  .review-card{
+    background:var(--card);
+    border-radius:18px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    box-shadow:var(--shadow);
+    border-left:8px solid #ccc;
+  }
+  .review-card.correct{border-left-color:var(--green);}
+  .review-card.wrong{border-left-color:var(--red);}
+  .review-card.unanswered{border-left-color:var(--orange);}
+  .review-q{
+    font-weight:bold;
+    margin-bottom:8px;
+    font-size:1rem;
+  }
+  .review-status{
+    display:inline-block;
+    font-size:0.85rem;
+    font-weight:bold;
+    padding:2px 10px;
+    border-radius:10px;
+    margin-bottom:8px;
+    color:#fff;
+  }
+  .review-status.correct{background:var(--green);}
+  .review-status.wrong{background:var(--red);}
+  .review-status.unanswered{background:var(--orange);}
+  .review-line{font-size:0.92rem;margin:3px 0;}
+  .review-line.your-wrong{color:var(--red);font-weight:bold;}
+  .review-line.your-correct{color:var(--green);font-weight:bold;}
+  .review-line.correct-ans{color:#1a6f2c;font-weight:bold;}
+  footer{
+    text-align:center;
+    font-size:0.85rem;
+    color:#888;
+    padding:10px 0 30px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>➕➖ Addition &amp; Subtraction up to 100 ➖➕</h1>
+    <p>A fun quiz for Class 1 friends! Pick the best answer for each question. 🌟</p>
+  </header>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label">
+      <span>Progress</span>
+      <span id="progressText">0 of 40 answered</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div id="quizSection"></div>
+
+  <div class="btn-row" id="submitRow">
+    <button class="big-btn submit-btn" onclick="submitQuiz()">✅ Submit Answers</button>
+  </div>
+
+  <div id="resultsSection">
+    <div class="score-card">
+      <h2>🎉 Quiz Complete! 🎉</h2>
+      <div class="score-big" id="scoreBig">0 / 40</div>
+      <div class="score-pct" id="scorePct">0%</div>
+      <div class="encourage" id="encourageMsg">Great job!</div>
+    </div>
+    <div class="review-title">📋 Question-by-Question Review</div>
+    <div id="reviewList"></div>
+    <div class="btn-row">
+      <button class="big-btn retry-btn" onclick="tryAgain()">🔄 Try Again</button>
+    </div>
+  </div>
+
+  <footer>Made with 💖 for little mathematicians</footer>
+</div>
+
+<script>
+// ---------- Question Bank ----------
+const rawQuestions = [
+  // 1-10: Addition (column style, no regrouping)
+  {q:"34 + 22 = ?", correct:"56", wrong:["12","76","45"], tag:"➕"},
+  {q:"45 + 13 = ?", correct:"58", wrong:["32","68","48"], tag:"➕"},
+  {q:"52 + 36 = ?", correct:"88", wrong:["16","78","98"], tag:"➕"},
+  {q:"23 + 45 = ?", correct:"68", wrong:["22","78","58"], tag:"➕"},
+  {q:"61 + 24 = ?", correct:"85", wrong:["37","95","75"], tag:"➕"},
+  {q:"70 + 19 = ?", correct:"89", wrong:["51","99","79"], tag:"➕"},
+  {q:"42 + 37 = ?", correct:"79", wrong:["5","89","69"], tag:"➕"},
+  {q:"55 + 14 = ?", correct:"69", wrong:["41","79","59"], tag:"➕"},
+  {q:"26 + 43 = ?", correct:"69", wrong:["17","79","59"], tag:"➕"},
+  {q:"81 + 18 = ?", correct:"99", wrong:["63","89","109"], tag:"➕"},
+
+  // 11-20: Subtraction (column style, no regrouping)
+  {q:"68 − 32 = ?", correct:"36", wrong:["100","26","46"], tag:"➖"},
+  {q:"79 − 45 = ?", correct:"34", wrong:["124","24","44"], tag:"➖"},
+  {q:"86 − 24 = ?", correct:"62", wrong:["110","52","72"], tag:"➖"},
+  {q:"95 − 63 = ?", correct:"32", wrong:["158","22","42"], tag:"➖"},
+  {q:"57 − 23 = ?", correct:"34", wrong:["80","24","44"], tag:"➖"},
+  {q:"48 − 15 = ?", correct:"33", wrong:["63","23","43"], tag:"➖"},
+  {q:"99 − 44 = ?", correct:"55", wrong:["143","45","65"], tag:"➖"},
+  {q:"76 − 52 = ?", correct:"24", wrong:["128","14","34"], tag:"➖"},
+  {q:"84 − 71 = ?", correct:"13", wrong:["155","3","23"], tag:"➖"},
+  {q:"65 − 34 = ?", correct:"31", wrong:["99","21","41"], tag:"➖"},
+
+  // 21-28: Addition word problems (daily life)
+  {q:"Riya has 23 red pens and 15 blue pens. How many pens does she have in all? 🖊️", correct:"38", wrong:["8","48","28"], tag:"➕"},
+  {q:"There are 34 mangoes in one basket and 22 mangoes in another. How many mangoes are there in all? 🥭", correct:"56", wrong:["12","66","46"], tag:"➕"},
+  {q:"Tom has 42 stickers. His friend gave him 16 more. How many stickers does Tom have now? ⭐", correct:"58", wrong:["26","68","48"], tag:"➕"},
+  {q:"There are 21 boys and 34 girls in a class. How many students are there in all? 👦👧", correct:"55", wrong:["13","65","45"], tag:"➕"},
+  {q:"A farmer picked 33 apples in the morning and 25 apples in the evening. How many apples did he pick in all? 🍎", correct:"58", wrong:["8","68","48"], tag:"➕"},
+  {q:"Priya collected 14 shells on Monday and 23 shells on Tuesday. How many shells did she collect in all? 🐚", correct:"37", wrong:["9","47","27"], tag:"➕"},
+  {q:"There are 45 fish in one pond and 32 fish in another pond. How many fish are there in all? 🐟", correct:"77", wrong:["13","87","67"], tag:"➕"},
+  {q:"Sam has 26 marbles and his brother has 41 marbles. How many marbles do they have altogether? 🔵", correct:"67", wrong:["15","77","57"], tag:"➕"},
+
+  // 29-36: Subtraction word problems (daily life)
+  {q:"There are 58 candies in a jar. Meera ate 23 of them. How many candies are left? 🍬", correct:"35", wrong:["81","25","45"], tag:"➖"},
+  {q:"A shop had 76 balloons. 42 balloons were sold. How many balloons are left? 🎈", correct:"34", wrong:["118","24","44"], tag:"➖"},
+  {q:"Rahul had 89 rupees. He spent 35 rupees on a toy. How much money does he have now? 💰", correct:"54", wrong:["124","44","64"], tag:"➖"},
+  {q:"There were 67 birds on a tree. 24 birds flew away. How many birds are left on the tree? 🐦", correct:"43", wrong:["91","33","53"], tag:"➖"},
+  {q:"A basket had 95 oranges. 41 oranges were given away. How many oranges are left? 🍊", correct:"54", wrong:["136","44","64"], tag:"➖"},
+  {q:"There are 48 students in a school bus. 15 students got off. How many students are left in the bus? 🚌", correct:"33", wrong:["63","23","43"], tag:"➖"},
+  {q:"Neha had 56 stamps. She gave 22 stamps to her friend. How many stamps does she have now? 📮", correct:"34", wrong:["78","24","44"], tag:"➖"},
+  {q:"A garden had 99 flowers. 53 flowers were picked. How many flowers are left in the garden? 🌸", correct:"46", wrong:["152","36","56"], tag:"➖"},
+
+  // 37-40: Rules & missing-number logic
+  {q:"What is the sum when you add 0 to 45? (Rule: adding 0 to a number keeps it the same!)", correct:"45", wrong:["0","46","54"], tag:"💡"},
+  {q:"Which of these is TRUE about addition?", correct:"Numbers can be added in any order and the sum stays the same.", wrong:["The order of numbers changes the sum.","Addition means taking away objects.","The answer of addition is called Difference."], tag:"💡"},
+  {q:"What do you get when you subtract a number from itself? Example: 27 − 27 = ?", correct:"0", wrong:["27","1","54"], tag:"💡"},
+  {q:"I am thinking of a number. When I take away 12 from it, I get 15. What is my number?", correct:"27", wrong:["3","17","37"], tag:"💡"}
+];
+
+// ---------- Build shuffled questions ----------
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let questions = rawQuestions.map((item,idx)=>{
+  const opts = shuffleArray([item.correct, ...item.wrong]);
+  return {
+    id: idx,
+    text: item.q,
+    tag: item.tag,
+    options: opts,
+    correct: item.correct,
+    userAnswer: null
+  };
+});
+
+const TOTAL = questions.length;
+
+// ---------- Render ----------
+function renderQuiz(){
+  const container = document.getElementById('quizSection');
+  container.innerHTML = '';
+  questions.forEach((qObj, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'qcard-'+idx;
+
+    const num = document.createElement('div');
+    num.className='q-num';
+    num.textContent = qObj.tag + ' Question ' + (idx+1) + ' of ' + TOTAL;
+    card.appendChild(num);
+
+    const qt = document.createElement('div');
+    qt.className='q-text';
+    qt.textContent = qObj.text;
+    card.appendChild(qt);
+
+    const optsWrap = document.createElement('div');
+    optsWrap.className='options';
+    qObj.options.forEach((optText)=>{
+      const btn = document.createElement('button');
+      btn.type='button';
+      btn.className='option-btn';
+      btn.textContent = optText;
+      btn.onclick = ()=> selectOption(idx, optText, btn);
+      optsWrap.appendChild(btn);
+    });
+    card.appendChild(optsWrap);
+    container.appendChild(card);
+  });
+  updateProgress();
+}
+
+function selectOption(qIdx, optText, btnEl){
+  questions[qIdx].userAnswer = optText;
+  const card = document.getElementById('qcard-'+qIdx);
+  card.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered = questions.filter(q=>q.userAnswer!==null).length;
+  document.getElementById('progressText').textContent = answered + ' of ' + TOTAL + ' answered';
+  const pct = (answered/TOTAL)*100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ---------- Submit & Score ----------
+function submitQuiz(){
+  let score = 0;
+  questions.forEach(q=>{
+    if(q.userAnswer === q.correct) score++;
+  });
+  const pct = Math.round((score/TOTAL)*100);
+
+  document.getElementById('scoreBig').textContent = score + ' / ' + TOTAL;
+  document.getElementById('scorePct').textContent = pct + '%';
+
+  let msg;
+  if(pct===100) msg="🏆 Perfect Score! You are a Math Superstar!";
+  else if(pct>=80) msg="🌟 Excellent Work! You know your numbers so well!";
+  else if(pct>=60) msg="👍 Good Job! Keep practicing to become even better!";
+  else if(pct>=40) msg="🙂 Nice Try! A little more practice will help a lot!";
+  else msg="💪 Keep Going! Practice makes perfect, try again!";
+  document.getElementById('encourageMsg').textContent = msg;
+
+  renderReview();
+
+  document.getElementById('quizSection').style.display='none';
+  document.getElementById('submitRow').style.display='none';
+  document.getElementById('progressWrap').style.display='none';
+  document.getElementById('resultsSection').style.display='block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderReview(){
+  const list = document.getElementById('reviewList');
+  list.innerHTML='';
+  questions.forEach((q, idx)=>{
+    const div = document.createElement('div');
+    let statusClass, statusText;
+    if(q.userAnswer === null){
+      statusClass='unanswered'; statusText='⚪ Not Answered';
+    } else if(q.userAnswer === q.correct){
+      statusClass='correct'; statusText='✅ Correct';
+    } else {
+      statusClass='wrong'; statusText='❌ Wrong';
+    }
+    div.className='review-card '+statusClass;
+
+    let innerHTML = '<div class="review-status '+statusClass+'">'+statusText+'</div>';
+    innerHTML += '<div class="review-q">'+ (idx+1) + '. ' + q.text + '</div>';
+
+    if(q.userAnswer === null){
+      innerHTML += '<div class="review-line correct-ans">✔️ Correct answer: '+q.correct+'</div>';
+    } else if(q.userAnswer === q.correct){
+      innerHTML += '<div class="review-line your-correct">✔️ Your answer: '+q.userAnswer+' (Correct!)</div>';
+    } else {
+      innerHTML += '<div class="review-line your-wrong">✖️ Your answer: '+q.userAnswer+'</div>';
+      innerHTML += '<div class="review-line correct-ans">✔️ Correct answer: '+q.correct+'</div>';
+    }
+    div.innerHTML = innerHTML;
+    list.appendChild(div);
+  });
+}
+
+// ---------- Try Again ----------
+function tryAgain(){
+  questions = rawQuestions.map((item,idx)=>{
+    const opts = shuffleArray([item.correct, ...item.wrong]);
+    return {
+      id: idx,
+      text: item.q,
+      tag: item.tag,
+      options: opts,
+      correct: item.correct,
+      userAnswer: null
+    };
+  });
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('quizSection').style.display='block';
+  document.getElementById('submitRow').style.display='flex';
+  document.getElementById('progressWrap').style.display='block';
+  renderQuiz();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ---------- Init ----------
+renderQuiz();
+</script>
+</body>
+</html>
