@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligent Machines - Computer Quiz for Class 1</title>
+<style>
+  :root{
+    --pink:#ff6fa3;
+    --purple:#8e6bff;
+    --blue:#43c6f7;
+    --green:#4ade80;
+    --yellow:#ffd23f;
+    --orange:#ff9f45;
+    --red:#ff5c5c;
+    --bg1:#fdf6ff;
+    --bg2:#e8f9ff;
+    --dark:#3a2e57;
+    --card-radius:22px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Comic Sans MS','Segoe UI Rounded','Trebuchet MS',sans-serif;
+    background:linear-gradient(160deg,var(--bg1) 0%, var(--bg2) 100%);
+    color:var(--dark);
+    padding:16px;
+  }
+  .app{
+    max-width:820px;
+    margin:0 auto;
+  }
+  header.title-bar{
+    text-align:center;
+    padding:20px 16px;
+    background:linear-gradient(120deg,var(--pink),var(--purple));
+    border-radius:var(--card-radius);
+    color:white;
+    box-shadow:0 8px 0 rgba(0,0,0,0.08);
+    margin-bottom:18px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.title-bar h1{
+    margin:0 0 4px 0;
+    font-size:1.7rem;
+    text-shadow:1px 2px 0 rgba(0,0,0,0.15);
+  }
+  header.title-bar p{
+    margin:0;
+    font-size:1rem;
+    opacity:0.95;
+  }
+  .deco{
+    position:absolute;
+    font-size:2rem;
+    opacity:0.35;
+  }
+  .deco.d1{top:-10px; left:6%;}
+  .deco.d2{bottom:-10px; right:8%;}
+  .deco.d3{top:10%; right:20%;}
+
+  .progress-wrap{
+    background:white;
+    border-radius:16px;
+    padding:12px 16px;
+    margin-bottom:18px;
+    box-shadow:0 4px 0 rgba(0,0,0,0.06);
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-weight:bold;
+    margin-bottom:6px;
+    color:var(--purple);
+    font-size:0.95rem;
+  }
+  .progress-bar-bg{
+    background:#eee6ff;
+    border-radius:12px;
+    height:18px;
+    overflow:hidden;
+    border:2px solid #d9c9ff;
+  }
+  .progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--green),var(--blue));
+    border-radius:12px;
+    transition:width 0.35s ease;
+  }
+
+  .question-card{
+    background:white;
+    border-radius:var(--card-radius);
+    padding:18px 18px 20px;
+    margin-bottom:16px;
+    box-shadow:0 6px 0 rgba(0,0,0,0.06);
+    border:3px solid transparent;
+  }
+  .q-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .q-number{
+    background:var(--yellow);
+    color:var(--dark);
+    font-weight:bold;
+    border-radius:50%;
+    width:34px;
+    height:34px;
+    min-width:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1rem;
+    box-shadow:0 3px 0 rgba(0,0,0,0.1);
+  }
+  .q-text{
+    font-size:1.08rem;
+    font-weight:bold;
+    color:var(--dark);
+    line-height:1.4;
+  }
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:560px){
+    .options{grid-template-columns:1fr;}
+  }
+  .option{
+    background:var(--bg2);
+    border:2px solid #cdeffc;
+    border-radius:14px;
+    padding:10px 12px;
+    cursor:pointer;
+    font-size:0.98rem;
+    font-weight:600;
+    color:var(--dark);
+    transition:transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .option:hover{
+    transform:translateY(-2px);
+    background:#dff3ff;
+  }
+  .option.selected{
+    background:linear-gradient(120deg,var(--purple),var(--pink));
+    color:white;
+    border-color:transparent;
+    transform:scale(1.02);
+  }
+  .option .bullet{
+    font-weight:bold;
+    background:white;
+    color:var(--purple);
+    border-radius:50%;
+    width:24px;
+    height:24px;
+    min-width:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.85rem;
+  }
+  .option.selected .bullet{
+    background:white;
+    color:var(--pink);
+  }
+
+  .submit-wrap{
+    text-align:center;
+    margin:26px 0 40px;
+  }
+  button.big-btn{
+    font-family:inherit;
+    font-size:1.15rem;
+    font-weight:bold;
+    padding:14px 34px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    color:white;
+    background:linear-gradient(120deg,var(--green),var(--blue));
+    box-shadow:0 6px 0 rgba(0,0,0,0.15);
+    transition:transform 0.1s ease;
+  }
+  button.big-btn:hover{transform:translateY(-2px);}
+  button.big-btn:active{transform:translateY(2px); box-shadow:0 2px 0 rgba(0,0,0,0.15);}
+  button.big-btn.secondary{
+    background:linear-gradient(120deg,var(--orange),var(--pink));
+    margin-top:14px;
+  }
+
+  .hint{
+    text-align:center;
+    color:#888;
+    font-size:0.9rem;
+    margin-top:-10px;
+    margin-bottom:20px;
+  }
+
+  /* Results */
+  .results-card{
+    background:white;
+    border-radius:var(--card-radius);
+    padding:26px 20px;
+    text-align:center;
+    box-shadow:0 6px 0 rgba(0,0,0,0.08);
+    margin-bottom:20px;
+  }
+  .score-emoji{
+    font-size:3.4rem;
+  }
+  .score-text{
+    font-size:1.6rem;
+    font-weight:bold;
+    color:var(--purple);
+    margin:6px 0;
+  }
+  .score-percent{
+    font-size:1.2rem;
+    font-weight:bold;
+    color:var(--blue);
+    margin-bottom:8px;
+  }
+  .encourage{
+    font-size:1.1rem;
+    color:var(--dark);
+    background:var(--bg2);
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:14px;
+    margin-top:6px;
+  }
+
+  .review-item{
+    background:white;
+    border-radius:18px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    box-shadow:0 4px 0 rgba(0,0,0,0.06);
+    border-left:8px solid #ccc;
+  }
+  .review-item.correct{border-left-color:var(--green);}
+  .review-item.wrong{border-left-color:var(--red);}
+  .review-item.unanswered{border-left-color:var(--orange);}
+  .review-q{
+    font-weight:bold;
+    margin-bottom:8px;
+    display:flex;
+    gap:8px;
+  }
+  .review-line{
+    margin:4px 0;
+    font-size:0.96rem;
+  }
+  .tag{
+    display:inline-block;
+    font-size:0.8rem;
+    font-weight:bold;
+    padding:2px 10px;
+    border-radius:10px;
+    margin-left:6px;
+    color:white;
+  }
+  .tag.correct{background:var(--green);}
+  .tag.wrong{background:var(--red);}
+  .tag.unanswered{background:var(--orange);}
+
+  .section-title{
+    font-size:1.3rem;
+    font-weight:bold;
+    color:var(--purple);
+    margin:26px 0 12px;
+    text-align:center;
+  }
+
+  footer{
+    text-align:center;
+    color:#999;
+    font-size:0.85rem;
+    margin:20px 0 10px;
+  }
+
+  .unanswered-warning{
+    display:none;
+    background:#fff3cd;
+    color:#8a6d1a;
+    border:2px solid #ffe08a;
+    border-radius:14px;
+    padding:10px 16px;
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:16px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="title-bar">
+    <span class="deco d1">🤖</span>
+    <span class="deco d2">🔊</span>
+    <span class="deco d3">🚁</span>
+    <h1>🤖 Intelligent Machines 🤖</h1>
+    <p>Computer Quiz for Class 1 | AI, Intelligent Machines &amp; Smart Machines</p>
+  </header>
+
+  <div id="quiz-screen">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>📊 Progress</span>
+        <span id="progress-text">0 of 40 answered</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div class="unanswered-warning" id="unanswered-warning">
+      ⚠️ Please answer all questions before submitting! Some questions are still empty.
+    </div>
+
+    <div class="submit-wrap">
+      <button class="big-btn" id="submit-btn">✅ Submit Answers</button>
+      <div class="hint">Answer all 40 questions, then press submit!</div>
+    </div>
+  </div>
+
+  <div id="results-screen" style="display:none;">
+    <div class="results-card">
+      <div class="score-emoji" id="score-emoji">🎉</div>
+      <div class="score-text" id="score-text">You scored 0 / 40</div>
+      <div class="score-percent" id="score-percent">0%</div>
+      <div class="encourage" id="encourage-msg">Great try!</div>
+    </div>
+
+    <div class="section-title">📋 Question-by-Question Review</div>
+    <div id="review-container"></div>
+
+    <div class="submit-wrap">
+      <button class="big-btn secondary" id="retry-btn">🔄 Try Again</button>
+    </div>
+  </div>
+
+  <footer>Made with 💜 for little learners | Standard 1 Computer</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- QUESTION BANK ----------
+  // Each question: text, correct answer, 3 wrong answers.
+  const rawQuestions = [
+    { q: "What does AI stand for?", correct: "Artificial Intelligence", wrong: ["Automatic Internet", "Amazing Ideas", "Animal Instinct"] },
+    { q: "A machine that uses AI behaves like a:", correct: "Human being", wrong: ["Animal", "Plant", "Robot toy only"] },
+    { q: "Machines that use AI and work smartly are called:", correct: "Intelligent machines", wrong: ["Slow machines", "Broken machines", "Old machines"] },
+    { q: "Some machines follow our instructions, while others:", correct: "Work on their own", wrong: ["Never work at all", "Break down immediately", "Only work once a year"] },
+    { q: "Which of these can you ask to play your favourite music and turn on the lights?", correct: "A smart speaker (like Alexa)", wrong: ["A washing machine", "A sewing machine", "A cooking oven"] },
+    { q: "Which of these can a farmer use to water the crops?", correct: "A drone", wrong: ["A vacuum cleaner", "A sewing machine", "A smart TV"] },
+    { q: "Which of these is an example of an intelligent machine?", correct: "A smart speaker that plays music on command", wrong: ["A simple wooden chair", "A plain paper book", "A hand fan"] },
+    { q: "Which machine washes our clothes automatically?", correct: "Washing machine", wrong: ["Vacuum cleaner", "Sewing machine", "Air conditioner"] },
+    { q: "Which machine helps clean your house without much help from you?", correct: "Vacuum cleaner", wrong: ["Washing machine", "Sewing machine", "Cooking oven"] },
+    { q: "Which machine is used to stitch clothes?", correct: "Sewing machine", wrong: ["Washing machine", "Vacuum cleaner", "Air conditioner"] },
+    { q: "Which machine is used to bake or cook food?", correct: "Cooking oven", wrong: ["Vacuum cleaner", "Sewing machine", "Smart TV"] },
+    { q: "Which machine lets you play games and connect to your smartphone?", correct: "Smart TV", wrong: ["Washing machine", "Sewing machine", "Vacuum cleaner"] },
+    { q: "Which machine can be switched on or off using a smartphone to cool a room?", correct: "Air conditioner", wrong: ["Washing machine", "Sewing machine", "Cooking oven"] },
+    { q: "Which of these is a smart machine?", correct: "Smart TV", wrong: ["A wooden chair", "A plain umbrella", "A simple candle"] },
+    { q: "Complete the sentence: \"A machine behaves like a ______ being with the help of AI.\"", correct: "Human", wrong: ["Animal", "Robot", "Plant"] },
+    { q: "Complete the sentence: \"A farmer can use a ______ for watering the crops.\"", correct: "Drone", wrong: ["Vacuum cleaner", "Sewing machine", "Air conditioner"] },
+    { q: "Complete the sentence: \"______ can play your favourite music when you ask it to.\"", correct: "A smart speaker", wrong: ["A washing machine", "A sewing machine", "A cooking oven"] },
+    { q: "Which of these machines can you find around you, like at home or school?", correct: "Computer, laptop and robots", wrong: ["Only trees and flowers", "Only clouds and rain", "Only animals"] },
+    { q: "Which of these best describes an 'intelligent machine'?", correct: "A machine that uses AI and works smartly like a human", wrong: ["A machine that never works", "A machine that is very old", "A machine made only of wood"] },
+    { q: "Which of these machines is commonly used in homes to keep the house cool?", correct: "Air conditioner", wrong: ["Sewing machine", "Washing machine", "Vacuum cleaner"] },
+    { q: "Which of these is an example of a helper robot used at home?", correct: "A home robot that checks on things for you", wrong: ["A plain umbrella", "A regular pencil", "A wooden spoon"] },
+    { q: "What can a smart TV do that a regular TV cannot?", correct: "Connect to the internet and smartphones, and play games", wrong: ["Turn off by itself only", "Never show any picture", "Only tell the time"] },
+    { q: "Which of these is TRUE about smart machines?", correct: "They make our work easier and smarter", wrong: ["They make our work harder", "They never help us", "They are all broken"] },
+    { q: "Which of these is the correct match: Washing machine → ______", correct: "Washes clothes", wrong: ["Cleans the floor", "Cooks food", "Cools the room"] },
+    { q: "Which of these is the correct match: Vacuum cleaner → ______", correct: "Cleans the house", wrong: ["Washes clothes", "Stitches clothes", "Bakes food"] },
+    { q: "Which of these is the correct match: Sewing machine → ______", correct: "Stitches clothes", wrong: ["Washes clothes", "Cleans the house", "Cools the room"] },
+    { q: "Which of these is the correct match: Cooking oven → ______", correct: "Bakes or cooks food", wrong: ["Washes clothes", "Cleans the house", "Cools the room"] },
+    { q: "Which of these is the correct match: Air conditioner → ______", correct: "Cools the room", wrong: ["Washes clothes", "Bakes food", "Stitches clothes"] },
+    { q: "Which of these is the correct match: Smart TV → ______", correct: "Lets you watch shows and play games", wrong: ["Washes clothes", "Cools the room", "Bakes food"] },
+    { q: "Which of these questions would help you check if a machine is 'smart'?", correct: "Can it connect to the internet or a smartphone?", wrong: ["Is it made of plastic?", "Is it a certain colour?", "Is it big or small?"] },
+    { q: "Which of these smart machines would you find in a kitchen?", correct: "Cooking oven", wrong: ["Vacuum cleaner", "Sewing machine", "Air conditioner"] },
+    { q: "Which of these smart machines would you find in a living room?", correct: "Smart TV", wrong: ["Sewing machine", "Cooking oven", "Washing machine"] },
+    { q: "Which of these smart machines helps with cleaning?", correct: "Vacuum cleaner", wrong: ["Sewing machine", "Cooking oven", "Smart TV"] },
+    { q: "Which of these smart machines helps with clothes?", correct: "Washing machine and Sewing machine", wrong: ["Cooking oven and Smart TV", "Air conditioner and Vacuum cleaner", "Only Smart TV"] },
+    { q: "Which of these best explains why intelligent machines are useful?", correct: "They help us do work easily and smartly, just like a helper", wrong: ["They make our lives harder", "They cannot do anything", "They break every day"] },
+    { q: "Which of these is an example of using AI in daily life?", correct: "Asking a smart speaker to play music", wrong: ["Reading a printed book", "Writing with a pencil", "Drawing with crayons"] },
+    { q: "Complete the sentence: \"Smart machines can connect to the ______.\"", correct: "Internet or smartphone", wrong: ["Garden", "Kitchen sink", "Bookshelf"] },
+    { q: "What kind of machine helps a farmer water crops from the sky?", correct: "Drone", wrong: ["Sewing machine", "Vacuum cleaner", "Air conditioner"] },
+    { q: "Which two of these are examples of smart machines mentioned in your lesson?", correct: "Washing machine and Smart TV", wrong: ["Tree and Flower", "Cloud and Rain", "Dog and Cat"] },
+    { q: "Which of the following best sums up what 'Intelligent Machines' means?", correct: "Machines that use AI to work smartly like humans", wrong: ["Machines that never work", "Machines made only of wood", "Machines that are always broken"] }
+  ];
+
+  // Shuffle helper (Fisher-Yates)
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  // Build final question list with shuffled options, correct answer text stored
+  const questions = rawQuestions.map((item, idx) => {
+    const options = shuffle([item.correct, ...item.wrong]);
+    return {
+      id: idx,
+      text: item.q,
+      options: options,
+      correct: item.correct
+    };
+  });
+
+  const TOTAL = questions.length;
+  const answers = new Array(TOTAL).fill(null); // stores selected option text
+
+  const container = document.getElementById('questions-container');
+  const progressFill = document.getElementById('progress-fill');
+  const progressText = document.getElementById('progress-text');
+
+  const letters = ['A','B','C','D'];
+
+  function renderQuestions(){
+    container.innerHTML = '';
+    questions.forEach((q, qi) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = 'card-' + qi;
+
+      const header = document.createElement('div');
+      header.className = 'q-header';
+      const num = document.createElement('div');
+      num.className = 'q-number';
+      num.textContent = (qi+1);
+      const text = document.createElement('div');
+      text.className = 'q-text';
+      text.textContent = q.text;
+      header.appendChild(num);
+      header.appendChild(text);
+      card.appendChild(header);
+
+      const optWrap = document.createElement('div');
+      optWrap.className = 'options';
+
+      q.options.forEach((opt, oi) => {
+        const optDiv = document.createElement('div');
+        optDiv.className = 'option';
+        optDiv.dataset.value = opt;
+        optDiv.innerHTML = '<span class="bullet">' + letters[oi] + '</span><span>' + opt + '</span>';
+        optDiv.addEventListener('click', () => selectOption(qi, opt, card));
+        optWrap.appendChild(optDiv);
+      });
+
+      card.appendChild(optWrap);
+      container.appendChild(card);
+    });
+  }
+
+  function selectOption(qi, value, card){
+    answers[qi] = value;
+    // update UI
+    const opts = card.querySelectorAll('.option');
+    opts.forEach(o => {
+      if(o.dataset.value === value){
+        o.classList.add('selected');
+      } else {
+        o.classList.remove('selected');
+      }
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const answeredCount = answers.filter(a => a !== null).length;
+    progressText.textContent = answeredCount + ' of ' + TOTAL + ' answered';
+    progressFill.style.width = (answeredCount / TOTAL * 100) + '%';
+  }
+
+  renderQuestions();
+  updateProgress();
+
+  // ---------- SUBMIT ----------
+  document.getElementById('submit-btn').addEventListener('click', () => {
+    const unansweredIdx = answers.map((a,i)=>a===null?i:-1).filter(i=>i>=0);
+    if(unansweredIdx.length > 0){
+      document.getElementById('unanswered-warning').style.display = 'block';
+      // scroll to first unanswered
+      const target = document.getElementById('card-' + unansweredIdx[0]);
+      if(target){
+        target.style.borderColor = '#ff9f45';
+        target.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(()=>{ target.style.borderColor = 'transparent'; }, 2000);
+      }
+      return;
+    }
+    document.getElementById('unanswered-warning').style.display = 'none';
+    showResults();
+  });
+
+  function showResults(){
+    let correctCount = 0;
+    questions.forEach((q, qi) => {
+      if(answers[qi] === q.correct) correctCount++;
+    });
+    const percent = Math.round((correctCount / TOTAL) * 100);
+
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('results-screen').style.display = 'block';
+
+    let emoji = '🌟';
+    let message = '';
+    if(percent === 100){
+      emoji = '🏆';
+      message = "PERFECT SCORE! You are a Things Around Us superstar! 🎉";
+    } else if(percent >= 80){
+      emoji = '🎉';
+      message = "Wonderful job! You know so much about living and non-living things!";
+    } else if(percent >= 60){
+      emoji = '😃';
+      message = "Good work! Keep practicing and you'll be an expert soon!";
+    } else if(percent >= 40){
+      emoji = '🙂';
+      message = "Nice try! Let's read about Things Around Us again together.";
+    } else {
+      emoji = '🌱';
+      message = "Great effort! Every try helps you learn more. Keep going!";
+    }
+
+    document.getElementById('score-emoji').textContent = emoji;
+    document.getElementById('score-text').textContent = 'You scored ' + correctCount + ' / ' + TOTAL;
+    document.getElementById('score-percent').textContent = percent + '%';
+    document.getElementById('encourage-msg').textContent = message;
+
+    renderReview();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function renderReview(){
+    const reviewContainer = document.getElementById('review-container');
+    reviewContainer.innerHTML = '';
+
+    questions.forEach((q, qi) => {
+      const userAnswer = answers[qi];
+      const isCorrect = userAnswer === q.correct;
+      const isUnanswered = userAnswer === null;
+
+      const item = document.createElement('div');
+      item.className = 'review-item ' + (isUnanswered ? 'unanswered' : (isCorrect ? 'correct' : 'wrong'));
+
+      const qDiv = document.createElement('div');
+      qDiv.className = 'review-q';
+      qDiv.innerHTML = '<span>' + (qi+1) + '. ' + q.text + '</span>' +
+        (isUnanswered
+          ? '<span class="tag unanswered">Unanswered</span>'
+          : (isCorrect ? '<span class="tag correct">Correct ✅</span>' : '<span class="tag wrong">Wrong ❌</span>'));
+      item.appendChild(qDiv);
+
+      if(isUnanswered){
+        const line = document.createElement('div');
+        line.className = 'review-line';
+        line.innerHTML = '✅ Correct answer: <strong>' + q.correct + '</strong>';
+        item.appendChild(line);
+      } else if(isCorrect){
+        const line = document.createElement('div');
+        line.className = 'review-line';
+        line.innerHTML = '✅ Your answer: <strong>' + userAnswer + '</strong> (Correct!)';
+        item.appendChild(line);
+      } else {
+        const line1 = document.createElement('div');
+        line1.className = 'review-line';
+        line1.innerHTML = '❌ Your answer: <strong>' + userAnswer + '</strong>';
+        const line2 = document.createElement('div');
+        line2.className = 'review-line';
+        line2.innerHTML = '✅ Correct answer: <strong>' + q.correct + '</strong>';
+        item.appendChild(line1);
+        item.appendChild(line2);
+      }
+
+      reviewContainer.appendChild(item);
+    });
+  }
+
+  // ---------- RETRY ----------
+  document.getElementById('retry-btn').addEventListener('click', () => {
+    location.reload();
+  });
+
+})();
+</script>
+</body>
+</html>
