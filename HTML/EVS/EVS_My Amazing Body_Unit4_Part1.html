@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Amazing Body - EVS Quiz for Class 1</title>
+<style>
+  :root{
+    --pink:#ff6fa3;
+    --purple:#8e6bff;
+    --blue:#43c6f7;
+    --green:#4ade80;
+    --yellow:#ffd23f;
+    --orange:#ff9f45;
+    --red:#ff5c5c;
+    --bg1:#fdf6ff;
+    --bg2:#e8f9ff;
+    --dark:#3a2e57;
+    --card-radius:22px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Comic Sans MS','Segoe UI Rounded','Trebuchet MS',sans-serif;
+    background:linear-gradient(160deg,var(--bg1) 0%, var(--bg2) 100%);
+    color:var(--dark);
+    padding:16px;
+  }
+  .app{
+    max-width:820px;
+    margin:0 auto;
+  }
+  header.title-bar{
+    text-align:center;
+    padding:20px 16px;
+    background:linear-gradient(120deg,var(--pink),var(--purple));
+    border-radius:var(--card-radius);
+    color:white;
+    box-shadow:0 8px 0 rgba(0,0,0,0.08);
+    margin-bottom:18px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.title-bar h1{
+    margin:0 0 4px 0;
+    font-size:1.7rem;
+    text-shadow:1px 2px 0 rgba(0,0,0,0.15);
+  }
+  header.title-bar p{
+    margin:0;
+    font-size:1rem;
+    opacity:0.95;
+  }
+  .deco{
+    position:absolute;
+    font-size:2rem;
+    opacity:0.35;
+  }
+  .deco.d1{top:-10px; left:6%;}
+  .deco.d2{bottom:-10px; right:8%;}
+  .deco.d3{top:10%; right:20%;}
+
+  .progress-wrap{
+    background:white;
+    border-radius:16px;
+    padding:12px 16px;
+    margin-bottom:18px;
+    box-shadow:0 4px 0 rgba(0,0,0,0.06);
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-weight:bold;
+    margin-bottom:6px;
+    color:var(--purple);
+    font-size:0.95rem;
+  }
+  .progress-bar-bg{
+    background:#eee6ff;
+    border-radius:12px;
+    height:18px;
+    overflow:hidden;
+    border:2px solid #d9c9ff;
+  }
+  .progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--green),var(--blue));
+    border-radius:12px;
+    transition:width 0.35s ease;
+  }
+
+  .question-card{
+    background:white;
+    border-radius:var(--card-radius);
+    padding:18px 18px 20px;
+    margin-bottom:16px;
+    box-shadow:0 6px 0 rgba(0,0,0,0.06);
+    border:3px solid transparent;
+  }
+  .q-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .q-number{
+    background:var(--yellow);
+    color:var(--dark);
+    font-weight:bold;
+    border-radius:50%;
+    width:34px;
+    height:34px;
+    min-width:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1rem;
+    box-shadow:0 3px 0 rgba(0,0,0,0.1);
+  }
+  .q-text{
+    font-size:1.08rem;
+    font-weight:bold;
+    color:var(--dark);
+    line-height:1.4;
+  }
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:560px){
+    .options{grid-template-columns:1fr;}
+  }
+  .option{
+    background:var(--bg2);
+    border:2px solid #cdeffc;
+    border-radius:14px;
+    padding:10px 12px;
+    cursor:pointer;
+    font-size:0.98rem;
+    font-weight:600;
+    color:var(--dark);
+    transition:transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .option:hover{
+    transform:translateY(-2px);
+    background:#dff3ff;
+  }
+  .option.selected{
+    background:linear-gradient(120deg,var(--purple),var(--pink));
+    color:white;
+    border-color:transparent;
+    transform:scale(1.02);
+  }
+  .option .bullet{
+    font-weight:bold;
+    background:white;
+    color:var(--purple);
+    border-radius:50%;
+    width:24px;
+    height:24px;
+    min-width:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.85rem;
+  }
+  .option.selected .bullet{
+    background:white;
+    color:var(--pink);
+  }
+
+  .submit-wrap{
+    text-align:center;
+    margin:26px 0 40px;
+  }
+  button.big-btn{
+    font-family:inherit;
+    font-size:1.15rem;
+    font-weight:bold;
+    padding:14px 34px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    color:white;
+    background:linear-gradient(120deg,var(--green),var(--blue));
+    box-shadow:0 6px 0 rgba(0,0,0,0.15);
+    transition:transform 0.1s ease;
+  }
+  button.big-btn:hover{transform:translateY(-2px);}
+  button.big-btn:active{transform:translateY(2px); box-shadow:0 2px 0 rgba(0,0,0,0.15);}
+  button.big-btn.secondary{
+    background:linear-gradient(120deg,var(--orange),var(--pink));
+    margin-top:14px;
+  }
+
+  .hint{
+    text-align:center;
+    color:#888;
+    font-size:0.9rem;
+    margin-top:-10px;
+    margin-bottom:20px;
+  }
+
+  /* Results */
+  .results-card{
+    background:white;
+    border-radius:var(--card-radius);
+    padding:26px 20px;
+    text-align:center;
+    box-shadow:0 6px 0 rgba(0,0,0,0.08);
+    margin-bottom:20px;
+  }
+  .score-emoji{
+    font-size:3.4rem;
+  }
+  .score-text{
+    font-size:1.6rem;
+    font-weight:bold;
+    color:var(--purple);
+    margin:6px 0;
+  }
+  .score-percent{
+    font-size:1.2rem;
+    font-weight:bold;
+    color:var(--blue);
+    margin-bottom:8px;
+  }
+  .encourage{
+    font-size:1.1rem;
+    color:var(--dark);
+    background:var(--bg2);
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:14px;
+    margin-top:6px;
+  }
+
+  .review-item{
+    background:white;
+    border-radius:18px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    box-shadow:0 4px 0 rgba(0,0,0,0.06);
+    border-left:8px solid #ccc;
+  }
+  .review-item.correct{border-left-color:var(--green);}
+  .review-item.wrong{border-left-color:var(--red);}
+  .review-item.unanswered{border-left-color:var(--orange);}
+  .review-q{
+    font-weight:bold;
+    margin-bottom:8px;
+    display:flex;
+    gap:8px;
+  }
+  .review-line{
+    margin:4px 0;
+    font-size:0.96rem;
+  }
+  .tag{
+    display:inline-block;
+    font-size:0.8rem;
+    font-weight:bold;
+    padding:2px 10px;
+    border-radius:10px;
+    margin-left:6px;
+    color:white;
+  }
+  .tag.correct{background:var(--green);}
+  .tag.wrong{background:var(--red);}
+  .tag.unanswered{background:var(--orange);}
+
+  .section-title{
+    font-size:1.3rem;
+    font-weight:bold;
+    color:var(--purple);
+    margin:26px 0 12px;
+    text-align:center;
+  }
+
+  footer{
+    text-align:center;
+    color:#999;
+    font-size:0.85rem;
+    margin:20px 0 10px;
+  }
+
+  .unanswered-warning{
+    display:none;
+    background:#fff3cd;
+    color:#8a6d1a;
+    border:2px solid #ffe08a;
+    border-radius:14px;
+    padding:10px 16px;
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:16px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="title-bar">
+    <span class="deco d1">👀</span>
+    <span class="deco d2">👂</span>
+    <span class="deco d3">✋</span>
+    <h1>🧒 My Amazing Body 🧒</h1>
+    <p>EVS Quiz for Class 1 | Body Parts, Sense Organs &amp; Taking Care of Our Body</p>
+  </header>
+
+  <div id="quiz-screen">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>📊 Progress</span>
+        <span id="progress-text">0 of 40 answered</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div class="unanswered-warning" id="unanswered-warning">
+      ⚠️ Please answer all questions before submitting! Some questions are still empty.
+    </div>
+
+    <div class="submit-wrap">
+      <button class="big-btn" id="submit-btn">✅ Submit Answers</button>
+      <div class="hint">Answer all 40 questions, then press submit!</div>
+    </div>
+  </div>
+
+  <div id="results-screen" style="display:none;">
+    <div class="results-card">
+      <div class="score-emoji" id="score-emoji">🎉</div>
+      <div class="score-text" id="score-text">You scored 0 / 40</div>
+      <div class="score-percent" id="score-percent">0%</div>
+      <div class="encourage" id="encourage-msg">Great try!</div>
+    </div>
+
+    <div class="section-title">📋 Question-by-Question Review</div>
+    <div id="review-container"></div>
+
+    <div class="submit-wrap">
+      <button class="big-btn secondary" id="retry-btn">🔄 Try Again</button>
+    </div>
+  </div>
+
+  <footer>Made with 💜 for little learners | Standard 1 EVS</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- QUESTION BANK ----------
+  // Each question: text, correct answer, 3 wrong answers.
+  const rawQuestions = [
+    { q: "Which part of the body do we use to see?", correct: "Eyes 👀", wrong: ["Ears 👂", "Nose 👃", "Tongue 👅"] },
+    { q: "Which part of the body do we use to hear?", correct: "Ears 👂", wrong: ["Eyes 👀", "Nose 👃", "Tongue 👅"] },
+    { q: "Which part of the body do we use to smell?", correct: "Nose 👃", wrong: ["Eyes 👀", "Ears 👂", "Tongue 👅"] },
+    { q: "Which part of the body do we use to taste food?", correct: "Tongue 👅", wrong: ["Eyes 👀", "Ears 👂", "Nose 👃"] },
+    { q: "Which part of the body helps us feel hot, cold, rough or smooth things?", correct: "Skin", wrong: ["Eyes 👀", "Ears 👂", "Tongue 👅"] },
+    { q: "How many sense organs do we have?", correct: "Five", wrong: ["Two", "Three", "Ten"] },
+    { q: "Which of these is NOT a sense organ?", correct: "Hair", wrong: ["Eyes 👀", "Ears 👂", "Nose 👃"] },
+    { q: "Our eyes help us to:", correct: "See things around us", wrong: ["Hear sounds", "Smell flowers", "Taste food"] },
+    { q: "Our ears help us to:", correct: "Hear sounds", wrong: ["See things", "Smell things", "Taste things"] },
+    { q: "Our nose helps us to:", correct: "Smell things", wrong: ["See things", "Hear sounds", "Taste food"] },
+    { q: "Our tongue helps us to:", correct: "Taste food", wrong: ["See things", "Hear sounds", "Smell things"] },
+    { q: "Our skin helps us to:", correct: "Feel touch, heat and cold", wrong: ["See things", "Hear sounds", "Smell things"] },
+    { q: "Which body part is at the very top of our body?", correct: "Head", wrong: ["Legs", "Arms", "Trunk"] },
+    { q: "Which body part joins the head to the trunk (body)?", correct: "Neck", wrong: ["Arms", "Legs", "Head"] },
+    { q: "Which of these are the main parts of the body?", correct: "Head, Trunk, Arms and Legs", wrong: ["Only eyes and ears", "Only hands and feet", "Only hair and nails"] },
+    { q: "We use our ______ to walk and run.", correct: "Legs", wrong: ["Arms", "Ears", "Nose"] },
+    { q: "We use our ______ to hold and pick up things.", correct: "Hands", wrong: ["Legs", "Ears", "Eyes"] },
+    { q: "Which part of the body grows on our head and needs to be combed?", correct: "Hair", wrong: ["Skin", "Nails", "Teeth"] },
+    { q: "Which of these helps us to chew our food?", correct: "Teeth", wrong: ["Hair", "Nails", "Skin"] },
+    { q: "How many eyes do we have?", correct: "Two", wrong: ["One", "Three", "Four"] },
+    { q: "How many ears do we have?", correct: "Two", wrong: ["One", "Three", "Four"] },
+    { q: "How many hands do we have?", correct: "Two", wrong: ["One", "Three", "Four"] },
+    { q: "How many legs does a person have?", correct: "Two", wrong: ["One", "Three", "Four"] },
+    { q: "How many fingers do we have on one hand?", correct: "Five", wrong: ["Three", "Four", "Six"] },
+    { q: "What should we do to keep our hands clean?", correct: "Wash them with soap and water", wrong: ["Never wash them", "Cover them with mud", "Keep them wet always"] },
+    { q: "What should we do every day to keep our teeth healthy?", correct: "Brush our teeth", wrong: ["Never brush them", "Eat only sweets", "Bite hard things"] },
+    { q: "What should we do to keep our body clean?", correct: "Take a bath every day", wrong: ["Never take a bath", "Wear dirty clothes", "Play in mud all day"] },
+    { q: "Why should we cut our nails regularly?", correct: "To keep them clean and prevent germs", wrong: ["To make them grow faster", "To make them colourful", "To make them longer"] },
+    { q: "Which of these helps protect our eyes from bright sunlight?", correct: "Sunglasses or shading them", wrong: ["Rubbing them hard", "Looking directly at the sun", "Putting sand in them"] },
+    { q: "Which of these should we avoid doing to keep our ears safe?", correct: "Putting sharp objects like pins inside them", wrong: ["Cleaning them gently", "Keeping them dry", "Protecting them from loud noise"] },
+    { q: "We should always eat food that is:", correct: "Clean and healthy", wrong: ["Dirty and spoiled", "Very sugary all the time", "Uncooked"] },
+    { q: "Which sense organ do we use to enjoy the smell of flowers?", correct: "Nose", wrong: ["Eyes", "Ears", "Tongue"] },
+    { q: "Which sense organ do we use to enjoy listening to music?", correct: "Ears", wrong: ["Eyes", "Nose", "Tongue"] },
+    { q: "Which sense organ do we use to read a book?", correct: "Eyes", wrong: ["Ears", "Nose", "Tongue"] },
+    { q: "Which sense organ tells us that ice is cold and fire is hot?", correct: "Skin", wrong: ["Eyes", "Ears", "Tongue"] },
+    { q: "Which sense organ helps us know if food is sweet or sour?", correct: "Tongue", wrong: ["Eyes", "Ears", "Nose"] },
+    { q: "Eyes are for seeing, just like ears are for:", correct: "Hearing", wrong: ["Smelling", "Tasting", "Touching"] },
+    { q: "Which of the following correctly matches: Nose → ______", correct: "Smelling", wrong: ["Seeing", "Hearing", "Tasting"] },
+    { q: "Why is it important to take care of our sense organs?", correct: "So they stay healthy and work well for us", wrong: ["Because they will turn into toys", "Because they will disappear otherwise", "Because they don't matter"] },
+    { q: "Which of these is a good habit for keeping our whole body healthy?", correct: "Eating healthy food, keeping clean, and exercising", wrong: ["Eating only junk food", "Never washing our hands", "Staying up all night"] }
+  ];
+
+  // Shuffle helper (Fisher-Yates)
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  // Build final question list with shuffled options, correct answer text stored
+  const questions = rawQuestions.map((item, idx) => {
+    const options = shuffle([item.correct, ...item.wrong]);
+    return {
+      id: idx,
+      text: item.q,
+      options: options,
+      correct: item.correct
+    };
+  });
+
+  const TOTAL = questions.length;
+  const answers = new Array(TOTAL).fill(null); // stores selected option text
+
+  const container = document.getElementById('questions-container');
+  const progressFill = document.getElementById('progress-fill');
+  const progressText = document.getElementById('progress-text');
+
+  const letters = ['A','B','C','D'];
+
+  function renderQuestions(){
+    container.innerHTML = '';
+    questions.forEach((q, qi) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = 'card-' + qi;
+
+      const header = document.createElement('div');
+      header.className = 'q-header';
+      const num = document.createElement('div');
+      num.className = 'q-number';
+      num.textContent = (qi+1);
+      const text = document.createElement('div');
+      text.className = 'q-text';
+      text.textContent = q.text;
+      header.appendChild(num);
+      header.appendChild(text);
+      card.appendChild(header);
+
+      const optWrap = document.createElement('div');
+      optWrap.className = 'options';
+
+      q.options.forEach((opt, oi) => {
+        const optDiv = document.createElement('div');
+        optDiv.className = 'option';
+        optDiv.dataset.value = opt;
+        optDiv.innerHTML = '<span class="bullet">' + letters[oi] + '</span><span>' + opt + '</span>';
+        optDiv.addEventListener('click', () => selectOption(qi, opt, card));
+        optWrap.appendChild(optDiv);
+      });
+
+      card.appendChild(optWrap);
+      container.appendChild(card);
+    });
+  }
+
+  function selectOption(qi, value, card){
+    answers[qi] = value;
+    // update UI
+    const opts = card.querySelectorAll('.option');
+    opts.forEach(o => {
+      if(o.dataset.value === value){
+        o.classList.add('selected');
+      } else {
+        o.classList.remove('selected');
+      }
+    });
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const answeredCount = answers.filter(a => a !== null).length;
+    progressText.textContent = answeredCount + ' of ' + TOTAL + ' answered';
+    progressFill.style.width = (answeredCount / TOTAL * 100) + '%';
+  }
+
+  renderQuestions();
+  updateProgress();
+
+  // ---------- SUBMIT ----------
+  document.getElementById('submit-btn').addEventListener('click', () => {
+    const unansweredIdx = answers.map((a,i)=>a===null?i:-1).filter(i=>i>=0);
+    if(unansweredIdx.length > 0){
+      document.getElementById('unanswered-warning').style.display = 'block';
+      // scroll to first unanswered
+      const target = document.getElementById('card-' + unansweredIdx[0]);
+      if(target){
+        target.style.borderColor = '#ff9f45';
+        target.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(()=>{ target.style.borderColor = 'transparent'; }, 2000);
+      }
+      return;
+    }
+    document.getElementById('unanswered-warning').style.display = 'none';
+    showResults();
+  });
+
+  function showResults(){
+    let correctCount = 0;
+    questions.forEach((q, qi) => {
+      if(answers[qi] === q.correct) correctCount++;
+    });
+    const percent = Math.round((correctCount / TOTAL) * 100);
+
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('results-screen').style.display = 'block';
+
+    let emoji = '🌟';
+    let message = '';
+    if(percent === 100){
+      emoji = '🏆';
+      message = "PERFECT SCORE! You are a Things Around Us superstar! 🎉";
+    } else if(percent >= 80){
+      emoji = '🎉';
+      message = "Wonderful job! You know so much about living and non-living things!";
+    } else if(percent >= 60){
+      emoji = '😃';
+      message = "Good work! Keep practicing and you'll be an expert soon!";
+    } else if(percent >= 40){
+      emoji = '🙂';
+      message = "Nice try! Let's read about Things Around Us again together.";
+    } else {
+      emoji = '🌱';
+      message = "Great effort! Every try helps you learn more. Keep going!";
+    }
+
+    document.getElementById('score-emoji').textContent = emoji;
+    document.getElementById('score-text').textContent = 'You scored ' + correctCount + ' / ' + TOTAL;
+    document.getElementById('score-percent').textContent = percent + '%';
+    document.getElementById('encourage-msg').textContent = message;
+
+    renderReview();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function renderReview(){
+    const reviewContainer = document.getElementById('review-container');
+    reviewContainer.innerHTML = '';
+
+    questions.forEach((q, qi) => {
+      const userAnswer = answers[qi];
+      const isCorrect = userAnswer === q.correct;
+      const isUnanswered = userAnswer === null;
+
+      const item = document.createElement('div');
+      item.className = 'review-item ' + (isUnanswered ? 'unanswered' : (isCorrect ? 'correct' : 'wrong'));
+
+      const qDiv = document.createElement('div');
+      qDiv.className = 'review-q';
+      qDiv.innerHTML = '<span>' + (qi+1) + '. ' + q.text + '</span>' +
+        (isUnanswered
+          ? '<span class="tag unanswered">Unanswered</span>'
+          : (isCorrect ? '<span class="tag correct">Correct ✅</span>' : '<span class="tag wrong">Wrong ❌</span>'));
+      item.appendChild(qDiv);
+
+      if(isUnanswered){
+        const line = document.createElement('div');
+        line.className = 'review-line';
+        line.innerHTML = '✅ Correct answer: <strong>' + q.correct + '</strong>';
+        item.appendChild(line);
+      } else if(isCorrect){
+        const line = document.createElement('div');
+        line.className = 'review-line';
+        line.innerHTML = '✅ Your answer: <strong>' + userAnswer + '</strong> (Correct!)';
+        item.appendChild(line);
+      } else {
+        const line1 = document.createElement('div');
+        line1.className = 'review-line';
+        line1.innerHTML = '❌ Your answer: <strong>' + userAnswer + '</strong>';
+        const line2 = document.createElement('div');
+        line2.className = 'review-line';
+        line2.innerHTML = '✅ Correct answer: <strong>' + q.correct + '</strong>';
+        item.appendChild(line1);
+        item.appendChild(line2);
+      }
+
+      reviewContainer.appendChild(item);
+    });
+  }
+
+  // ---------- RETRY ----------
+  document.getElementById('retry-btn').addEventListener('click', () => {
+    location.reload();
+  });
+
+})();
+</script>
+</body>
+</html>
