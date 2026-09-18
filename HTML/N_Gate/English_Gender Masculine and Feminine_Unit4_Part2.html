@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gender Quiz - Masculine and Feminine - Part 2 - Standard 1</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --purple:#8a63f2;
+    --blue:#3ea6ff;
+    --green:#3dd68c;
+    --yellow:#ffcb3d;
+    --orange:#ff9f43;
+    --red:#ff5c5c;
+    --card-bg:#ffffff;
+    --text:#333355;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:0;
+    font-family:"Comic Sans MS","Trebuchet MS","Segoe UI",Verdana,sans-serif;
+    background:linear-gradient(135deg,#a1c4fd 0%,#c2e9fb 25%,#fbc2eb 50%,#fddb92 75%,#a1c4fd 100%);
+    background-size:400% 400%;
+    animation:bgshift 20s ease infinite;
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  @keyframes bgshift{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  header{
+    text-align:center;
+    padding:22px 12px 14px;
+  }
+  header h1{
+    margin:0;
+    font-size:clamp(1.6rem,5vw,2.6rem);
+    color:#6a1b9a;
+    text-shadow:2px 2px 0 #fff, 4px 4px 0 rgba(0,0,0,0.08);
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:clamp(0.9rem,2.5vw,1.15rem);
+    color:#4a2c6d;
+    font-weight:bold;
+  }
+  .progress-wrap{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(4px);
+    padding:10px 16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.12);
+  }
+  .progress-label{
+    text-align:center;
+    font-weight:bold;
+    color:var(--purple);
+    margin-bottom:6px;
+    font-size:clamp(0.85rem,2.2vw,1.05rem);
+  }
+  .progress-bar-bg{
+    width:100%;
+    max-width:700px;
+    margin:0 auto;
+    height:18px;
+    background:#e8e8f4;
+    border-radius:20px;
+    overflow:hidden;
+    border:2px solid #d0d0e8;
+  }
+  .progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--green),var(--blue));
+    border-radius:20px;
+    transition:width 0.35s ease;
+  }
+  .container{
+    max-width:820px;
+    margin:20px auto;
+    padding:0 14px;
+  }
+  .question-card{
+    background:var(--card-bg);
+    border-radius:20px;
+    padding:18px 18px 20px;
+    margin-bottom:18px;
+    box-shadow:0 6px 16px rgba(80,50,150,0.15);
+    border:3px solid transparent;
+    animation:pop 0.35s ease;
+  }
+  @keyframes pop{
+    from{transform:scale(0.96);opacity:0;}
+    to{transform:scale(1);opacity:1;}
+  }
+  .q-number{
+    display:inline-block;
+    background:var(--purple);
+    color:#fff;
+    font-weight:bold;
+    border-radius:50%;
+    width:34px;
+    height:34px;
+    line-height:34px;
+    text-align:center;
+    margin-right:10px;
+    font-size:0.95rem;
+    flex-shrink:0;
+  }
+  .q-text-row{
+    display:flex;
+    align-items:flex-start;
+    margin-bottom:14px;
+  }
+  .q-text{
+    font-size:clamp(1rem,2.6vw,1.2rem);
+    font-weight:bold;
+    color:#2d2350;
+    line-height:1.4;
+  }
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:520px){
+    .options{grid-template-columns:1fr;}
+  }
+  .option-btn{
+    background:#f4f2ff;
+    border:2.5px solid #d9d3ff;
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:clamp(0.95rem,2.4vw,1.08rem);
+    font-family:inherit;
+    font-weight:bold;
+    color:#463b6b;
+    cursor:pointer;
+    text-align:left;
+    transition:all 0.15s ease;
+  }
+  .option-btn:hover{
+    background:#e6defc;
+    transform:translateY(-2px);
+    border-color:var(--purple);
+  }
+  .option-btn.selected{
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    color:#fff;
+    border-color:var(--purple);
+    transform:scale(1.02);
+  }
+  .option-btn.correct-answer{
+    background:linear-gradient(135deg,#43e97b,#38f9d7);
+    color:#0b4a2e;
+    border-color:var(--green);
+  }
+  .option-btn.wrong-answer{
+    background:linear-gradient(135deg,#ff8a8a,#ff5c5c);
+    color:#5a0000;
+    border-color:var(--red);
+  }
+  .option-btn:disabled{
+    cursor:default;
+  }
+  .status-icon{
+    font-size:1.3rem;
+    margin-left:8px;
+  }
+  .submit-wrap{
+    text-align:center;
+    margin:26px 0 10px;
+  }
+  .big-btn{
+    font-family:inherit;
+    font-size:clamp(1.05rem,3vw,1.3rem);
+    font-weight:bold;
+    padding:16px 34px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    color:#fff;
+    box-shadow:0 6px 0 rgba(0,0,0,0.15);
+    transition:transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .big-btn:active{
+    transform:translateY(4px);
+    box-shadow:0 2px 0 rgba(0,0,0,0.15);
+  }
+  #submitBtn{
+    background:linear-gradient(135deg,var(--green),#2bb673);
+  }
+  #tryAgainBtn{
+    background:linear-gradient(135deg,var(--orange),var(--pink));
+  }
+  #resultsSection{
+    display:none;
+  }
+  .score-card{
+    background:#fff;
+    border-radius:24px;
+    padding:28px 20px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(80,50,150,0.2);
+    margin-bottom:24px;
+  }
+  .score-card h2{
+    font-size:clamp(1.5rem,5vw,2.2rem);
+    color:#6a1b9a;
+    margin:0 0 8px;
+  }
+  .score-big{
+    font-size:clamp(2.2rem,8vw,3.2rem);
+    font-weight:bold;
+    color:var(--purple);
+    margin:8px 0;
+  }
+  .percentage{
+    font-size:clamp(1.2rem,4vw,1.6rem);
+    font-weight:bold;
+    color:var(--blue);
+    margin-bottom:10px;
+  }
+  .encourage{
+    font-size:clamp(1rem,3vw,1.3rem);
+    font-weight:bold;
+    color:#e0662a;
+    background:#fff3e0;
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:16px;
+    margin-top:8px;
+  }
+  .review-title{
+    text-align:center;
+    color:#6a1b9a;
+    font-size:clamp(1.3rem,4vw,1.7rem);
+    margin:20px 0 16px;
+  }
+  .review-card{
+    background:#fff;
+    border-radius:18px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    box-shadow:0 4px 12px rgba(80,50,150,0.12);
+    border-left:8px solid var(--green);
+  }
+  .review-card.wrong{
+    border-left-color:var(--red);
+  }
+  .review-card.unanswered{
+    border-left-color:var(--yellow);
+  }
+  .review-q{
+    font-weight:bold;
+    margin-bottom:8px;
+    color:#2d2350;
+  }
+  .review-line{
+    font-size:0.98rem;
+    margin:4px 0;
+  }
+  .review-line.correct-line{color:#1d8a4f;}
+  .review-line.wrong-line{color:#c62828;}
+  .review-line.info-line{color:#8a6d00;}
+  footer{
+    text-align:center;
+    color:#5a4a80;
+    font-size:0.85rem;
+    margin-top:30px;
+    padding-bottom:10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>👫 Gender Quiz &ndash; Masculine &amp; Feminine &ndash; Part 2 👫</h1>
+  <p>Standard 1 &middot; English Grammar &middot; Unit 4: Gender - Masculine and Feminine</p>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-label" id="progressLabel">0 of 40 answered</div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="quizSection"></div>
+
+  <div class="submit-wrap" id="submitWrap">
+    <button class="big-btn" id="submitBtn">✅ Submit Answers</button>
+  </div>
+
+  <div id="resultsSection">
+    <div class="score-card">
+      <h2>🎉 Quiz Complete!</h2>
+      <div class="score-big" id="scoreBig">0 / 40</div>
+      <div class="percentage" id="percentageText">0%</div>
+      <div class="encourage" id="encourageText"></div>
+    </div>
+
+    <div class="review-title">📝 Question-by-Question Review</div>
+    <div id="reviewList"></div>
+
+    <div class="submit-wrap">
+      <button class="big-btn" id="tryAgainBtn">🔄 Try Again</button>
+    </div>
+  </div>
+</div>
+
+<footer>Made with ❤️ for little learners</footer>
+
+<script>
+(function(){
+  const RAW_QUESTIONS = [
+    {q:"Which gender word is used for WOMEN, GIRLS and FEMALE ANIMALS?", options:["feminine","masculine","neutral","plural"], correct:"feminine"},
+    {q:"Which gender word is used for MEN, BOYS and MALE ANIMALS?", options:["masculine","feminine","neutral","plural"], correct:"masculine"},
+    {q:"'Bride' and 'bridegroom' are examples of ___ gender pairs.", options:["masculine and feminine","singular and plural","common and proper","none"], correct:"masculine and feminine"},
+    {q:"'King' and 'queen' are words that show ___.", options:["gender","number","tense","colour"], correct:"gender"},
+
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["king - queen","king - princess","king - lioness","king - hen"], correct:"king - queen"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["lion - lioness","lion - queen","lion - hen","lion - aunt"], correct:"lion - lioness"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["boy - girl","boy - woman","boy - aunt","boy - hen"], correct:"boy - girl"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["father - mother","father - sister","father - niece","father - queen"], correct:"father - mother"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["brother - sister","brother - mother","brother - aunt","brother - hen"], correct:"brother - sister"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["uncle - aunt","uncle - mother","uncle - sister","uncle - queen"], correct:"uncle - aunt"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["son - daughter","son - niece","son - sister","son - aunt"], correct:"son - daughter"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["nephew - niece","nephew - daughter","nephew - sister","nephew - mother"], correct:"nephew - niece"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["cock - hen","cock - peahen","cock - duck","cock - cow"], correct:"cock - hen"},
+    {q:"Which pair correctly shows a masculine and feminine word?", options:["duck - drake","hen - drake","cow - drake","peahen - drake"], correct:"duck - drake"},
+
+    {q:"Which of these is NOT masculine?", options:["queen","king","boy","father"], correct:"queen"},
+    {q:"Which of these is NOT feminine?", options:["king","queen","girl","mother"], correct:"king"},
+    {q:"Which of these is NOT masculine?", options:["aunt","uncle","son","nephew"], correct:"aunt"},
+    {q:"Which of these is NOT feminine?", options:["brother","sister","niece","daughter"], correct:"brother"},
+    {q:"Which of these is NOT masculine?", options:["hen","cock","drake","bull"], correct:"hen"},
+    {q:"Which of these is NOT feminine?", options:["cock","hen","peahen","cow"], correct:"cock"},
+    {q:"Which of these is NOT masculine?", options:["bride","prince","bridegroom","priest"], correct:"bride"},
+    {q:"Which of these is NOT feminine?", options:["prince","bride","princess","priestess"], correct:"prince"},
+
+    {q:"Is the word 'grandmother' masculine or feminine?", options:["feminine","masculine","neither","both"], correct:"feminine"},
+    {q:"Is the word 'grandfather' masculine or feminine?", options:["masculine","feminine","neither","both"], correct:"masculine"},
+    {q:"Is the word 'daughter' masculine or feminine?", options:["feminine","masculine","neither","both"], correct:"feminine"},
+    {q:"Is the word 'brother' masculine or feminine?", options:["masculine","feminine","neither","both"], correct:"masculine"},
+    {q:"Is the word 'priestess' masculine or feminine?", options:["feminine","masculine","neither","both"], correct:"feminine"},
+    {q:"Is the word 'bridegroom' masculine or feminine?", options:["masculine","feminine","neither","both"], correct:"masculine"},
+
+    {q:"The king and the ___ live in the palace.", options:["queen","princess","bride","aunt"], correct:"queen"},
+    {q:"My brother and my ___ are twins.", options:["sister","aunt","niece","mother"], correct:"sister"},
+    {q:"The lion roared loudly while the ___ rested nearby.", options:["lioness","tigress","hen","cow"], correct:"lioness"},
+    {q:"Every evening, my grandfather and ___ go for a walk.", options:["grandmother","aunt","sister","mother"], correct:"grandmother"},
+    {q:"The cock crows every morning, and the ___ lays eggs.", options:["hen","peahen","duck","cow"], correct:"hen"},
+    {q:"The prince rode a horse while the ___ waited in the palace.", options:["princess","queen","bride","aunt"], correct:"princess"},
+
+    {q:"The feminine form of 'man' is:", options:["woman","girl","aunt","sister"], correct:"woman"},
+    {q:"The feminine form of 'priest' is:", options:["priestess","queen","bride","aunt"], correct:"priestess"},
+    {q:"The masculine form of 'hen' is:", options:["cock","drake","bull","peacock"], correct:"cock"},
+    {q:"The masculine form of 'aunt' is:", options:["uncle","father","brother","son"], correct:"uncle"},
+    {q:"The feminine form of 'nephew' is:", options:["niece","daughter","sister","aunt"], correct:"niece"},
+    {q:"The masculine form of 'princess' is:", options:["prince","king","bridegroom","uncle"], correct:"prince"}
+  ];
+
+  const TOTAL = RAW_QUESTIONS.length;
+  let questions = [];
+  let userAnswers = [];
+
+  function shuffleArray(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildQuestions(){
+    questions = RAW_QUESTIONS.map(item => ({
+      q: item.q,
+      correct: item.correct,
+      shuffledOptions: shuffleArray(item.options)
+    }));
+    userAnswers = new Array(TOTAL).fill(null);
+  }
+
+  const quizSection = document.getElementById('quizSection');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressFill = document.getElementById('progressFill');
+  const submitWrap = document.getElementById('submitWrap');
+  const resultsSection = document.getElementById('resultsSection');
+  const scoreBig = document.getElementById('scoreBig');
+  const percentageText = document.getElementById('percentageText');
+  const encourageText = document.getElementById('encourageText');
+  const reviewList = document.getElementById('reviewList');
+
+  function renderQuiz(){
+    quizSection.innerHTML = '';
+    questions.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = 'card-' + idx;
+
+      const row = document.createElement('div');
+      row.className = 'q-text-row';
+      const numSpan = document.createElement('span');
+      numSpan.className = 'q-number';
+      numSpan.textContent = (idx+1);
+      const qText = document.createElement('span');
+      qText.className = 'q-text';
+      qText.textContent = item.q;
+      row.appendChild(numSpan);
+      row.appendChild(qText);
+      card.appendChild(row);
+
+      const optsWrap = document.createElement('div');
+      optsWrap.className = 'options';
+      item.shuffledOptions.forEach(optText => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.textContent = optText;
+        btn.addEventListener('click', () => selectAnswer(idx, optText, btn));
+        optsWrap.appendChild(btn);
+      });
+      card.appendChild(optsWrap);
+      quizSection.appendChild(card);
+    });
+  }
+
+  function selectAnswer(qIdx, optText, btnEl){
+    userAnswers[qIdx] = optText;
+    const card = document.getElementById('card-' + qIdx);
+    card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btnEl.classList.add('selected');
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const answeredCount = userAnswers.filter(a => a !== null).length;
+    progressLabel.textContent = answeredCount + ' of ' + TOTAL + ' answered';
+    progressFill.style.width = ((answeredCount/TOTAL)*100) + '%';
+  }
+
+  function getEncouragement(pct){
+    if(pct === 100) return "🌟 Perfect Score! You are a Gender Superstar! 🌟";
+    if(pct >= 80) return "🏆 Wonderful job! You know masculine and feminine words very well!";
+    if(pct >= 60) return "😊 Good work! Keep practicing to become a superstar!";
+    if(pct >= 40) return "💪 Nice try! A little more practice will help you shine!";
+    return "🌈 Keep going! Practice makes perfect - try again!";
+  }
+
+  function submitQuiz(){
+    let score = 0;
+    questions.forEach((item, idx) => {
+      if(userAnswers[idx] === item.correct) score++;
+    });
+    const pct = Math.round((score/TOTAL)*100);
+
+    questions.forEach((item, idx) => {
+      const card = document.getElementById('card-' + idx);
+      const buttons = card.querySelectorAll('.option-btn');
+      buttons.forEach(b => {
+        b.disabled = true;
+        if(b.textContent === item.correct){
+          b.classList.add('correct-answer');
+        } else if(b.textContent === userAnswers[idx] && userAnswers[idx] !== item.correct){
+          b.classList.add('wrong-answer');
+        }
+      });
+    });
+
+    scoreBig.textContent = score + ' / ' + TOTAL;
+    percentageText.textContent = pct + '%';
+    encourageText.textContent = getEncouragement(pct);
+
+    reviewList.innerHTML = '';
+    questions.forEach((item, idx) => {
+      const ua = userAnswers[idx];
+      const div = document.createElement('div');
+      let statusIcon, lineHtml;
+      if(ua === null){
+        div.className = 'review-card unanswered';
+        statusIcon = '➖';
+        lineHtml = '<div class="review-line info-line">➖ Not answered</div>' +
+                   '<div class="review-line correct-line">✅ Correct answer: ' + item.correct + '</div>';
+      } else if(ua === item.correct){
+        div.className = 'review-card';
+        statusIcon = '✅';
+        lineHtml = '<div class="review-line correct-line">✅ Your answer: ' + ua + ' (Correct!)</div>';
+      } else {
+        div.className = 'review-card wrong';
+        statusIcon = '❌';
+        lineHtml = '<div class="review-line wrong-line">❌ Your answer: ' + ua + '</div>' +
+                   '<div class="review-line correct-line">✅ Correct answer: ' + item.correct + '</div>';
+      }
+      div.innerHTML = '<div class="review-q">' + statusIcon + ' Q' + (idx+1) + '. ' + item.q + '</div>' + lineHtml;
+      reviewList.appendChild(div);
+    });
+
+    submitWrap.style.display = 'none';
+    resultsSection.style.display = 'block';
+    window.scrollTo({top: resultsSection.offsetTop - 20, behavior:'smooth'});
+  }
+
+  function resetQuiz(){
+    buildQuestions();
+    renderQuiz();
+    updateProgress();
+    submitWrap.style.display = 'block';
+    resultsSection.style.display = 'none';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+  document.getElementById('tryAgainBtn').addEventListener('click', resetQuiz);
+
+  buildQuestions();
+  renderQuiz();
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>
